@@ -131,8 +131,11 @@ def publish(client, root, paths):
     original = client.gallery()
     if original.get("Owner") != "VoyagerX" or original.get("Role") != "admin":
         raise SyncError("Token must have admin access to the VoyagerX Gallery")
-    if original.get("EntryFile") != "index.ipynb" or original.get("Category") != "notebook":
-        raise SyncError("Unexpected Gallery entry/category; refusing to change it")
+    entry = original.get("EntryFile", "")
+    category = original.get("Category")
+    suffixes = {"notebook": ".ipynb", "website": ".html", "pdf": ".pdf", "file": None}
+    if entry not in paths or category not in suffixes or (suffixes[category] and Path(entry).suffix.lower() != suffixes[category]):
+        raise SyncError("Current Gallery entry/category is incompatible with the selected files; refusing to change it")
     # Request URLs in small batches and use them immediately, before they expire.
     for start in range(0, len(paths), 6):
         batch = paths[start:start + 6]
@@ -154,7 +157,7 @@ def publish(client, root, paths):
     })
     client.api("PUT", "/api/v1/gallery/publish", json={"Gid": client.gid})
     result = client.gallery()
-    if set(result["Files"]) != set(paths) or result.get("Private") not in (False, 0) or result.get("EntryFile") != "index.ipynb":
+    if set(result["Files"]) != set(paths) or result.get("Private") not in (False, 0) or result.get("EntryFile") != entry or result.get("Category") != category:
         raise SyncError("Published Gallery metadata does not match the expected course")
     return result
 

@@ -37,27 +37,32 @@ class PublisherTests(unittest.TestCase):
             self.assertNotIn("Authorization", put.call_args.kwargs["headers"])
             self.assertNotIn("cookies", put.call_args.kwargs)
 
-    def run_publish(self, change=False, bad_size=False):
+    def run_publish(self, change=False, bad_size=False, website=False):
         original = {"Name": "course", "Owner": "VoyagerX", "Role": "admin", "Category": "notebook", "EntryFile": "index.ipynb", "Files": ["old.txt"], "Label": ["course"], "Private": False, "GmtUpdated": "original"}
+        name = "index.html" if website else "index.ipynb"
+        if website:
+            original.update(Category="website", EntryFile=name)
         current = dict(original, GmtUpdated="changed") if change else original
-        final = dict(original, Files=["index.ipynb"])
+        final = dict(original, Files=[name])
         client = Mock(gid="gid")
         client.gallery.side_effect = [original, current, final]
-        client.upload_urls.return_value = {"index.ipynb": "https://oss.example/url"}
-        client.api.return_value = {"Files": [{"FileName": "index.ipynb", "Size": 0 if bad_size else 8}]}
+        client.upload_urls.return_value = {name: "https://oss.example/url"}
+        client.api.return_value = {"Files": [{"FileName": name, "Size": 0 if bad_size else 8}]}
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / "index.ipynb").write_text("notebook")
+            (root / name).write_text("notebook")
             if change or bad_size:
                 with self.assertRaises(sync.SyncError):
-                    sync.publish(client, root, ["index.ipynb"])
+                    sync.publish(client, root, [name])
                 self.assertFalse(any(call.args[0] == "PUT" for call in client.api.call_args_list))
             else:
-                sync.publish(client, root, ["index.ipynb"])
+                sync.publish(client, root, [name])
                 writes = [call for call in client.api.call_args_list if call.args[0] == "PUT"]
                 self.assertEqual(writes[-1].args[1], "/api/v1/gallery/publish")
                 payload = writes[0].kwargs["json"]
-                self.assertEqual(json.loads(payload["Files"]), ["index.ipynb"])
+                self.assertEqual(json.loads(payload["Files"]), [name])
+                self.assertEqual(payload["EntryFile"], name)
+                self.assertEqual(payload["Category"], original["Category"])
                 self.assertEqual(payload["Private"], 0)
                 self.assertEqual(payload["Name"], "course")
                 self.assertEqual(json.loads(payload["Label"]), ["course"])
@@ -70,6 +75,9 @@ class PublisherTests(unittest.TestCase):
 
     def test_success_updates_manifest_then_publishes(self):
         self.run_publish()
+
+    def test_preserves_existing_html_entry(self):
+        self.run_publish(website=True)
 
 
 if __name__ == "__main__":

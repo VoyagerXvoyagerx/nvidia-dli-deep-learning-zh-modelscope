@@ -54,7 +54,7 @@ python build_html.py
 
 ## GitHub 提交后自动发布灵感流
 
-推送到 `main` 后，[Publish ModelScope Gallery](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/actions/workflows/sync-gallery.yml) 自动测试同步脚本、从 notebook 重建 HTML，并将课程上传、发布到[现有公开灵感流](https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope)。也可在 Actions 页面点击 **Run workflow** 手动重试。排队任务取执行时最新的 `main`；上传与发布串行执行，不取消正在发布的任务。HTML 构建不执行课程训练，也不向 GitHub 自动提交文件。
+推送到 `main` 后，[Publish ModelScope Gallery](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/actions/workflows/sync-gallery.yml) 自动测试同步脚本、从 notebook 重建 HTML，并将课程上传、发布到[现有公开灵感流](https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope)。保留灵感流当前的入口文件、类别、名称和标签；入口必须仍在发布清单内。也可在 Actions 页面点击 **Run workflow** 手动重试。排队任务取执行时最新的 `main`；上传与发布串行执行，不取消正在发布的任务。HTML 构建不执行课程训练，也不向 GitHub 自动提交文件。
 
 认证由仓库 Actions Secret `MODELSCOPE_API_TOKEN` 提供，需使用有该灵感流管理员权限的 VoyagerX token。密钥不会写入源码或发往 OSS 文件上传地址。工作流、同步脚本、依赖列表和自动化测试仅在 GitHub 保留。
 
