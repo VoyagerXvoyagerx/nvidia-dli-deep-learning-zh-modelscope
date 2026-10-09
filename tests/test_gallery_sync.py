@@ -24,6 +24,10 @@ class PublisherTests(unittest.TestCase):
         with self.assertRaises(sync.SyncError):
             client.upload_urls(["index.ipynb"])
 
+    def test_contributing_replaces_duplicate_course_readme_in_gallery(self):
+        self.assertTrue(sync.selected("CONTRIBUTING.md"))
+        self.assertFalse(sync.selected("course_content/README.md"))
+
     def test_expired_oss_url_refreshes_without_sending_credentials(self):
         client = sync.GalleryClient("test-token", "test-gallery")
         client.upload_urls = Mock(return_value={"index.ipynb": "https://oss.example/new"})

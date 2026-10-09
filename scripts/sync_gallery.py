@@ -23,7 +23,8 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://modelscope.cn"
 GALLERY_ID = "cb1503c2-1458-4f67-b9c3-bd505091cb47"
 GALLERY_URL = BASE + "/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope"
-ROOT_FILES = {"LICENSE", "README.md", "index.ipynb", "build_html.py"}
+ROOT_FILES = {"LICENSE", "README.md", "CONTRIBUTING.md", "index.ipynb", "build_html.py"}
+EXCLUDED_FILES = {"course_content/README.md"}  # Replaced in Gallery by CONTRIBUTING.md; keep the 50-file budget.
 EXCLUDED_DIRS = {"environment", "slides", "__pycache__", ".ipynb_checkpoints", "tutorial_assets"}
 MAX_FILES = 50
 
@@ -33,6 +34,8 @@ class SyncError(RuntimeError):
 
 
 def selected(path: str) -> bool:
+    if path in EXCLUDED_FILES:
+        return False
     parts = PurePosixPath(path).parts
     if not parts or any(part in {"..", "."} for part in parts) or path.startswith("/"):
         return False
@@ -52,7 +55,7 @@ def manifest(root: Path) -> list[str]:
     if not ROOT_FILES.issubset(paths) or not any(p.endswith(".ipynb") and p.startswith("course_content/tutorials/") for p in paths):
         raise SyncError("Course entry, root files or tutorial notebooks are missing")
     if len(paths) > MAX_FILES:
-        raise SyncError(f"Gallery allows at most {MAX_FILES} files; selected {len(paths)}. Adjust the course file selection first.")
+        raise SyncError(f"Publisher file budget is {MAX_FILES}; selected {len(paths)}. Adjust the course file selection first.")
     for name in paths:
         p = root / name
         if p.is_symlink() or not p.resolve().is_relative_to(root.resolve()):
