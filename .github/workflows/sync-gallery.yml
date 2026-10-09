@@ -1,0 +1,44 @@
+name: Publish ModelScope Gallery
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Do not interrupt an upload/publication already in progress.
+concurrency:
+  group: modelscope-gallery-cb1503c2
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Queued runs publish the latest main, rather than an older event commit.
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-gallery-sync.txt
+      - name: Install build and publishing dependencies
+        run: python -m pip install -r requirements-gallery-sync.txt
+      - name: Test publisher
+        run: python -m unittest discover -s tests -v
+      - name: Rebuild HTML without executing notebooks
+        run: python build_html.py
+      - name: Validate Gallery file selection
+        run: python scripts/sync_gallery.py --dry-run
+      - name: Upload and publish existing Gallery
+        env:
+          MODELSCOPE_API_TOKEN: ${{ secrets.MODELSCOPE_API_TOKEN }}
+          MODELSCOPE_GALLERY_ID: cb1503c2-1458-4f67-b9c3-bd505091cb47
+        run: python scripts/sync_gallery.py

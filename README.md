@@ -51,3 +51,22 @@ python build_html.py
 ## GitHub 与 Gallery 文件范围
 
 报告、`REUSE.toml`、`smoke_test.ipynb`、第三方来源说明、`VALIDATION.md`、`course_content/environment/` 和 `course_content/slides/` 仅在 [GitHub](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope) 保留。灵感流仅提供课程运行与预览所需文件。首次下载会跳过接口返回的空链接并打印文件名；这表示对应文件未下载。目录存在时不会自动更新。
+
+## GitHub 提交后自动发布灵感流
+
+推送到 `main` 后，[Publish ModelScope Gallery](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/actions/workflows/sync-gallery.yml) 自动测试同步脚本、从 notebook 重建 HTML，并将课程上传、发布到[现有公开灵感流](https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope)。也可在 Actions 页面点击 **Run workflow** 手动重试。排队任务取执行时最新的 `main`；上传与发布串行执行，不取消正在发布的任务。HTML 构建不执行课程训练，也不向 GitHub 自动提交文件。
+
+认证由仓库 Actions Secret `MODELSCOPE_API_TOKEN` 提供，需使用有该灵感流管理员权限的 VoyagerX token。密钥不会写入源码或发往 OSS 文件上传地址。工作流、同步脚本、依赖列表和自动化测试仅在 GitHub 保留。
+
+同步文件从 Git 跟踪文件中选择根目录 `LICENSE`、`README.md`、`index.ipynb`、`build_html.py`，以及 `LICENSES/` 和 `course_content/`，并加入本次生成的 HTML。上述 GitHub 专属目录、运行缓存和隐藏文件除外。当前共 50 个文件，已达到 Gallery 的文件数量上限；新增文件超过上限会使 Action 失败，需调整发布范围后重试，不会默默遗漏新课程。上传失败、草稿文件大小不符或检测到灵感流被同时修改时，不执行发布。平台内容审核可能使部分已发布文件暂时没有下载链接，文件名会显示在 Action Summary 中。
+
+接口说明：公开 OpenAPI 的 `POST /openapi/v1/galleries` 目前只支持创建，未提供更新已有 Gallery 的接口。本工作流为保持 ID 和 URL，使用 Gallery 网页的 HTTP API：获取信息 `GET /api/v1/gallery`，获取草稿上传地址 `POST /api/v1/gallery/square/files/upload`，校验草稿 `GET /api/v1/gallery/square/files`，更新文件清单 `PUT /api/v1/gallery`，发布 `PUT /api/v1/gallery/publish`。这些网页接口可能随平台改版变化；认证或接口变化会在 Actions 中报错。
+
+本地检查（不联网、不需要 token）：
+
+```bash
+python -m pip install -r requirements-gallery-sync.txt
+python -m unittest discover -s tests -v
+python build_html.py
+python scripts/sync_gallery.py --dry-run
+```
