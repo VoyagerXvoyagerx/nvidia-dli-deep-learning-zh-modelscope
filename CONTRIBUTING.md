@@ -93,13 +93,11 @@ git push origin main
 
 仅保留在 GitHub：`ADAPTATION_REPORT.md`、`REUSE.toml`、`smoke_test.ipynb`、`THIRD_PARTY_NOTICES.md`、`VALIDATION.md`、`course_content/README.md`、`course_content/environment/`、`course_content/slides/`，以及工作流、同步脚本、测试和发布依赖列表。隐藏文件、运行缓存和 `model.pth` 不发布。
 
-同步脚本采用 **50 文件预算**，参考创建 OpenAPI 的上限；这不代表网页更新接口已有相同限制的官方文档。当前发布清单为 50 个文件。为加入本指南，重复的 `course_content/README.md` 改为仅保留在 GitHub。新增文件超过预算时，先调整 `scripts/sync_gallery.py` 的发布范围，再通过 `--dry-run` 检查，不能默默跳过新课程。脚本还检查单文件不超过 5 MiB。
+同步脚本采用 **50 文件预算**，(API 实际没有这个 50 的限制)。为加入本指南，重复的 `course_content/README.md` 改为仅保留在 GitHub。新增文件超过预算时，先调整 `scripts/sync_gallery.py` 的发布范围，再通过 `--dry-run` 检查，不能默默跳过新课程。脚本还检查单文件不超过 5 MiB。
 
-### 与官方创建 OpenAPI 的区别
+### Gallery OpenAPI 使用说明
 
-官方文档的 `POST /galleries`（服务完整路径 `/openapi/v1/galleries`）用于创建新的 Gallery：先上传得到文件 ID，再提交 `files` ID 列表，Gallery ID 由服务端生成。它与更新已有 Gallery 的草稿、发布流程不同。
-
-当前同步使用从 Gallery 网页前端代码、SDK 兼容实现中确认并实际验证的网页 HTTP API，**不是官方公开 OpenAPI 的更新接口**：
+官方文档的 `POST /galleries`（服务完整路径 `/openapi/v1/galleries`）用于创建新的 Gallery：先上传得到文件 ID，再提交 `files` ID 列表，Gallery ID 由服务端生成。当前同步使用从 Gallery 网页前端代码、SDK 兼容实现中确认并实际验证的网页 HTTP API：
 
 | 步骤 | 网页 HTTP API |
 |---|---|
@@ -112,14 +110,15 @@ git push origin main
 
 网页接口的 `Files` 是相对路径清单，更新请求中需编码为 JSON 字符串；它不是创建 OpenAPI 的文件 ID 列表。网页接口可能随平台改版变化，不能将其稳定性视为公开 OpenAPI 的承诺。若平台提供正式的更新、发布 OpenAPI，后续应迁移同步脚本。
 
-## 魔搭产品侧 TODO
+##  Wish List
 
-以下为产品改进建议，尚未实现：
+以下为产品改进心愿单，尚未实现：
 
-- [ ] Gallery 的 files 增加每个文件的 `path` / `name` 及稳定 URL，方便直接分享、引用指定文件，并支持嵌套目录。例如希望提供 `https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope/files/README.md`。这里是期望的 URL 形式，不表示该路由目前可用。
-- [ ] 优化灵感流中 `.ipynb` 文件的图片相对路径识别。
-- [ ] 优化新版 IDE 中 Gallery 目录下的图片相对路径识别。
-- [ ] 优化新版 IDE 中持久化目录下的图片相对路径识别。
+- [ ] Gallery 的 files 增加每个文件的 `path` / `name` 及稳定 URL，方便直接分享、引用指定文件，并支持嵌套目录。例如希望提供 `https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope/files/README.md`。这里是期望的 URL 形式。
+- [ ] 优化灵感流中 `.ipynb` 文件 markdown cell 中的图片相对路径识别。
+- [ ] 优化新版 IDE 中 Gallery 目录下 `.ipynb` 文件 markdown cell 中的图片相对路径识别。
 - [ ] 优化新版 IDE 中 Gallery 目录下的文件相对路径与模块导入识别，覆盖 `from xxx import xxxx` 场景。
+- [ ] 优化新版 IDE 中持久化目录下 `.ipynb` 文件 markdown cell 中的图片相对路径识别。
+- [ ] 灵感流支持移动端访问
 
 验收时应覆盖 notebook 与图片/模块同目录、嵌套目录、Gallery 临时挂载目录和 `/mnt/workspace` 持久化目录；打开 notebook 后无需手动 `os.chdir` 或插入 `sys.path`，即可正确显示图片并导入相应课程模块。
