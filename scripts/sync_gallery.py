@@ -106,18 +106,22 @@ class GalleryClient:
         for attempt in range(3):
             try:
                 # A separate request prevents the ModelScope credential being sent to OSS.
-                response = requests.put(url, data=(root / name).read_bytes(), headers={
-                    "Content-Type": "application/octet-stream", "x-oss-meta-author": "aliy",
-                }, timeout=(15, 180), allow_redirects=False)
+                # Stream smaller chunks instead of sending a large bytes object
+                # in one socket write. Reopen for each retry so the body restarts.
+                with (root / name).open("rb") as body:
+                    response = requests.put(url, data=body, headers={
+                        "Content-Type": "application/octet-stream", "x-oss-meta-author": "aliy",
+                    }, timeout=(60, 180), allow_redirects=False)
                 if response.ok:
                     print(f"Uploaded: {name}", flush=True)
                     return
                 status = response.status_code
                 if status not in {403, 408, 429, 500, 502, 503, 504}:
                     raise SyncError(f"Upload failed: {name}, HTTP {status}")
-            except requests.RequestException:
-                status = "network error"
+            except requests.RequestException as exc:
+                status = type(exc).__name__
             if attempt < 2:
+                print(f"Retrying upload: {name}, {status}, attempt {attempt + 2}/3", flush=True)
                 time.sleep(2 ** attempt)
                 # Refresh expiring signed URLs before retrying the idempotent PUT.
                 url = self.upload_urls([name])[name]

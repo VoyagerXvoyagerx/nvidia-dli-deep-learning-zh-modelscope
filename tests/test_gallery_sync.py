@@ -34,8 +34,15 @@ class PublisherTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "index.ipynb").write_text("notebook")
-            with patch.object(sync.requests, "put", side_effect=[Mock(ok=False, status_code=403), Mock(ok=True)]) as put, patch.object(sync.time, "sleep"):
+            payloads = []
+            def upload_result(url, **kwargs):
+                body = kwargs["data"]
+                self.assertTrue(hasattr(body, "read"))
+                payloads.append(body.read())
+                return Mock(ok=False, status_code=403) if len(payloads) == 1 else Mock(ok=True)
+            with patch.object(sync.requests, "put", side_effect=upload_result) as put, patch.object(sync.time, "sleep"):
                 client.upload(root, "index.ipynb", "https://oss.example/expired")
+            self.assertEqual(payloads, [b"notebook", b"notebook"])
             client.upload_urls.assert_called_once_with(["index.ipynb"])
             self.assertEqual(put.call_args.args[0], "https://oss.example/new")
             self.assertNotIn("Authorization", put.call_args.kwargs["headers"])
