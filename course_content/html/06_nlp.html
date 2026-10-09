@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>06 · BERT 与自然语言处理 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
+<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/06_nlp.ipynb">源 Notebook</a><a href="https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope">魔搭运行</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope">GitHub</a></nav></header>
+<aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" >04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="active" href="06_nlp.html" aria-current=page>06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
+<main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 06 · BERT 与自然语言处理</div><h1 class="page-title">06 · BERT 与自然语言处理</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=238c5634"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="NVIDIA-DLI-at-ModelScope-Notebook">NVIDIA DLI at ModelScope Notebook<a class="anchor-link" href="#NVIDIA-DLI-at-ModelScope-Notebook">¶</a></h2><p>原课程：NVIDIA DLI《深度学习基础》，来源 <a href="https://github.com/NVDLI/fundamentals-of-deep-learning-zh">https://github.com/NVDLI/fundamentals-of-deep-learning-zh</a> 。本版本由 VoyagerX 适配，原课程正文和练习保留。模型与数据集从 VoyagerX 的 ModelScope 仓库下载，不访问 Hugging Face、Kaggle 或 PyTorch 外部下载站。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=350be198">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="n">tutorial_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials"</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">tutorial_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+    <span class="c1"># 首次运行下载课程目录；跳过空链接并打印对应文件名。</span>
+    <span class="o">!</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import requests; from pathlib import Path; from concurrent.futures import ThreadPoolExecutor; b="https://modelscope.cn"; gid="cb1503c2-1458-4f67-b9c3-bd505091cb47"; dst=Path("/mnt/workspace/fundamentals-of-deep-learning-zh"); r=requests.get(b+"/api/v1/gallery",params={"Gid":gid},timeout=60); r.raise_for_status(); files=r.json()["Data"]["Gallery"]["Files"]; r=requests.post(b+"/api/v1/gallery/square/files/download",json={"Gid":gid,"FileNames":[f for f in files if f.startswith("course_content/")],"Draft":False},timeout=60); r.raise_for_status(); urls=r.json()["Data"]["Urls"]; exec("def download(x):\n u=x.get(\"Url\")\n if not u:\n  print(\"跳过空下载链接：\",x.get(\"Filename\")); return\n p=dst/x[\"Filename\"].removeprefix(\"course_content/\")\n p.parent.mkdir(parents=True,exist_ok=True)\n r=requests.get(u,timeout=300)\n r.raise_for_status()\n p.write_bytes(r.content)"); pool=ThreadPoolExecutor(max_workers=6); list(pool.map(download,urls)); pool.shutdown(); print("有效链接下载完成：",dst)'</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">tutorial_dir</span><span class="p">);</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tutorial_dir</span><span class="p">))</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelscope_assets</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_bert</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7e6704e1"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="6.-%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86">6. 自然语言处理<a class="anchor-link" href="#6.-%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=63d9d3cf"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>在这个教程中，我们将离开像静态图像这样的独立数据，转向依赖于序列中其它数据项的数据。作为示例，我们将使用句子文本。语言自然由序列数据组成，形式为单词中的字符和句子中的单词。其它序列数据的例子包括股票价格和天气数据等时间序列。视频虽然包含静态图像，但也属于序列。当数据中的元素与之前和之后的内容有关系，就需要采取不同的方法来处理。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=95c166f5"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.1-%E7%9B%AE%E6%A0%87">6.1 目标<a class="anchor-link" href="#6.1-%E7%9B%AE%E6%A0%87">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=63b2afe7"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>使用分词器为神经网络准备文本</li>
+<li>观察如何使用嵌入来识别文本数据的数值特征</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=896302a8"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.2-BERT">6.2 BERT<a class="anchor-link" href="#6.2-BERT">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=ed512137"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>BERT，全称为 <strong>B</strong>idirectional <strong>E</strong>ncoder <strong>R</strong>epresentations from <strong>T</strong>ransformers，是 <a href="https://www.google.com/">Google</a> 在 2018 年引入的一种开创性模型。</p>
+<p>BERT 同时针对两个目标进行训练：</p>
+<ul>
+<li>从一系列单词中预测缺失的单词</li>
+<li>在一系列句子之后预测新的句子</li>
+</ul>
+<p>让我们用这两种挑战来看看 BERT 的表现。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=4571fbb7"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.3-%E5%88%86%E8%AF%8D">6.3 分词<a class="anchor-link" href="#6.3-%E5%88%86%E8%AF%8D">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=76984d1a"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>由于神经网络是数值计算机，让我们将文本转换为数值 token。让我们加载 BERT 的<a href="https://huggingface.co/docs/transformers/main_classes/tokenizer#tokenizer">分词器</a>：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=4c2d2352">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BertTokenizer</span><span class="p">,</span> <span class="n">BertForMaskedLM</span><span class="p">,</span> <span class="n">BertForQuestionAnswering</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">prepare_bert</span><span class="p">(</span><span class="s2">"bert-base-cased"</span><span class="p">),</span> <span class="n">local_files_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a221eb85"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>BERT 的<code>分词器</code>可以一次性<a href="https://huggingface.co/docs/transformers/main_classes/tokenizer#transformers.PreTrainedTokenizer.encode">编码</a>多段文本。稍后我们将测试 BERT 的记忆力，先给它一些信息和一个关于信息的问题。您可以随时回到这里，尝试不同的句子组合。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=cd0b18f6">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">text_1</span> <span class="o">=</span> <span class="s2">"I understand equations, both the simple and quadratical."</span>
+<span class="n">text_2</span> <span class="o">=</span> <span class="s2">"What kind of equations do I understand?"</span>
+
+<span class="c1"># Tokenized input with special tokens around it (for BERT: [CLS] at the beginning and [SEP] at the end)</span>
+<span class="n">indexed_tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text_1</span><span class="p">,</span> <span class="n">text_2</span><span class="p">,</span> <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">indexed_tokens</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=390f931f"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>如果计算 token 的数量，会发现句子中的 token 数量多于单词数。让我们来看看为什么会这样。可以用 <a href="https://huggingface.co/docs/transformers/main_classes/tokenizer#transformers.PreTrainedTokenizer.convert_ids_to_tokens">convert_ids_to_tokens</a> 来查看使用了哪些 token。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=5435fca5">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">indexed_tokens</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=8cb501dc"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>索引列表比原始输入长的原因有两个：</p>
+<ol>
+<li><code>tokenizer</code> 添加了 <code>special_tokens</code> 来表示序列的开始（<code>[CLS]</code>）和句子之间的分隔（<code>[SEP]</code>）。</li>
+<li><code>tokenizer</code> 可以将一个词分解成多个部分。</li>
+</ol>
+<p>从语言学角度来看，第二点很有趣。许多语言都有<a href="https://zh.wikipedia.org/wiki/%E8%AF%8D%E6%A0%B9">词根</a>，或构成单词的组成部分。例如，“quadratic”这个词的词根是“quadr”，意思是“4”。BERT 并不是用语言定义词根，而是使用 <a href="https://paperswithcode.com/method/wordpiece">WordPiece</a> 模型来找出如何拆分单词模式。我们今天使用的 BERT 模型有一个 <code>28996</code> 个 token 的词汇表。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=8fdc9975"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我们可以直接<a href="https://huggingface.co/docs/transformers/main_classes/tokenizer#transformers.PreTrainedTokenizer.decode">解码</a>编码过的文本。注意 <code>special_tokens</code> 已经被添加进去了。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=1498e60b">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">indexed_tokens</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=4020bac7"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.4-%E6%96%87%E6%9C%AC%E5%88%86%E6%AE%B5">6.4 文本分段<a class="anchor-link" href="#6.4-%E6%96%87%E6%9C%AC%E5%88%86%E6%AE%B5">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=d48df212"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>为了使用 BERT 模型进行预测，它还需要一个 <code>segment_ids</code> 的列表。这是一个与 token 相同长度的向量，表示每个句子属于哪个段落。</p>
+<p>由于我们的 <code>tokenizer</code> 添加了一些 <code>special_tokens</code>，可以使用这些特殊标记来找到段落。首先，定义哪个索引对应哪个特殊标记。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=9e71529b">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">cls_token</span> <span class="o">=</span> <span class="mi">101</span>
+<span class="n">sep_token</span> <span class="o">=</span> <span class="mi">102</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=be0cc070"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>接下来创建一个 <code>for</code> 循环。将从 <code>segment_id</code> 设置为 <code>0</code> 开始，并且每当看到 [SEP] 标记时就增加 <code>segment_id</code>。为了确保效果，稍后将把这些 <code>segment_ids</code> 和 <code>indexed_tokens</code> 作为张量输入模型。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=feace8b0">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_segment_ids</span><span class="p">(</span><span class="n">indexed_tokens</span><span class="p">):</span>
+    <span class="n">segment_ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">segment_id</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">indexed_tokens</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="o">==</span> <span class="n">sep_token</span><span class="p">:</span>
+            <span class="n">segment_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">segment_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segment_id</span><span class="p">)</span>
+    <span class="n">segment_ids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>  <span class="c1"># Last [SEP] is ignored</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">segment_ids</span><span class="p">]),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">indexed_tokens</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=cebae44e"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>测试一下。每个数字是否正确地对应第一句和第二句？</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=b4e062f5">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">segments_tensors</span><span class="p">,</span> <span class="n">tokens_tensor</span> <span class="o">=</span> <span class="n">get_segment_ids</span><span class="p">(</span><span class="n">indexed_tokens</span><span class="p">)</span>
+<span class="n">segments_tensors</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a1233f43"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.4-%E6%96%87%E6%9C%AC%E6%8E%A9%E7%A0%81%EF%BC%88Text-Masking%EF%BC%89">6.4 文本掩码（Text Masking）<a class="anchor-link" href="#6.4-%E6%96%87%E6%9C%AC%E6%8E%A9%E7%A0%81%EF%BC%88Text-Masking%EF%BC%89">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=42d81d87"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>先看看 BERT 对单词的处理。为了训练词嵌入，BERT 在一系列单词中掩掉一个单词。掩码用了一个特殊的标记：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=65dfb96c">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span><span class="o">.</span><span class="n">mask_token</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=f9792811">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span><span class="o">.</span><span class="n">mask_token_id</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=bd6b50ad"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>让我们从之前的两个句子中选择位置索引 <code>5</code> 进行掩码。随时回到这里改变索引，看看结果会如何变化！</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=1b77f61a">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">masked_index</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=8932dbda"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>接下来，应用掩码并验证它是否出现在句子序列中。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=6deac9e6">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">indexed_tokens</span><span class="p">[</span><span class="n">masked_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">mask_token_id</span>
+<span class="n">tokens_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">indexed_tokens</span><span class="p">])</span>
+<span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">indexed_tokens</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=0f6aea80"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>然后，加载用于预测缺失单词的模型：<code>modelForMaskedLM</code>。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=908dd216">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">masked_lm_model</span> <span class="o">=</span> <span class="n">BertForMaskedLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">prepare_bert</span><span class="p">(</span><span class="s2">"bert-base-cased"</span><span class="p">),</span> <span class="n">local_files_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9b606a7b"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>就像使用其它 PyTorch 模块一样，我们可以检查其架构。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=78313cee">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">masked_lm_model</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=00505af9"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>您能找到标有 <code>word_embeddings</code> 的部分吗？这些是 BERT 为每个 token 学习到的嵌入。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=349ff0f3">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">embedding_table</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">masked_lm_model</span><span class="o">.</span><span class="n">bert</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">word_embeddings</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="n">embedding_table</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=635c8ad3"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我们可以验证 BERT 词汇表中的 <code>28996</code> 个 token 都有一个大小为 <code>768</code> 的嵌入。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=0b9ba827">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">embedding_table</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=020544fd"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>测试一下模型吧！它能正确预测我们提供的句子中缺失的单词吗？我们将使用 <a href="https://pytorch.org/docs/stable/generated/torch.no_grad.html">torch.no_grad</a> 来让 PyTorch 不计算梯度。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=fef11d9b">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">masked_lm_model</span><span class="p">(</span><span class="n">tokens_tensor</span><span class="p">,</span> <span class="n">token_type_ids</span><span class="o">=</span><span class="n">segments_tensors</span><span class="p">)</span>
+<span class="n">predictions</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9ce11d45"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>这有点难读懂，来看一下 <code>shape</code>。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=ae4efa98">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">predictions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5fc56db7"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>24</code> 指的是 token 数，<code>28996</code> 是指对 BERT 词汇表中每个 token 的预测。我们想找到词汇表中所有 token 的最大值，可以用 <a href="https://pytorch.org/docs/stable/generated/torch.argmax.html">torch.argmax</a>。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=803815c7">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Get the predicted token</span>
+<span class="n">predicted_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">predictions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="n">masked_index</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="n">predicted_index</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=32f8f7da"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>让我们看看 token <code>1241</code> 对应的是什么：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=8dc45267">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">predicted_token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">([</span><span class="n">predicted_index</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">predicted_token</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=066afef9"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>您觉得怎么样？正确吗？</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=23a1eb73">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">indexed_tokens</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=2f56a36e"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.5-%E9%97%AE%E9%A2%98%E4%B8%8E%E5%9B%9E%E7%AD%94">6.5 问题与回答<a class="anchor-link" href="#6.5-%E9%97%AE%E9%A2%98%E4%B8%8E%E5%9B%9E%E7%AD%94">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=83910deb"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>虽然词掩码很有趣，但 BERT 是为更复杂的问题设计的，比如句子预测。它能通过 <a href="https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf">Attention Transformer</a> 架构来完成这一任务。</p>
+<p>这部分将使用 BERT 的不同版本，它有自己的 tokenizer。让我们为示例句子找到一组新的 token。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=7f45877e">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">text_1</span> <span class="o">=</span> <span class="s2">"I understand equations, both the simple and quadratical."</span>
+<span class="n">text_2</span> <span class="o">=</span> <span class="s2">"What kind of equations do I understand?"</span>
+
+<span class="n">question_answering_tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">prepare_bert</span><span class="p">(</span><span class="s2">"bert-large-uncased-whole-word-masking-finetuned-squad"</span><span class="p">),</span> <span class="n">local_files_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">indexed_tokens</span> <span class="o">=</span> <span class="n">question_answering_tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text_1</span><span class="p">,</span> <span class="n">text_2</span><span class="p">,</span> <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">segments_tensors</span><span class="p">,</span> <span class="n">tokens_tensor</span> <span class="o">=</span> <span class="n">get_segment_ids</span><span class="p">(</span><span class="n">indexed_tokens</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=925a87b3"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>接下来加载 <code>question_answering_model</code>。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=12d9e415">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">question_answering_model</span> <span class="o">=</span> <span class="n">BertForQuestionAnswering</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">prepare_bert</span><span class="p">(</span><span class="s2">"bert-large-uncased-whole-word-masking-finetuned-squad"</span><span class="p">),</span> <span class="n">local_files_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=b1695c7d"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>可以像在掩掉单词时一样输入 tokens 和 segments。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=0f2ce72f">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Predict the start and end positions logits</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">question_answering_model</span><span class="p">(</span><span class="n">tokens_tensor</span><span class="p">,</span> <span class="n">token_type_ids</span><span class="o">=</span><span class="n">segments_tensors</span><span class="p">)</span>
+<span class="n">out</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=d8e19220"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>question_answering_model</code> 和问答模型正在扫描我们的输入序列，以找到最能回答问题的子序列。数值越高，答案就越有可能是从这里开始的。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=6e778f69">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="o">.</span><span class="n">start_logits</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9ee8e771"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>同样，<code>end_logits</code> 中的数越高，答案就越可能结束在那个 token 上。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=aa1db4cc">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="o">.</span><span class="n">end_logits</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=d5e21de1"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>然后可以用 <a href="https://pytorch.org/docs/stable/generated/torch.argmax.html">torch.argmax</a> 来找到从开始到结束的 <code>answer_sequence</code>：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=0d391ce9">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">answer_sequence</span> <span class="o">=</span> <span class="n">indexed_tokens</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">start_logits</span><span class="p">):</span><span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">end_logits</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">answer_sequence</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=103b0ae9"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>最后，<a href="https://huggingface.co/docs/transformers/main_classes/tokenizer#transformers.PreTrainedTokenizer.decode">解码</a>这些 token，看看答案是否正确！</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=9c9b95c9">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">question_answering_tokenizer</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">answer_sequence</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=bd7287ee">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">question_answering_tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">answer_sequence</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5bcbc259"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.7-%E6%80%BB%E7%BB%93">6.7 总结<a class="anchor-link" href="#6.7-%E6%80%BB%E7%BB%93">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=0f1545df"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>干得好！您成功地使用了大语言模型 (LLM) 从一系列句子中提取答案。尽管 BERT 在首次发布时是最先进的，但许多其它 LLM 自那以后也取得了突破。<a href="https://build.nvidia.com/explore/discover">build.nvidia.com</a> 上托管了许多这样的模型，可以在浏览器中与它们互动。去探索一下，了解了解当今的最先进技术吧！</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=ba08d9e5"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="6.7.1-%E6%B8%85%E7%90%86%E5%86%85%E5%AD%98">6.7.1 清理内存<a class="anchor-link" href="#6.7.1-%E6%B8%85%E7%90%86%E5%86%85%E5%AD%98">¶</a></h3><p>继续进行后续内容之前，请执行以下单元清理 GPU 显存。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=d956c98d">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">IPython</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">IPython</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+<span class="n">app</span><span class="o">.</span><span class="n">kernel</span><span class="o">.</span><span class="n">do_shutdown</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=d9752608"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="6.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">6.7.2 下一步<a class="anchor-link" href="#6.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=bbd2d0ce"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>恭喜您，您已经完成了所有课程学习目标！</p>
+<p>作为最后的练习，请在评估中成功完成一个端到端的图像分类问题，完成后您将获得本课程的证书。</p>
+</div>
+</div>
+</div>
+</article><nav class="pager" aria-label="上一课与下一课"><a rel="prev" href="05b_corgi_door.html">← 05b · 柯基识别与迁移学习</a><span></span></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2><a class="depth-2" href="#NVIDIA-DLI-at-ModelScope-Notebook">NVIDIA DLI at ModelScope Notebook</a><a class="depth-1" href="#6.-%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86">6. 自然语言处理</a><a class="depth-2" href="#6.1-%E7%9B%AE%E6%A0%87">6.1 目标</a><a class="depth-2" href="#6.2-BERT">6.2 BERT</a><a class="depth-2" href="#6.3-%E5%88%86%E8%AF%8D">6.3 分词</a><a class="depth-2" href="#6.4-%E6%96%87%E6%9C%AC%E5%88%86%E6%AE%B5">6.4 文本分段</a><a class="depth-2" href="#6.4-%E6%96%87%E6%9C%AC%E6%8E%A9%E7%A0%81%EF%BC%88Text-Masking%EF%BC%89">6.4 文本掩码（Text Masking）</a><a class="depth-2" href="#6.5-%E9%97%AE%E9%A2%98%E4%B8%8E%E5%9B%9E%E7%AD%94">6.5 问题与回答</a><a class="depth-2" href="#6.7-%E6%80%BB%E7%BB%93">6.7 总结</a><a class="depth-3" href="#6.7.1-%E6%B8%85%E7%90%86%E5%86%85%E5%AD%98">6.7.1 清理内存</a><a class="depth-3" href="#6.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">6.7.2 下一步</a></aside><script>
+document.querySelector('.menu').addEventListener('click',()=>{const n=document.querySelector('.sidebar');n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',n.classList.contains('open'))});
+document.querySelector('.search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase();let n=0;document.querySelectorAll('.chapters li').forEach(li=>{const ok=li.textContent.toLocaleLowerCase().includes(q);li.hidden=!ok;n+=ok});document.querySelector('.empty-search').style.display=n?'none':'block'});
+document.querySelectorAll('.highlight').forEach(block=>{const pre=block.querySelector('pre');if(!pre)return;const b=document.createElement('button');b.type='button';b.className='copy';b.textContent='复制';b.setAttribute('aria-label','复制代码');b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200)});block.append(b)});
+</script></body></html>

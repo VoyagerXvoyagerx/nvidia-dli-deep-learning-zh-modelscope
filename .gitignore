@@ -1,0 +1,5 @@
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+course_content/tutorials/tutorial_assets/
+course_content/tutorials/model.pth

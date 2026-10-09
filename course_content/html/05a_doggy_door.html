@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>05a · VGG16 预训练模型 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
+<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/05a_doggy_door.ipynb">源 Notebook</a><a href="https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope">魔搭运行</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope">GitHub</a></nav></header>
+<aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" >04b · 模型部署与预测</a></li><li><a class="active" href="05a_doggy_door.html" aria-current=page>05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
+<main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 05a · VGG16 预训练模型</div><h1 class="page-title">05a · VGG16 预训练模型</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=d1b7830e"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="NVIDIA-DLI-at-ModelScope-Notebook">NVIDIA DLI at ModelScope Notebook<a class="anchor-link" href="#NVIDIA-DLI-at-ModelScope-Notebook">¶</a></h2><p>原课程：NVIDIA DLI《深度学习基础》，来源 <a href="https://github.com/NVDLI/fundamentals-of-deep-learning-zh">https://github.com/NVDLI/fundamentals-of-deep-learning-zh</a> 。本版本由 VoyagerX 适配，原课程正文和练习保留。模型与数据集从 VoyagerX 的 ModelScope 仓库下载，不访问 Hugging Face、Kaggle 或 PyTorch 外部下载站。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=99992d16">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="n">tutorial_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials"</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">tutorial_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+    <span class="c1"># 首次运行下载课程目录；跳过空链接并打印对应文件名。</span>
+    <span class="o">!</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import requests; from pathlib import Path; from concurrent.futures import ThreadPoolExecutor; b="https://modelscope.cn"; gid="cb1503c2-1458-4f67-b9c3-bd505091cb47"; dst=Path("/mnt/workspace/fundamentals-of-deep-learning-zh"); r=requests.get(b+"/api/v1/gallery",params={"Gid":gid},timeout=60); r.raise_for_status(); files=r.json()["Data"]["Gallery"]["Files"]; r=requests.post(b+"/api/v1/gallery/square/files/download",json={"Gid":gid,"FileNames":[f for f in files if f.startswith("course_content/")],"Draft":False},timeout=60); r.raise_for_status(); urls=r.json()["Data"]["Urls"]; exec("def download(x):\n u=x.get(\"Url\")\n if not u:\n  print(\"跳过空下载链接：\",x.get(\"Filename\")); return\n p=dst/x[\"Filename\"].removeprefix(\"course_content/\")\n p.parent.mkdir(parents=True,exist_ok=True)\n r=requests.get(u,timeout=300)\n r.raise_for_status()\n p.write_bytes(r.content)"); pool=ThreadPoolExecutor(max_workers=6); list(pool.map(download,urls)); pool.shutdown(); print("有效链接下载完成：",dst)'</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">tutorial_dir</span><span class="p">);</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tutorial_dir</span><span class="p">))</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelscope_assets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_vgg16</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6beab7fd"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="5a.-%E4%BD%BF%E7%94%A8%E9%A2%84%E8%AE%AD%E7%BB%83%E7%9A%84%E6%A8%A1%E5%9E%8B">5a. 使用预训练的模型<a class="anchor-link" href="#5a.-%E4%BD%BF%E7%94%A8%E9%A2%84%E8%AE%AD%E7%BB%83%E7%9A%84%E6%A8%A1%E5%9E%8B">¶</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9326be4c"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>虽然通常必须要有一个标注良好的大型数据集才能训练出一个好的深度学习模型，但也有很多“开箱即用”的免费预训练模型供我们使用。在您决定开展自己的深度学习项目时，建议您先从在线查找能够帮助您实现目标的现有模型开始。<a href="https://ngc.nvidia.com/catalog/models">NGC</a> 是一个提供可用模型的出色平台。GitHub 上也有很多模型，您可以通过在网上搜索来查找这些模型。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a3d6b9f7"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5a.1-%E7%9B%AE%E6%A0%87">5a.1 目标<a class="anchor-link" href="#5a.1-%E7%9B%AE%E6%A0%87">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=27ce1e2d"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>完成本节内容的学习后，您将能够：</p>
+<ul>
+<li>使用 TorchVision 加载经过良好训练的预训练模型</li>
+<li>对您自己的图像进行预处理，使其适用于预训练模型</li>
+<li>使用预训练模型对您自己的图像进行精确推理</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=dc8629f9">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision.transforms.v2</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">transforms</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision.io</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tv_io</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=faec3ae6"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5a.2-%E8%87%AA%E5%8A%A8%E5%8C%96%E7%9A%84%E7%8B%97%E9%97%A8">5a.2 自动化的狗门<a class="anchor-link" href="#5a.2-%E8%87%AA%E5%8A%A8%E5%8C%96%E7%9A%84%E7%8B%97%E9%97%A8">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=bab45d2d"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>在本练习中，我们将创建一个只允许狗进出的狗门，而将猫留在屋内，其他动物则只能在屋外待在它们应该待的地方。通常，我们需要一个非常大的数据集，其中要包含很多狗以及其他动物的图片。所幸，我们可以找到现成的模型，它们已被包含大量动物图片的大型数据集训练过了。</p>
+<p><a href="https://en.wikipedia.org/wiki/ImageNet#History_of_the_ImageNet_challenge">ImageNet</a> 挑战赛已产生许多可用于图像分类的顶尖模型。这些模型均使用数百万张图像进行了训练，能够准确地将图像分类为 1000 种不同的物体，其中很多类别属于动物，包括多个品种的狗和猫。这些都是适用于狗门的理想模型。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=558ebe3d"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5a.3-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B">5a.3 加载模型<a class="anchor-link" href="#5a.3-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=adaa9243"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我们先来下载模型。经过训练的 ImageNet 模型可以直接从 TorchVision 库中下载。您可在 <a href="https://keras.io/api/applications/#available-models">此处</a> 看到可用的模型及其详情。其中任何模型都适用于我们的练习。我们将选取常用模型 <a href="https://pytorch.org/vision/stable/models/vgg.html">VGG16</a> 的<a href="https://pytorch.org/vision/stable/models/generated/torchvision.models.vgg19.html#torchvision.models.VGG19_Weights">默认参数</a></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=bbaa81d1">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">torchvision.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">VGG16_Weights</span>
+
+<span class="c1"># load the VGG16 network *pre-trained* on the ImageNet dataset</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="n">VGG16_Weights</span><span class="o">.</span><span class="n">DEFAULT</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_vgg16</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=c8f70b10"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>此模型现已加载完毕，我们来观察一下。您会注意到，它看起来很像手语练习中的卷积模型。请注意第一层（输入层）和最后一层（输出层）。和先前的练习一样，我们需要确保图像与模型预期的输入维度相匹配。另外，了解模型将从最后的输出层中返回何种结果也非常有用。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=660731d3">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=34bbea01"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="5a.3.1-%E8%BE%93%E5%85%A5%E7%BB%B4%E5%BA%A6">5a.3.1 输入维度<a class="anchor-link" href="#5a.3.1-%E8%BE%93%E5%85%A5%E7%BB%B4%E5%BA%A6">¶</a></h3><p>与之前的练习一样，我们的图像应该匹配模型期望的输入维度。由于 PyTorch 模型是动态构建的，模型本身并不知道它的输入形状应该是什么。幸运的是，预训练的 <code>weights</code> 自带了它们自己的变换。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=294a1f82">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">pre_trans</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">transforms</span><span class="p">()</span>
+<span class="n">pre_trans</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6112743f"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>这就相当于下面这段代码：</p>
+<div class="highlight"><pre><span></span><span class="n">IMG_WIDTH</span><span class="p">,</span> <span class="n">IMG_HEIGHT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)</span>
+
+<span class="n">pre_trans</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">ToDtype</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># Converts [0, 255] to [0, 1]</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">((</span><span class="n">IMG_WIDTH</span><span class="p">,</span> <span class="n">IMG_HEIGHT</span><span class="p">)),</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span>
+        <span class="n">mean</span><span class="o">=</span><span class="p">[</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">],</span>
+        <span class="n">std</span><span class="o">=</span><span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">],</span>
+    <span class="p">),</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="mi">224</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+<p>这里有一个新的变换是 <a href="https://pytorch.org/vision/main/generated/torchvision.transforms.Normalize.html">Normalize</a>，它将根据提供的<a href="https://en.wikipedia.org/wiki/Mean">均值</a>和<a href="https://en.wikipedia.org/wiki/Standard_deviation">标准差</a>重新着色图像。另一个新的变换是 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.CenterCrop.html#torchvision.transforms.v2.CenterCrop">CenterCrop</a>，它会移除图像的边缘。我们可以将这些变换应用到任何我们想要用于 VGG16 模型的图像张量上。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=728ad7c9"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="5a.3.2-%E8%BE%93%E5%87%BA%E7%BB%B4%E5%BA%A6">5a.3.2 输出维度<a class="anchor-link" href="#5a.3.2-%E8%BE%93%E5%87%BA%E7%BB%B4%E5%BA%A6">¶</a></h3><p>我们还可看到，模型将返回形状为 1000 的预测。要记得，在第一个练习中，模型的输出形状为 10，对应于 10 个不同数字。在第二个练习中，形状为 24，对应于手语字母表中的 24 个字母，而这些字母可以在静止图像中捕获。而在本练习中，该图像将放入 1000 种可能的类别中。虽然完整的 ImageNet 数据集包含 20000 多个类别，但该竞赛以及最终产生的预训练模型仅会使用其中 1000 个类别。我们可以在此处看一下所有 <a href="https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a">可能的类别</a>。</p>
+<p>其中很多类别均为动物，包括各个种类的狗和猫。狗的类别范围是 151 到 268。猫的类别范围是 281 到 285。我们将能使用这些类别告知狗门哪类动物在门口，以及我们是否应该让它进来。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=37b12565"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5a.4-%E5%8A%A0%E8%BD%BD%E5%9B%BE%E5%83%8F">5a.4 加载图像<a class="anchor-link" href="#5a.4-%E5%8A%A0%E8%BD%BD%E5%9B%BE%E5%83%8F">¶</a></h2><p>和先前练习中的操作一样，我们首先加载图像并将其显示出来。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=31d8c746">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.image</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpimg</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">show_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">):</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=91f83768">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">show_image</span><span class="p">(</span><span class="s2">"data/doggy_door_images/happy_dog.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=415dbe5a"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="5a.4.1-%E9%A2%84%E5%A4%84%E7%90%86%E5%9B%BE%E5%83%8F">5a.4.1 预处理图像<a class="anchor-link" href="#5a.4.1-%E9%A2%84%E5%A4%84%E7%90%86%E5%9B%BE%E5%83%8F">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=d58de282"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>接下来，我们需要对图像进行预处理，以便能以适当的格式将其送入模型中。这与上一个练习中预测手语图像时的操作类似。要记得，本例中的图像的最终形状需为 (1, 3, 224, 224)。我们将适用 <code>weights</code> 的 Transform 方法来做。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=a2f0a0b8">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load_and_process_image</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="c1"># Print image's original shape, for reference</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Original image shape: '</span><span class="p">,</span> <span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    
+    <span class="n">image</span> <span class="o">=</span> <span class="n">tv_io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">pre_trans</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>  <span class="c1"># weights.transforms()</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Turn into a batch</span>
+    <span class="k">return</span> <span class="n">image</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a24880d0"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>让我们在 happy dog 照片上用一下看看效果：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=55776a63">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">processed_image</span> <span class="o">=</span> <span class="n">load_and_process_image</span><span class="p">(</span><span class="s2">"data/doggy_door_images/happy_dog.jpg"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Processed image shape: "</span><span class="p">,</span> <span class="n">processed_image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=fefddd03"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>现在维度对了，但变成什么样子了？打印出来看看：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=9b192520">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torchvision.transforms.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="n">plot_image</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">processed_image</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">plot_image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=e8c3a5c6"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>看起来可能有点迷幻，但如果我们眯起眼睛，就还能看出我们的 happy dog。奇怪的着色是 <code>Normalize</code> 变换造成的，而照片看起来有点放大是因为 <code>CenterCrop</code>。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=f4a1f8d4"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5a.5-%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B">5a.5 进行预测<a class="anchor-link" href="#5a.5-%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a5a31dd4"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>现在我们已将图像处理成正确的格式，接着我们就可将其传入模型并获取预测。我们预期会输出一个包含 1000 个元素的数组，这读起来不太容易。所幸我们有一个 <a href="https://www.json.org/json-en.html">json</a> 格式的所有类别列表，它类似于 Python 列表和字典的组合。事实上，让我们将它加载到列表和字典的组合中。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=d735634a">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">vgg_classes</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">"data/imagenet_class_index.json"</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1b0fe6f1"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>这个文件使用数字字符串标识每个类别：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=a9a48a58">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">vgg_classes</span><span class="p">[</span><span class="s2">"0"</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=841ddd23"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>让我们创建一个函数,使 VGG 模型的预测变得人类可读。这类似于我们上一节的 <code>predict_letter</code> 函数。这次，我们将使用 <a href="https://pytorch.org/docs/stable/generated/torch.topk.html">torch.topk</a> 函数给出前3个预测。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=f1214f5f">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">readable_prediction</span><span class="p">(</span><span class="n">image_path</span><span class="p">):</span>
+    <span class="c1"># Show image</span>
+    <span class="n">show_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="c1"># Load and pre-process image</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">load_and_process_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="c1"># Make predictions</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">image</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Unbatch</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="c1"># Print predictions in readable form</span>
+    <span class="n">out_str</span> <span class="o">=</span> <span class="s2">"Top results: "</span>
+    <span class="n">pred_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">vgg_classes</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+    <span class="n">out_str</span> <span class="o">+=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pred_classes</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">out_str</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">predictions</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=95611a38"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>请尝试对一些动物进行预测，并查看结果！另外，您还可随时上传自己的图像并对它们进行分类。您可能会对此模型的出色程度感到吃惊。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=f537b9cd">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">readable_prediction</span><span class="p">(</span><span class="s2">"data/doggy_door_images/happy_dog.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=9c9cc45a">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">readable_prediction</span><span class="p">(</span><span class="s2">"data/doggy_door_images/brown_bear.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=596977a4">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">readable_prediction</span><span class="p">(</span><span class="s2">"data/doggy_door_images/sleepy_cat.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=16eceba1"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5a.6-%E4%BB%85%E5%85%81%E8%AE%B8%E7%8B%97%E8%BF%9B%E5%87%BA">5a.6 仅允许狗进出<a class="anchor-link" href="#5a.6-%E4%BB%85%E5%85%81%E8%AE%B8%E7%8B%97%E8%BF%9B%E5%87%BA">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=ed585eb4"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>为了仅允许狗进出并将猫留在屋内，在利用模型进行预测时，我们需要选择合适的类别。狗的类别范围是 151 到 268，而猫的类别范围是 281 到 285。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=878d808c"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="%E7%BB%83%E4%B9%A0">练习<a class="anchor-link" href="#%E7%BB%83%E4%B9%A0">¶</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6f231a14"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我们上一节用了 <a href="https://numpy.org/doc/stable/reference/generated/numpy.argmax.html">argmax</a> 函数。您还记得我们是从哪个维度提取索引的吗？</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=06f371eb"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>提示</strong>：第一个维度是批次维度。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=6bd69bfe">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">doggy_door</span><span class="p">(</span><span class="n">image_path</span><span class="p">):</span>
+    <span class="n">show_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">load_and_process_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="n">FIXME</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Predicted index:"</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+    <span class="k">if</span> <span class="mi">151</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;=</span> <span class="mi">268</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Doggy come on in!"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="mi">281</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;=</span> <span class="mi">285</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Kitty stay inside!"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"You're not a dog! Stay outside!"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3c746bf3"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="%E8%A7%A3%E7%AD%94">解答<a class="anchor-link" href="#%E8%A7%A3%E7%AD%94">¶</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=4c708606"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>单击下方的 <code>...</code> 查看答案。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=b52d3bed">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># SOLUTION</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">doggy_door</span><span class="p">(</span><span class="n">image_path</span><span class="p">):</span>
+    <span class="n">show_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">load_and_process_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Predicted index:"</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+    <span class="k">if</span> <span class="mi">151</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;=</span> <span class="mi">268</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Doggy come on in!"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="mi">281</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;=</span> <span class="mi">285</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Kitty stay inside!"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"You're not a dog! Stay outside!"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=8b703b9d">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">doggy_door</span><span class="p">(</span><span class="s2">"data/doggy_door_images/brown_bear.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=0bda76af">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">doggy_door</span><span class="p">(</span><span class="s2">"data/doggy_door_images/happy_dog.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=dcfaccce">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">doggy_door</span><span class="p">(</span><span class="s2">"data/doggy_door_images/sleepy_cat.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=de9ce055"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5a.7-%E6%80%BB%E7%BB%93">5a.7 总结<a class="anchor-link" href="#5a.7-%E6%80%BB%E7%BB%93">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=f2e6d7b5"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>您做得很棒！通过使用强大的预训练模型，我们只用几行代码便创建出了实用的狗门。令人兴奋的是，我们无需做大量的前期工作即可利用深度学习。而且，随着深度学习社区的不断发展，您还可将更多模型用在自己的项目中。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=b2bdd183"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="5a.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">5a.7.1 清理显存<a class="anchor-link" href="#5a.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">¶</a></h3><p>继续进行后续内容之前，请执行以下单元清理 GPU 显存。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=b6abc05c">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">IPython</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">IPython</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+<span class="n">app</span><span class="o">.</span><span class="n">kernel</span><span class="o">.</span><span class="n">do_shutdown</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=743355d5"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="5a.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">5a.7.2 下一步<a class="anchor-link" href="#5a.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=404b4fb8"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>预训练模型固然非常强大，但其有时也会无法完全适配您的数据。下一节中，您将学习另一项强大技术“<em>迁移学习</em>”，它可以帮助您定制预训练模型，进而对您的数据作出良好预测。</p>
+</div>
+</div>
+</div>
+</article><nav class="pager" aria-label="上一课与下一课"><a rel="prev" href="04b_asl_predictions.html">← 04b · 模型部署与预测</a><a rel="next" href="05b_corgi_door.html">05b · 柯基识别与迁移学习 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2><a class="depth-2" href="#NVIDIA-DLI-at-ModelScope-Notebook">NVIDIA DLI at ModelScope Notebook</a><a class="depth-1" href="#5a.-%E4%BD%BF%E7%94%A8%E9%A2%84%E8%AE%AD%E7%BB%83%E7%9A%84%E6%A8%A1%E5%9E%8B">5a. 使用预训练的模型</a><a class="depth-2" href="#5a.1-%E7%9B%AE%E6%A0%87">5a.1 目标</a><a class="depth-2" href="#5a.2-%E8%87%AA%E5%8A%A8%E5%8C%96%E7%9A%84%E7%8B%97%E9%97%A8">5a.2 自动化的狗门</a><a class="depth-2" href="#5a.3-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B">5a.3 加载模型</a><a class="depth-3" href="#5a.3.1-%E8%BE%93%E5%85%A5%E7%BB%B4%E5%BA%A6">5a.3.1 输入维度</a><a class="depth-3" href="#5a.3.2-%E8%BE%93%E5%87%BA%E7%BB%B4%E5%BA%A6">5a.3.2 输出维度</a><a class="depth-2" href="#5a.4-%E5%8A%A0%E8%BD%BD%E5%9B%BE%E5%83%8F">5a.4 加载图像</a><a class="depth-3" href="#5a.4.1-%E9%A2%84%E5%A4%84%E7%90%86%E5%9B%BE%E5%83%8F">5a.4.1 预处理图像</a><a class="depth-2" href="#5a.5-%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B">5a.5 进行预测</a><a class="depth-2" href="#5a.6-%E4%BB%85%E5%85%81%E8%AE%B8%E7%8B%97%E8%BF%9B%E5%87%BA">5a.6 仅允许狗进出</a><a class="depth-2" href="#5a.7-%E6%80%BB%E7%BB%93">5a.7 总结</a><a class="depth-3" href="#5a.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">5a.7.1 清理显存</a><a class="depth-3" href="#5a.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">5a.7.2 下一步</a></aside><script>
+document.querySelector('.menu').addEventListener('click',()=>{const n=document.querySelector('.sidebar');n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',n.classList.contains('open'))});
+document.querySelector('.search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase();let n=0;document.querySelectorAll('.chapters li').forEach(li=>{const ok=li.textContent.toLocaleLowerCase().includes(q);li.hidden=!ok;n+=ok});document.querySelector('.empty-search').style.display=n?'none':'block'});
+document.querySelectorAll('.highlight').forEach(block=>{const pre=block.querySelector('pre');if(!pre)return;const b=document.createElement('button');b.type='button';b.className='copy';b.textContent='复制';b.setAttribute('aria-label','复制代码');b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200)});block.append(b)});
+</script></body></html>

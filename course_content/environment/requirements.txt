@@ -1,0 +1,12 @@
+# ModelScope Notebook 镜像已预装课程依赖，无需执行 pip install -r。
+# 以下为用户提供的镜像版本记录，不作为安装约束。
+# torch 2.13.0
+# torchvision 0.28.0
+# transformers 5.16.1
+# modelscope 1.40.1
+# numpy 2.5.2
+# pandas 2.3.3
+# pillow 11.3.0
+# matplotlib 3.11.1
+# safetensors 0.8.0
+# tqdm 4.70.0

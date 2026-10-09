@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>04a · 数据增强 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
+<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/04a_asl_augmentation.ipynb">源 Notebook</a><a href="https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope">魔搭运行</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope">GitHub</a></nav></header>
+<aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="active" href="04a_asl_augmentation.html" aria-current=page>04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" >04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
+<main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 04a · 数据增强</div><h1 class="page-title">04a · 数据增强</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=7b7a8ca7"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="NVIDIA-DLI-at-ModelScope-Notebook">NVIDIA DLI at ModelScope Notebook<a class="anchor-link" href="#NVIDIA-DLI-at-ModelScope-Notebook">¶</a></h2><p>原课程：NVIDIA DLI《深度学习基础》，来源 <a href="https://github.com/NVDLI/fundamentals-of-deep-learning-zh">https://github.com/NVDLI/fundamentals-of-deep-learning-zh</a> 。本版本由 VoyagerX 适配，原课程正文和练习保留。模型与数据集从 VoyagerX 的 ModelScope 仓库下载，不访问 Hugging Face、Kaggle 或 PyTorch 外部下载站。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=299fdcf6">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="n">tutorial_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials"</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">tutorial_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+    <span class="c1"># 首次运行下载课程目录；跳过空链接并打印对应文件名。</span>
+    <span class="o">!</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import requests; from pathlib import Path; from concurrent.futures import ThreadPoolExecutor; b="https://modelscope.cn"; gid="cb1503c2-1458-4f67-b9c3-bd505091cb47"; dst=Path("/mnt/workspace/fundamentals-of-deep-learning-zh"); r=requests.get(b+"/api/v1/gallery",params={"Gid":gid},timeout=60); r.raise_for_status(); files=r.json()["Data"]["Gallery"]["Files"]; r=requests.post(b+"/api/v1/gallery/square/files/download",json={"Gid":gid,"FileNames":[f for f in files if f.startswith("course_content/")],"Draft":False},timeout=60); r.raise_for_status(); urls=r.json()["Data"]["Urls"]; exec("def download(x):\n u=x.get(\"Url\")\n if not u:\n  print(\"跳过空下载链接：\",x.get(\"Filename\")); return\n p=dst/x[\"Filename\"].removeprefix(\"course_content/\")\n p.parent.mkdir(parents=True,exist_ok=True)\n r=requests.get(u,timeout=300)\n r.raise_for_status()\n p.write_bytes(r.content)"); pool=ThreadPoolExecutor(max_workers=6); list(pool.map(download,urls)); pool.shutdown(); print("有效链接下载完成：",dst)'</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">tutorial_dir</span><span class="p">);</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tutorial_dir</span><span class="p">))</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">modelscope_assets</span><span class="w"> </span><span class="kn">import</span> <span class="n">prepare_asl</span> <span class="k">as</span> <span class="n">download_asl_dataset</span><span class="p">,</span> <span class="n">maybe_compile</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3be18093"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="4a.-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">4a. 数据增强<a class="anchor-link" href="#4a.-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">¶</a></h1><p>目前为止，我们已经选择了一个出色的模型架构，此架构的设计目的在于识别图像中的重要特征，因而它极大提高了模型的性能。我们的验证准确率仍落后于训练准确率，这意味着我们有点过拟合。换个角度来看，我们的模型在对验证数据集进行测试时，会因之前从未见过的内容而产生混淆。</p>
+<p>为了增强模型在处理新数据时的鲁棒性，我们将以编程方式增加数据集的大小和差异。这称为<a href="https://link.springer.com/article/10.1186/s40537-019-0197-0"><em>数据增强</em></a>，是对很多深度学习应用都非常有用的技术。</p>
+<p>数据的增加让模型在训练时能看到更多图像。数据差异的增加可帮助模型忽略不重要的特征，而只选择在分类时真正重要的特征。如此一来，在面对新数据时，模型有望在进行预测时更好地泛化。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=bf6b543e"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4a.1-%E7%9B%AE%E6%A0%87">4a.1 目标<a class="anchor-link" href="#4a.1-%E7%9B%AE%E6%A0%87">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=70d2fce6"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>完成这一章节，您将能够：</p>
+<ul>
+<li>增强 ASL 数据集</li>
+<li>使用增强数据来训练改进的模型</li>
+<li>将训练好的模型保存到磁盘，以进行部署</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=fcb112a9">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="kn">import</span> <span class="n">Adam</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision.transforms.v2</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">transforms</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision.transforms.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">utils</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5a9d5757"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4a.2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">4a.2 数据准备<a class="anchor-link" href="#4a.2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">¶</a></h2><p>我们目前在使用新的 notebook，因此需要重新加载和处理数据。为此，请执行以下单元。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=313bbb84">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 若尚未下载，会从 ModelScope VoyagerX/asl-hg 下载 ASL CSV 文件。</span>
+<span class="n">download_asl_dataset</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=2ffc417a">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">IMG_HEIGHT</span> <span class="o">=</span> <span class="mi">28</span>
+<span class="n">IMG_WIDTH</span> <span class="o">=</span> <span class="mi">28</span>
+<span class="n">IMG_CHS</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">N_CLASSES</span> <span class="o">=</span> <span class="mi">24</span>
+
+<span class="n">train_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/asl_data/sign_mnist_train.csv"</span><span class="p">)</span>
+<span class="n">valid_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/asl_data/sign_mnist_valid.csv"</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_df</span><span class="p">):</span>
+        <span class="n">x_df</span> <span class="o">=</span> <span class="n">base_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">y_df</span> <span class="o">=</span> <span class="n">x_df</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'label'</span><span class="p">)</span>
+        <span class="n">x_df</span> <span class="o">=</span> <span class="n">x_df</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="mi">255</span>  <span class="c1"># Normalize values from 0 to 1</span>
+        <span class="n">x_df</span> <span class="o">=</span> <span class="n">x_df</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">IMG_CHS</span><span class="p">,</span> <span class="n">IMG_WIDTH</span><span class="p">,</span> <span class="n">IMG_HEIGHT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_df</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ys</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y_df</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ys</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xs</span><span class="p">)</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">MyDataset</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span>
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">train_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+
+<span class="n">valid_data</span> <span class="o">=</span> <span class="n">MyDataset</span><span class="p">(</span><span class="n">valid_df</span><span class="p">)</span>
+<span class="n">valid_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">valid_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">valid_N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_loader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6bbed83c"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4a.3-%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B">4a.3 创建模型<a class="anchor-link" href="#4a.3-%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=e78d4c50"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我们还需要再次创建我们的模型。正如我们在上一课中学到的，卷积神经网络使用重复的层序列。让我们利用这种模式来创建我们自己的<a href="https://pytorch.org/tutorials/beginner/examples_nn/two_layer_net_module.html">自定义模块</a>。然后就可以在我们的 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html">Sequential</a> 模型中像使用层一样使用这个模块。</p>
+<p>为此，我们将扩展 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html">Module</a> 类。定义两个方法：</p>
+<ul>
+<li><code>__init__</code>：定义我们希望模块拥有的任何属性，包括神经网络层。实际上是在模型中使用另一个模型。</li>
+<li><code>forward</code>：定义我们希望模块如何处理来自它所连接的前一层的任何输入数据。由于我们用的是 <code>Sequential</code> 模型，可以像进行预测一样将输入数据传入其中。</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=b481be1b">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyConvBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">dropout_p</span><span class="p">):</span>
+        <span class="n">kernel_size</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">(</span><span class="n">out_ch</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout_p</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=ffb77512"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>现在我们已经定义了我们的自定义模块，让我们看看它的实际应用。下面的模型在架构上与上一课中的相同。你能看出联系吗？</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=38ab72f0">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">flattened_img_size</span> <span class="o">=</span> <span class="mi">75</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">3</span>
+
+<span class="c1"># Input 1 x 28 x 28</span>
+<span class="n">base_model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">MyConvBlock</span><span class="p">(</span><span class="n">IMG_CHS</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="c1"># 25 x 14 x 14</span>
+    <span class="n">MyConvBlock</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="c1"># 50 x 7 x 7</span>
+    <span class="n">MyConvBlock</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># 75 x 3 x 3</span>
+    <span class="c1"># Flatten to Dense Layers</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">flattened_img_size</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">.3</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="n">N_CLASSES</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=325936c2"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>当我们打印模型时，它不仅会显示我们自定义模块的使用，还会显示我们自定义模块内的层：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=07d44ab1">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">loss_function</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">base_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">maybe_compile</span><span class="p">(</span><span class="n">base_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
+<span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3cf16723"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>自定义模块是灵活的，我们可以定义任何我们希望拥有的其它方法或属性。这使得它们在数据科学家试图解决复杂问题时变得非常强大。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=b9711c22"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4a.4-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">4a.4 数据增强<a class="anchor-link" href="#4a.4-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=ca8dae23"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>在定义训练循环之前，是时候进行数据增强了。</p>
+<p>我们之前见过 <a href="https://pytorch.org/vision/stable/index.html">TorchVision</a> 的 <a href="https://pytorch.org/vision/0.9/transforms.html">Transforms</a>，但在本课中，我们将进一步探索它的数据增强工具。首先，让我们获取一个用于测试的样本图像：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=55c6dd4d">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">row_0</span> <span class="o">=</span> <span class="n">train_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y_0</span> <span class="o">=</span> <span class="n">row_0</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'label'</span><span class="p">)</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="n">row_0</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="mi">255</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="n">x_0</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">IMG_CHS</span><span class="p">,</span> <span class="n">IMG_WIDTH</span><span class="p">,</span> <span class="n">IMG_HEIGHT</span><span class="p">)</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+<span class="n">x_0</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=8cbc9c3a">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=40d13b8b"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4a.4.1-RandomResizeCrop">4a.4.1 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.RandomResizedCrop">RandomResizeCrop</a><a class="anchor-link" href="#4a.4.1-RandomResizeCrop">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=0f8ae90e"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>这个变换将根据 <code>scale</code> 随机调整输入图像的大小，然后将其<a href="https://en.wikipedia.org/wiki/Cropping_(image)">裁剪（crop）</a>到我们指定的大小。在本例中，我们将其裁剪到原始图像尺寸。为此，TorchVision 需要知道它所缩放图像的<a href="https://en.wikipedia.org/wiki/Aspect_ratio_(image)">长宽比</a>。由于这里的高度与宽度相同，因此宽高比为 1:1。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=af1f3c03">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">trans</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">((</span><span class="n">IMG_WIDTH</span><span class="p">,</span> <span class="n">IMG_HEIGHT</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mf">.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ratio</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=cf4b0a15"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>尝试多次运行下面的单元，每次结果都应该不同。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=cbb0ca8a">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">new_x_0</span> <span class="o">=</span> <span class="n">trans</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">new_x_0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=a4a53eac">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">new_x_0</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=44165e9b"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4a.4.2-RandomHorizontalFlip">4a.4.2 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.RandomHorizontalFlip">RandomHorizontalFlip</a><a class="anchor-link" href="#4a.4.2-RandomHorizontalFlip">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6eef6c29"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我们还可以随机地水平或垂直翻转我们的图像。然而，对于这些图像，我们只会水平翻转它们。</p>
+<p>花点时间思考一下为什么我们想要水平翻转图像，而不是垂直翻转。当你有了想法后，查看下面的文字。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=29a95730"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code># SOLUTION</code>
+我们的数据集由表示字母表的手部图片组成。如果以后要使用此模型对手部图像进行分类时，这些手是不可能上下倒置的，但他们可能是左撇子。这种特定领域的推理可以帮助您为自己的深度学习应用做出正确的决策。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=93e52661">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">trans</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">()</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=2285bda8"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>尝试多次运行下面的单元格。图像是否大约有一半的时间会翻转？</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=d2496699">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">new_x_0</span> <span class="o">=</span> <span class="n">trans</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">new_x_0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=a3108ae7"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4a.4.3-RandomRotation">4a.4.3 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.RandomRotation">RandomRotation</a><a class="anchor-link" href="#4a.4.3-RandomRotation">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=9747c64f"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我们还可以随机旋转图像以增加更多变化。就像其他增强技术一样，很容易不小心做得过头。对于美国手语来说，如果我们旋转得太多，<code>D</code> 可能会像 <code>G</code>，反之亦然。因此，让我们将其限制在 <code>30</code> 度以内。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=cb30d413">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">trans</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">RandomRotation</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6d0195ff"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>当我们运行下面的代码块时，可能会出现一些黑色像素。当我们旋转时，图像的角落会消失，几乎每失去一个像素，我们就会得到一个空白像素。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=f9bda241">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">new_x_0</span> <span class="o">=</span> <span class="n">trans</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">new_x_0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5caf19d3"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4a.4.3-ColorJitter">4a.4.3 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.ColorJitter">ColorJitter</a><a class="anchor-link" href="#4a.4.3-ColorJitter">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7baaba7d"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>ColorJitter</code> 变换有 4 个参数：</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Brightness">brightness</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Contrast_(vision)">contrast</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Colorfulness#Saturation">saturation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hue">hue</a></li>
+</ul>
+<p>后两个适用于彩色图像，所以我们现在只需要前两个。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=5518896c">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">brightness</span> <span class="o">=</span> <span class="mf">.2</span>  <span class="c1"># Change to be from 0 to 1</span>
+<span class="n">contrast</span> <span class="o">=</span> <span class="mf">.5</span>  <span class="c1"># Change to be from 0 to 1</span>
+
+<span class="n">trans</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">ColorJitter</span><span class="p">(</span><span class="n">brightness</span><span class="o">=</span><span class="n">brightness</span><span class="p">,</span> <span class="n">contrast</span><span class="o">=</span><span class="n">contrast</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=61d8690f"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>尝试多次运行下面的代码，但也试着将 <code>brightness</code> 或 <code>contrast</code> 改为 <code>1</code>。有得到任何有趣的结果吗？</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=b3f0f51c">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">new_x_0</span> <span class="o">=</span> <span class="n">trans</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">new_x_0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=f43f79d2"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4a.3.4-Compose">4a.3.4 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.Compose">Compose</a><a class="anchor-link" href="#4a.3.4-Compose">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=67003c0b"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>是时候把所有内容整合在一起了。我们可以使用 <code>Compose</code> 创建这些随机变换的序列。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=b8ed7c1f">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">random_transforms</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">RandomRotation</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">((</span><span class="n">IMG_WIDTH</span><span class="p">,</span> <span class="n">IMG_HEIGHT</span><span class="p">),</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mf">.9</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ratio</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">(),</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">ColorJitter</span><span class="p">(</span><span class="n">brightness</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span> <span class="n">contrast</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=11c4f2cc"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>让我们测试一下。有了所有这些不同的组合，这一张图像有多少种变化？无限种吗？</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=e33dcc2c">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">new_x_0</span> <span class="o">=</span> <span class="n">random_transforms</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">new_x_0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=79a1777c"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4a.4-%E7%94%A8%E5%A2%9E%E5%BC%BA%E7%9A%84%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83">4a.4 用增强的数据进行训练<a class="anchor-link" href="#4a.4-%E7%94%A8%E5%A2%9E%E5%BC%BA%E7%9A%84%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1118601e"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>训练过程大部分保持不变，但有一行发生了变化。在将图像传递给模型之前，我们将应用 <code>random_transforms</code>。为了方便起见，将 <code>get_batch_accuracy</code> 移到了 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/utils.py">utils</a> 文件中。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=1501f3f1">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">():</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">random_transforms</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>  <span class="c1"># Updated</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">batch_loss</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">batch_loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="n">loss</span> <span class="o">+=</span> <span class="n">batch_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">accuracy</span> <span class="o">+=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_batch_accuracy</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_N</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Train - Loss: </span><span class="si">{:.4f}</span><span class="s1"> Accuracy: </span><span class="si">{:.4f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=0a973cc8"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>另一方面，验证过程保持不变。没有随机变换。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=53bd7a0a">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">():</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">valid_loader</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+            <span class="n">loss</span> <span class="o">+=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">accuracy</span> <span class="o">+=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_batch_accuracy</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">valid_N</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Valid - Loss: </span><span class="si">{:.4f}</span><span class="s1"> Accuracy: </span><span class="si">{:.4f}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5391eb9b"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>来测试一下图像增强。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=c92394b1">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">epochs</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Epoch: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">))</span>
+    <span class="n">train</span><span class="p">()</span>
+    <span class="n">validate</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7063cab7"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4a.5-%E8%AE%A8%E8%AE%BA%E8%8E%B7%E5%BE%97%E7%9A%84%E7%BB%93%E6%9E%9C">4a.5 讨论获得的结果<a class="anchor-link" href="#4a.5-%E8%AE%A8%E8%AE%BA%E8%8E%B7%E5%BE%97%E7%9A%84%E7%BB%93%E6%9E%9C">¶</a></h2><p>您会注意到验证准确率更高且更一致，这意味着我们的模型已摆脱过拟合问题。现在它具有更好的泛化能力，因而能够更好地对新数据作出预测。</p>
+<p>训练准确率可能会降低，这是可以接受的。与之前相比，模型现在接触到了更加多样化的数据。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=7c76d90c"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4a.6-%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B">4a.6 保存模型<a class="anchor-link" href="#4a.6-%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B">¶</a></h2><p>现在我们已对模型进行了有效训练，下面我们就来实际应用它吧！让我们使用该模型对新图像进行分类，此过程称为推理。而在程序中使用训练过的模型则称为部署。第一步最好先将模型保存到磁盘上。然后，您可将模型传给应用该模型的各种环境中并加载。</p>
+<p>PyTorch 有<a href="https://pytorch.org/tutorials/beginner/saving_loading_models.html">多种方式</a>可以做到这一点，这里要用的是 <code>torch.save</code>。我们还需要保存自定义的模块代码 <code>MyConvBlock</code>，已经在 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/utils.py">utils.py</a> 中保存了。在下一个 notebook 中，我们将加载模型并用它来读取新的手语图片。</p>
+<p>PyTorch 无法保存编译后的模型（<a href="https://discuss.pytorch.org/t/how-to-save-load-a-model-with-torch-compile/179739">参见这个帖子</a>），所以我们将采用其它方式。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=0cc75a36">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="s1">'model.pth'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=c18509f8"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4a.7-%E6%80%BB%E7%BB%93">4a.7 总结<a class="anchor-link" href="#4a.7-%E6%80%BB%E7%BB%93">¶</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=163e1f52"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>在本节中，您使用 TorchVision 增强了数据集，结果是经过训练的模型，具有较少的过拟合和出色的测试图像结果。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6e800623"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4a.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">4a.7.1 清理显存<a class="anchor-link" href="#4a.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">¶</a></h3><p>继续进行后面的内容前，请执行以下单元以清理 GPU 显存。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=1de8cc4c">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">IPython</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">IPython</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+<span class="n">app</span><span class="o">.</span><span class="n">kernel</span><span class="o">.</span><span class="n">do_shutdown</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=51539fc0"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4a.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">4a.7.2 下一步<a class="anchor-link" href="#4a.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=fdc8f3b1"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>现在，您已经过有效训练的模型保存到磁盘，在下一部分中，您将部署模型以对从未看到过的图像进行预测。</p>
+</div>
+</div>
+</div>
+</article><nav class="pager" aria-label="上一课与下一课"><a rel="prev" href="03_asl_cnn.html">← 03 · 卷积神经网络</a><a rel="next" href="04b_asl_predictions.html">04b · 模型部署与预测 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2><a class="depth-2" href="#NVIDIA-DLI-at-ModelScope-Notebook">NVIDIA DLI at ModelScope Notebook</a><a class="depth-1" href="#4a.-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">4a. 数据增强</a><a class="depth-2" href="#4a.1-%E7%9B%AE%E6%A0%87">4a.1 目标</a><a class="depth-2" href="#4a.2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">4a.2 数据准备</a><a class="depth-2" href="#4a.3-%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B">4a.3 创建模型</a><a class="depth-2" href="#4a.4-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">4a.4 数据增强</a><a class="depth-3" href="#4a.4.1-RandomResizeCrop">4a.4.1 RandomResizeCrop</a><a class="depth-3" href="#4a.4.2-RandomHorizontalFlip">4a.4.2 RandomHorizontalFlip</a><a class="depth-3" href="#4a.4.3-RandomRotation">4a.4.3 RandomRotation</a><a class="depth-3" href="#4a.4.3-ColorJitter">4a.4.3 ColorJitter</a><a class="depth-3" href="#4a.3.4-Compose">4a.3.4 Compose</a><a class="depth-3" href="#4a.4-%E7%94%A8%E5%A2%9E%E5%BC%BA%E7%9A%84%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83">4a.4 用增强的数据进行训练</a><a class="depth-2" href="#4a.5-%E8%AE%A8%E8%AE%BA%E8%8E%B7%E5%BE%97%E7%9A%84%E7%BB%93%E6%9E%9C">4a.5 讨论获得的结果</a><a class="depth-2" href="#4a.6-%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B">4a.6 保存模型</a><a class="depth-2" href="#4a.7-%E6%80%BB%E7%BB%93">4a.7 总结</a><a class="depth-3" href="#4a.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">4a.7.1 清理显存</a><a class="depth-3" href="#4a.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">4a.7.2 下一步</a></aside><script>
+document.querySelector('.menu').addEventListener('click',()=>{const n=document.querySelector('.sidebar');n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',n.classList.contains('open'))});
+document.querySelector('.search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase();let n=0;document.querySelectorAll('.chapters li').forEach(li=>{const ok=li.textContent.toLocaleLowerCase().includes(q);li.hidden=!ok;n+=ok});document.querySelector('.empty-search').style.display=n?'none':'block'});
+document.querySelectorAll('.highlight').forEach(block=>{const pre=block.querySelector('pre');if(!pre)return;const b=document.createElement('button');b.type='button';b.className='copy';b.textContent='复制';b.setAttribute('aria-label','复制代码');b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200)});block.append(b)});
+</script></body></html>

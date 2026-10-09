@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>04b · 模型部署与预测 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css">
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
+<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/04b_asl_predictions.ipynb">源 Notebook</a><a href="https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope">魔搭运行</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope">GitHub</a></nav></header>
+<aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="active" href="04b_asl_predictions.html" aria-current=page>04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
+<main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 04b · 模型部署与预测</div><h1 class="page-title">04b · 模型部署与预测</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=c0306a1c"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="NVIDIA-DLI-at-ModelScope-Notebook">NVIDIA DLI at ModelScope Notebook<a class="anchor-link" href="#NVIDIA-DLI-at-ModelScope-Notebook">¶</a></h2><p>原课程：NVIDIA DLI《深度学习基础》，来源 <a href="https://github.com/NVDLI/fundamentals-of-deep-learning-zh">https://github.com/NVDLI/fundamentals-of-deep-learning-zh</a> 。本版本由 VoyagerX 适配，原课程正文和练习保留。模型与数据集从 VoyagerX 的 ModelScope 仓库下载，不访问 Hugging Face、Kaggle 或 PyTorch 外部下载站。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=1f5706a7">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="n">tutorial_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials"</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">tutorial_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+    <span class="c1"># 首次运行下载课程目录；跳过空链接并打印对应文件名。</span>
+    <span class="o">!</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import requests; from pathlib import Path; from concurrent.futures import ThreadPoolExecutor; b="https://modelscope.cn"; gid="cb1503c2-1458-4f67-b9c3-bd505091cb47"; dst=Path("/mnt/workspace/fundamentals-of-deep-learning-zh"); r=requests.get(b+"/api/v1/gallery",params={"Gid":gid},timeout=60); r.raise_for_status(); files=r.json()["Data"]["Gallery"]["Files"]; r=requests.post(b+"/api/v1/gallery/square/files/download",json={"Gid":gid,"FileNames":[f for f in files if f.startswith("course_content/")],"Draft":False},timeout=60); r.raise_for_status(); urls=r.json()["Data"]["Urls"]; exec("def download(x):\n u=x.get(\"Url\")\n if not u:\n  print(\"跳过空下载链接：\",x.get(\"Filename\")); return\n p=dst/x[\"Filename\"].removeprefix(\"course_content/\")\n p.parent.mkdir(parents=True,exist_ok=True)\n r=requests.get(u,timeout=300)\n r.raise_for_status()\n p.write_bytes(r.content)"); pool=ThreadPoolExecutor(max_workers=6); list(pool.map(download,urls)); pool.shutdown(); print("有效链接下载完成：",dst)'</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">tutorial_dir</span><span class="p">);</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">tutorial_dir</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=61e9f4ec"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="4b.-%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B">4b. 部署模型<a class="anchor-link" href="#4b.-%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B">¶</a></h1><p>现在我们已对模型进行了有效的训练，接下来就该实际应用它了。本练习中，我们将给模型展示新图像，让它判断新图像里的手语所对应的字母表中的正确字母。</p>
+<h2 id="4b.1-%E7%9B%AE%E6%A0%87">4b.1 目标<a class="anchor-link" href="#4b.1-%E7%9B%AE%E6%A0%87">¶</a></h2><p>完成这一章节后，您将能够：</p>
+<ul>
+<li>从磁盘加载一个已经训练过的模型；</li>
+<li>为基于不同格式图像训练而得到的模型，重新格式化图像</li>
+<li>使用训练过的模型从未见过的新图像进行推理，并评估其性能</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=f40b5ac4">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="kn">import</span> <span class="n">Adam</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision.io</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tv_io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision.transforms.v2</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">transforms</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torchvision.transforms.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=c73beb7c"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4b.2-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B">4b.2 加载模型<a class="anchor-link" href="#4b.2-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B">¶</a></h2><p>我们当前正在使用新的 notebook，所以需要重新加载已保存的训练好的模型。前一个练习中的保存操作创建了一个名为 <code>asl_model</code> 的文件。我们可以通过选择同一文件名来加载该模型。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=2e67038f"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>因为我们的模型用了一个 <a href="https://pytorch.org/tutorials/beginner/examples_nn/two_layer_net_module.html">自定义的模型</a>，所以需要加载这个类的代码。我们已经在 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/uitls.py">utils.py</a> 中保存了一份代码。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=429fee79">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">MyConvBlock</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6c92dff2"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>现在我们已经定义了 <code>MyConvBlock</code>，可以用 <a href="https://pytorch.org/docs/stable/generated/torch.load.html">torch.load</a> 从路径加载模型。可以用 <code>map_location</code> 指定设备。当我们打印模型时，它看起来与上一个 notebook 中的一样吗？</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=9a651ddf">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"model.pth"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">(),</span> <span class="s2">"请先完成 04a_asl_augmentation.ipynb 训练并保存 model.pth"</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'model.pth'</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=deb24724"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我们还可以验证模型是否在我们的 GPU 上。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=c82955db">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="nb">next</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=aae2c70c"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4b.3-%E4%B8%BA%E6%A8%A1%E5%9E%8B%E5%87%86%E5%A4%87%E5%9B%BE%E5%83%8F">4b.3 为模型准备图像<a class="anchor-link" href="#4b.3-%E4%B8%BA%E6%A8%A1%E5%9E%8B%E5%87%86%E5%A4%87%E5%9B%BE%E5%83%8F">¶</a></h2><p>现在，我们就来使用模型对其先前从未见过的新图像进行预测，此过程也称为推理。我们在 <code>images</code> 文件夹中为您提供了一组图像。请尝试在左侧的文件导航区域打开并浏览这些图像。</p>
+<p>您会发现，此文件夹中的图像比数据集里的图像的分辨率要高得多，而且还是彩色的。别忘了，数据集中的图像为 28x28 像素，且为灰度图。请务必牢记，无论何时使用模型进行预测，输入皆须与训练模型所用数据的形状相匹配。对于此模型，训练数据集的形状如下：(19200, 28, 28, 1)，这对应于 19,200 个 28x28 像素的图像，其中每个图像皆具有一个颜色通道（灰度图）。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=d8a17b0e"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4b.3.1-%E6%98%BE%E7%A4%BA%E5%9B%BE%E5%83%8F">4b.3.1 显示图像<a class="anchor-link" href="#4b.3.1-%E6%98%BE%E7%A4%BA%E5%9B%BE%E5%83%8F">¶</a></h3><p>使用模型对新图像进行预测时，同时显示输入图像对我们也有用。我们可以使用 matplotlib 库来执行此操作。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=d331a1f5">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.image</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpimg</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">show_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">):</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=864218f0">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">show_image</span><span class="p">(</span><span class="s1">'images/B.jpg'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=03546d88"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4b.3.2-%E7%BC%A9%E6%94%BE%E5%9B%BE%E5%83%8F">4b.3.2 缩放图像<a class="anchor-link" href="#4b.3.2-%E7%BC%A9%E6%94%BE%E5%9B%BE%E5%83%8F">¶</a></h3><p>数据集中的图像为 28x28 像素，且为灰度图。我们需要确保将相同大小和颜色的图像传入模型的 <code>predict</code> 方法中。目前有好几种方法使用 Python 对图像进行编辑，但 TorchVision 已有一个内置的 <a href="https://pytorch.org/vision/stable/generated/torchvision.io.read_image.html">read_image</a> 函数。我们可以通过 <a href="https://pytorch.org/vision/stable/generated/torchvision.io.ImageReadMode.html#torchvision.io.ImageReadMode">ImageReadMode</a> 让它知道读取的图片是什么类型。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=69f58ca4">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">tv_io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="s1">'images/B.jpg'</span><span class="p">,</span> <span class="n">tv_io</span><span class="o">.</span><span class="n">ImageReadMode</span><span class="o">.</span><span class="n">GRAY</span><span class="p">)</span>
+<span class="n">image</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=b1e13dbb"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>让我们看下图片的维度。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=8aa2a0d1">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">image</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=94840ac5"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>这张图像比我们训练时使用的要大得多。我们可以再次使用 TorchVision 的 Transforms 来将数据转换为我们模型期望的形式。</p>
+<p>我们将:</p>
+<ul>
+<li>用 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.ToDtype.html">ToDtype</a> 将图像转换为浮点型<ul>
+<li>我们将 <code>scale</code> 设置为 <code>True</code> 以将 [0, 255] 转换为 [0, 1]</li>
+</ul>
+</li>
+<li>使用 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.Resize.html#torchvision.transforms.v2.Resize">Resize</a> 将图像调整为 28 x 28 像素</li>
+<li>使用 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.Grayscale.html#torchvision.transforms.v2.Grayscale">Grayscale</a> 将图像转换为灰度<ul>
+<li>这一步实际上不会做任何事情，因为我们的模型已经是灰度的，但在这里添加它是为了展示获取灰度图像的另一种方法。</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=62261c66">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">IMG_WIDTH</span> <span class="o">=</span> <span class="mi">28</span>
+<span class="n">IMG_HEIGHT</span> <span class="o">=</span> <span class="mi">28</span>
+
+<span class="n">preprocess_trans</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">ToDtype</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="c1"># Converts [0, 255] to [0, 1]</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">((</span><span class="n">IMG_WIDTH</span><span class="p">,</span> <span class="n">IMG_HEIGHT</span><span class="p">)),</span>
+    <span class="n">transforms</span><span class="o">.</span><span class="n">Grayscale</span><span class="p">()</span>  <span class="c1"># From Color to Gray</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=882f49f3"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>让我们在一张图像上测试 <code>preprocess_trans</code>，以确保它正常工作：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=be9ab387">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">processed_image</span> <span class="o">=</span> <span class="n">preprocess_trans</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+<span class="n">processed_image</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=098d0d39"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>数字看起来是正确的，但维度如何？</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=bed476ed">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">processed_image</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=f4a866fd"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>接下来，让我们绘制图像，看看它是否像我们训练时的样子。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=81ae3deb">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">plot_image</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">to_pil_image</span><span class="p">(</span><span class="n">processed_image</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">plot_image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=256dc329"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>看起来不错！让我们将它传递给模型。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=c8b09166"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4b.4-%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B">4b.4 进行预测<a class="anchor-link" href="#4b.4-%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=1f54cb19"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>好的，现在准备好进行预测了！我们的模型仍然期望接收一批图像。<a href="https://pytorch.org/docs/stable/generated/torch.squeeze.htmlhttps://pytorch.org/docs/stable/generated/torch.squeeze.html">squeeze</a> 能移除 1 个维度，<a href="https://pytorch.org/docs/stable/generated/torch.unsqueeze.htmlhttps://pytorch.org/docs/stable/generated/torch.unsqueeze.html">unsqueeze</a> 则在我们指定的索引处添加 1 个维度。第一个维度通常是批次维度，所以我们可以使用 <code>.unsqueeze(0)</code>。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=5134cfb0">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">batched_image</span> <span class="o">=</span> <span class="n">processed_image</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">batched_image</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=836b0375"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>接下来，我们应该确保输入张量与模型在同一个 <code>device</code> 上。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=edf9b87e">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">batched_image_gpu</span> <span class="o">=</span> <span class="n">batched_image</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">batched_image_gpu</span><span class="o">.</span><span class="n">device</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3c7c3193"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>现在我们准备将它传递给模型了！</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=460a3de1">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batched_image_gpu</span><span class="p">)</span>
+<span class="n">output</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=3a42174c"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4b.4.1-%E7%90%86%E8%A7%A3%E9%A2%84%E6%B5%8B%E7%BB%93%E6%9E%9C">4b.4.1 理解预测结果<a class="anchor-link" href="#4b.4.1-%E7%90%86%E8%A7%A3%E9%A2%84%E6%B5%8B%E7%BB%93%E6%9E%9C">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=41035ef8"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>预测结果的格式是长度为 24 的一维数组。尽管看起来略有差异，但此格式与 y_train 和 y_valid 中的“二值化”的多分类数组相同。数组中的每个元素均为 0 至 1 之间的概率，代表了每个类别的置信度。为了使这个结果更具可读性，我们可以先找出该数组中具有最高概率的那个元素。使用 <code>numpy</code> 库和 <a href="https://numpy.org/doc/stable/reference/generated/numpy.argmax.html">argmax</a> 函数就能轻松完成此操作。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=99128298">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">prediction</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="n">prediction</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=d76114eb"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>预测结果的数组中的每个元素代表手语字母表中的一个可能的字母。请记住 j 和 z 已排除在外，因为这两个字母涉及手部动作，而我们仅需要处理静态照片。让我们在预测结果的数组的索引值和相应字母之间创建一个映射。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=36988105">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Alphabet does not contain j or z because they require movement</span>
+<span class="n">alphabet</span> <span class="o">=</span> <span class="s2">"abcdefghiklmnopqrstuvwxy"</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=4be31dab"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>现在我们根据输入预测的索引值找到对应的字母。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=885dec52">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">alphabet</span><span class="p">[</span><span class="n">prediction</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=6fab231a"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="%E7%BB%83%E4%B9%A0%EF%BC%9A%E6%B1%87%E6%80%BB%E4%B8%80%E5%88%87">练习：汇总一切<a class="anchor-link" href="#%E7%BB%83%E4%B9%A0%EF%BC%9A%E6%B1%87%E6%80%BB%E4%B8%80%E5%88%87">¶</a></h4><p>让我们将上述与预测相关的内容全部置入一个函数中，这样我们就能对输入的图像进行预测。利用上面使用过的功能和步骤，在下方实现这一函数。如果需要帮助，可单击下方的三个点来显示答案。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=9d93d115">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">predict_letter</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="c1"># Show image</span>
+    <span class="n">FIXME</span>
+    <span class="c1"># Load and grayscale image</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">FIXME</span>
+    <span class="c1"># Transform image</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">FIXME</span>
+    <span class="c1"># Batch image</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">FIXME</span>
+    <span class="c1"># Send image to correct device</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">FIXME</span>
+    <span class="c1"># Make prediction</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">FIXME</span>
+    <span class="c1"># Find max index</span>
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">FIXME</span>
+    <span class="c1"># Convert prediction to letter</span>
+    <span class="n">predicted_letter</span> <span class="o">=</span> <span class="n">FIXME</span>
+    <span class="c1"># Return prediction</span>
+    <span class="k">return</span> <span class="n">predicted_letter</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5568b547"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="%E8%A7%A3%E7%AD%94">解答<a class="anchor-link" href="#%E8%A7%A3%E7%AD%94">¶</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=bf471017"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>单击下方的三个点来显示答案。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=1108bf8b">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># SOLUTION</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict_letter</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="n">show_image</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">tv_io</span><span class="o">.</span><span class="n">read_image</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">tv_io</span><span class="o">.</span><span class="n">ImageReadMode</span><span class="o">.</span><span class="n">GRAY</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">preprocess_trans</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">prediction</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="c1"># convert prediction to letter</span>
+    <span class="n">predicted_letter</span> <span class="o">=</span> <span class="n">alphabet</span><span class="p">[</span><span class="n">prediction</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">predicted_letter</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=38449a1f">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">predict_letter</span><span class="p">(</span><span class="s2">"images/B.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=e42828d9"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>让我们再用 images 文件夹中的 'a' 字母图片执行预测函数：</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=09875b35">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">predict_letter</span><span class="p">(</span><span class="s2">"images/A.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=32771acc"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4b.5-%E6%80%BB%E7%BB%93">4b.5 总结<a class="anchor-link" href="#4b.5-%E6%80%BB%E7%BB%93">¶</a></h2><p>您已在这些练习中出色地完成了工作！您已经从头开始完成了高精度模型训练的整个流程，然后采用该模型进行了有价值的新预测。如果有时间，您可上传自己的图像放到 images 文件夹中，并用这些图像测试模型。这也是学习手语的好机会！例如，您可以尝试用手语比出您名字中的字母。</p>
+<p>您可以想象一下，如何在应用中使用此模型来教人手语，甚至帮助失声者与计算机交互。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=56290843"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="4b.5.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">4b.5.1 清理显存<a class="anchor-link" href="#4b.5.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">¶</a></h4><p>继续进行后面的内容前，请执行以下单元清理 GPU 显存。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered" id="cell-id=13787d93">
+<div class="input">
+<div class="inner_cell">
+<div class="input_area">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">IPython</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">IPython</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+<span class="n">app</span><span class="o">.</span><span class="n">kernel</span><span class="o">.</span><span class="n">do_shutdown</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=ff78e338"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4b.5.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">4b.5.2 下一步<a class="anchor-link" href="#4b.5.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=5a4b1aa8"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>我们希望你喜欢这些练习。在下一章节中，您将学习在没有强大的数据集时，如何利用深度学习。如果你想阅读和了解当下热门的推理技术，可以看看<a href="http://web.eecs.umich.edu/~mosharaf/Readings/FB-ML-Edge.pdf">这篇很棒的论文</a>。</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered" id="cell-id=ca47f9df"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>现在您已熟悉构建模型并对其工作原理有了一定的了解，我们将把精力转向使用预训练模型来加速您的工作的强大技术。</p>
+</div>
+</div>
+</div>
+</article><nav class="pager" aria-label="上一课与下一课"><a rel="prev" href="04a_asl_augmentation.html">← 04a · 数据增强</a><a rel="next" href="05a_doggy_door.html">05a · VGG16 预训练模型 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2><a class="depth-2" href="#NVIDIA-DLI-at-ModelScope-Notebook">NVIDIA DLI at ModelScope Notebook</a><a class="depth-1" href="#4b.-%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B">4b. 部署模型</a><a class="depth-2" href="#4b.1-%E7%9B%AE%E6%A0%87">4b.1 目标</a><a class="depth-2" href="#4b.2-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B">4b.2 加载模型</a><a class="depth-2" href="#4b.3-%E4%B8%BA%E6%A8%A1%E5%9E%8B%E5%87%86%E5%A4%87%E5%9B%BE%E5%83%8F">4b.3 为模型准备图像</a><a class="depth-3" href="#4b.3.1-%E6%98%BE%E7%A4%BA%E5%9B%BE%E5%83%8F">4b.3.1 显示图像</a><a class="depth-3" href="#4b.3.2-%E7%BC%A9%E6%94%BE%E5%9B%BE%E5%83%8F">4b.3.2 缩放图像</a><a class="depth-3" href="#4b.4-%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B">4b.4 进行预测</a><a class="depth-3" href="#4b.4.1-%E7%90%86%E8%A7%A3%E9%A2%84%E6%B5%8B%E7%BB%93%E6%9E%9C">4b.4.1 理解预测结果</a><a class="depth-2" href="#4b.5-%E6%80%BB%E7%BB%93">4b.5 总结</a><a class="depth-3" href="#4b.5.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">4b.5.2 下一步</a></aside><script>
+document.querySelector('.menu').addEventListener('click',()=>{const n=document.querySelector('.sidebar');n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',n.classList.contains('open'))});
+document.querySelector('.search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase();let n=0;document.querySelectorAll('.chapters li').forEach(li=>{const ok=li.textContent.toLocaleLowerCase().includes(q);li.hidden=!ok;n+=ok});document.querySelector('.empty-search').style.display=n?'none':'block'});
+document.querySelectorAll('.highlight').forEach(block=>{const pre=block.querySelector('pre');if(!pre)return;const b=document.createElement('button');b.type='button';b.className='copy';b.textContent='复制';b.setAttribute('aria-label','复制代码');b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200)});block.append(b)});
+</script></body></html>
