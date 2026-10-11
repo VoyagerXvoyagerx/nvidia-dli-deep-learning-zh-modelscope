@@ -112,13 +112,9 @@ git push origin main
 
 ##  Wish List
 
-以下为产品改进心愿单，尚未实现：
+以下为产品改进心愿单：
 
 - [ ] Gallery 的 files 增加每个文件的 `path` / `name` 及稳定 URL，方便直接分享、引用指定文件，并支持嵌套目录。例如希望提供 `https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope/files/README.md`。这里是期望的 URL 形式。
-- [ ] 优化灵感流中 `.ipynb` 文件 markdown cell 中的图片相对路径识别。
-- [ ] 优化新版 IDE 中 Gallery 目录下 `.ipynb` 文件 markdown cell 中的图片相对路径识别。
-- [ ] 优化新版 IDE 中 Gallery 目录下的文件相对路径与模块导入识别，覆盖 `from xxx import xxxx` 场景。
-- [ ] 优化新版 IDE 中持久化目录下 `.ipynb` 文件 markdown cell 中的图片相对路径识别。
-- [ ] 灵感流支持移动端访问
+- [ ] 运行后文件直接存入持久化目录
 
 验收时应覆盖 notebook 与图片/模块同目录、嵌套目录、Gallery 临时挂载目录和 `/mnt/workspace` 持久化目录；打开 notebook 后无需手动 `os.chdir` 或插入 `sys.path`，即可正确显示图片并导入相应课程模块。
