@@ -22,6 +22,9 @@ class HtmlTests(unittest.TestCase):
                     soup = BeautifulSoup(page, 'html.parser')
                     links = soup.select('.toplinks a')
                     self.assertEqual([a.text for a in links], ['查看和运行 Notebook', 'GitHub'])
+                    for link in links:
+                        self.assertEqual(link.get('target'), '_blank')
+                        self.assertIn('noopener', link.get('rel', []))
                     self.assertEqual(links[0]['href'], build_html.GALLERY + '/files/' + path.relative_to(root).as_posix())
                     self.assertNotIn('本版本由 VoyagerX 适配', page)
                     self.assertNotIn('tutorial_dir', page)
