@@ -48,13 +48,17 @@ class PublisherTests(unittest.TestCase):
             self.assertNotIn("Authorization", put.call_args.kwargs["headers"])
             self.assertNotIn("cookies", put.call_args.kwargs)
 
-    def run_publish(self, change=False, bad_size=False, website=False):
+    def run_publish(self, change=False, bad_size=False, website=False, override=False):
         original = {"Name": "course", "Owner": "VoyagerX", "Role": "admin", "Category": "notebook", "EntryFile": "index.ipynb", "Files": ["old.txt"], "Label": ["course"], "Private": False, "GmtUpdated": "original"}
         name = "index.html" if website else "index.ipynb"
         if website:
             original.update(Category="website", EntryFile=name)
+        if override:
+            original.update(Category="website", EntryFile="old.html")
         current = dict(original, GmtUpdated="changed") if change else original
         final = dict(original, Files=[name])
+        if override:
+            final.update(EntryFile=name)
         client = Mock(gid="gid")
         client.gallery.side_effect = [original, current, final]
         client.upload_urls.return_value = {name: "https://oss.example/url"}
@@ -67,7 +71,7 @@ class PublisherTests(unittest.TestCase):
                     sync.publish(client, root, [name])
                 self.assertFalse(any(call.args[0] == "PUT" for call in client.api.call_args_list))
             else:
-                sync.publish(client, root, [name])
+                sync.publish(client, root, [name], **({"entry_file": name} if override else {}))
                 writes = [call for call in client.api.call_args_list if call.args[0] == "PUT"]
                 self.assertEqual(writes[-1].args[1], "/api/v1/gallery/publish")
                 payload = writes[0].kwargs["json"]
@@ -89,6 +93,9 @@ class PublisherTests(unittest.TestCase):
 
     def test_preserves_existing_html_entry(self):
         self.run_publish(website=True)
+
+    def test_updates_entry_from_repository_configuration(self):
+        self.run_publish(website=True, override=True)
 
 
 if __name__ == "__main__":

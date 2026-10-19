@@ -64,6 +64,11 @@ document.querySelectorAll('.highlight').forEach(block=>{const pre=block.querySel
 
 def notebook_body(path: Path, destinations: dict[Path, str], output: Path):
     notebook = nbformat.read(path, as_version=4)
+    # 仅从 HTML 预览中隐藏适配说明与目录初始化，源 Notebook 保持完整。
+    notebook.cells = [cell for cell in notebook.cells if not (
+        (cell.cell_type == "markdown" and "原课程：NVIDIA DLI《深度学习基础》" in cell.source and "本版本由 VoyagerX 适配" in cell.source)
+        or (cell.cell_type == "code" and 'tutorial_dir = Path("/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials")' in cell.source)
+    )]
     exporter = HTMLExporter(template_name="basic")
     exporter.exclude_input_prompt = True
     exporter.exclude_output_prompt = True
@@ -112,15 +117,20 @@ def build(output: Path):
     for i, path in enumerate(paths):
         title = TITLES.get(path.stem, path.stem)
         body, headings = notebook_body(path, destinations, output)
+        if path.stem == "index" and not body.strip():
+            body = '<p>选择课程开始学习，点击“查看和运行 Notebook”进入对应文件完成练习。</p><ul>' + ''.join(
+                f'<li><a href="{destinations[p.resolve()]}">{html.escape(TITLES.get(p.stem, p.stem))}</a></li>'
+                for p in paths if p != path
+            ) + '</ul>'
         chapters = "".join(f'<li><a class="{"active" if p == path else ""}" href="{destinations[p.resolve()]}" {"aria-current=page" if p == path else ""}>{html.escape(TITLES.get(p.stem,p.stem))}</a></li>' for p in paths)
         toc = "".join(f'<a class="depth-{depth}" href="#{html.escape(anchor,quote=True)}">{html.escape(text)}</a>' for depth, anchor, text in headings)
         previous = f'<a rel="prev" href="{paths[i-1].stem}.html">← {html.escape(TITLES.get(paths[i-1].stem,paths[i-1].stem))}</a>' if i else '<span></span>'
         following = f'<a rel="next" href="{paths[i+1].stem}.html">{html.escape(TITLES.get(paths[i+1].stem,paths[i+1].stem))} →</a>' if i+1 < len(paths) else '<span></span>'
-        source = GITHUB + "/blob/main/" + path.relative_to(ROOT).as_posix()
+        source = GALLERY + "/files/" + path.relative_to(ROOT).as_posix()
         page = f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css">
 <script>window.MathJax={{tex:{{inlineMath:[['$','$'],['\\\\(','\\\\)']],displayMath:[['$$','$$'],['\\\\[','\\\\]']] }},options:{{enableMenu:false}},svg:{{fontCache:'global'}}}};</script><script defer src="_static/mathjax.js"></script></head>
-<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="{source}">源 Notebook</a><a href="{GALLERY}">魔搭运行</a><a href="{GITHUB}">GitHub</a></nav></header>
+<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="{source}">查看和运行 Notebook</a><a href="{GITHUB}">GitHub</a></nav></header>
 <aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters">{chapters}</ul><p class="empty-search">没有匹配的课程</p></aside>
 <main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / {html.escape(title)}</div><h1 class="page-title">{html.escape(title)}</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook">{body}</article><nav class="pager" aria-label="上一课与下一课">{previous}{following}</nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="{GITHUB}/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2>{toc}</aside><script>{JS}</script></body></html>'''
         (output / destinations[path.resolve()]).write_text(page, encoding="utf-8")

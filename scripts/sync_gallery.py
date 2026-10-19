@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://modelscope.cn"
 GALLERY_ID = "cb1503c2-1458-4f67-b9c3-bd505091cb47"
 GALLERY_URL = BASE + "/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope"
+ENTRY_FILE = "course_content/html/index.html"
 ROOT_FILES = {"LICENSE", "README.md", "CONTRIBUTING.md", "index.ipynb", "build_html.py"}
 EXCLUDED_FILES = {"course_content/README.md"}  # Replaced in Gallery by CONTRIBUTING.md; keep the 50-file budget.
 EXCLUDED_DIRS = {"environment", "slides", "__pycache__", ".ipynb_checkpoints", "tutorial_assets"}
@@ -134,15 +135,15 @@ def fingerprint(gallery):
     return {key: gallery.get(key) for key in keys}
 
 
-def publish(client, root, paths):
+def publish(client, root, paths, *, entry_file=None):
     original = client.gallery()
     if original.get("Owner") != "VoyagerX" or original.get("Role") != "admin":
         raise SyncError("Token must have admin access to the VoyagerX Gallery")
-    entry = original.get("EntryFile", "")
-    category = original.get("Category")
+    entry = entry_file if entry_file is not None else original.get("EntryFile", "")
+    category = "website" if entry_file is not None else original.get("Category")
     suffixes = {"notebook": ".ipynb", "website": ".html", "pdf": ".pdf", "file": None}
     if entry not in paths or category not in suffixes or (suffixes[category] and Path(entry).suffix.lower() != suffixes[category]):
-        raise SyncError("Current Gallery entry/category is incompatible with the selected files; refusing to change it")
+        raise SyncError("Gallery entry/category is incompatible with the selected files")
     # Request URLs in small batches and use them immediately, before they expire.
     for start in range(0, len(paths), 6):
         batch = paths[start:start + 6]
@@ -157,7 +158,7 @@ def publish(client, root, paths):
         raise SyncError("Gallery changed during upload; publication aborted. Run the workflow again.")
     client.api("PUT", "/api/v1/gallery", json={
         "Gid": client.gid, "Name": original["Name"], "Owner": original["Owner"],
-        "Category": original["Category"], "EntryFile": original["EntryFile"],
+        "Category": category, "EntryFile": entry,
         "Files": json.dumps(paths, ensure_ascii=False),
         "Label": json.dumps(original.get("Label", []), ensure_ascii=False),
         "Private": 0, "Action": "open",
@@ -181,7 +182,7 @@ def main():
     token = os.environ.get("MODELSCOPE_API_TOKEN", "").strip()
     if not token:
         raise SyncError("Set the MODELSCOPE_API_TOKEN repository Actions Secret")
-    result = publish(GalleryClient(token, os.environ.get("MODELSCOPE_GALLERY_ID", GALLERY_ID)), ROOT, paths)
+    result = publish(GalleryClient(token, os.environ.get("MODELSCOPE_GALLERY_ID", GALLERY_ID)), ROOT, paths, entry_file=ENTRY_FILE)
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     pending = result.get("CsiPending", [])
     summary = f"Published {len(paths)} files from commit `{commit}` to [ModelScope Gallery]({GALLERY_URL}).\n"

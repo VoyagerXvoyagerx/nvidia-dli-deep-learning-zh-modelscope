@@ -9,7 +9,7 @@
 
 ## 灵感流类型与入口
 
-当前灵感流属于个人用户 **VoyagerX**，设置为公开，类型为 **`website`**，入口文件为 **`course_content/html/00_jupyterlab.html`**。Gallery 也包含 `index.ipynb` 和各课程 notebook，供下载、查看或在 ModelScope Notebook/IDE 中运行练习。
+当前灵感流属于个人用户 **VoyagerX**，设置为公开，类型为 **`website`**，入口文件为 **`course_content/html/index.html`**。Gallery 也包含 `index.ipynb` 和各课程 notebook，供下载、查看或在 ModelScope Notebook/IDE 中运行练习。
 
 类型与入口后缀的规则如下，后缀不区分大小写：
 
@@ -20,7 +20,7 @@
 | `pdf` | `.pdf` | 以 PDF 为入口 |
 | `file` | 不限制后缀 | 其他文件内容 |
 
-同步脚本会读取并保留灵感流当前的类型、入口、名称和标签，保持 Gallery ID 和 URL。入口必须在本次发布清单中，且后缀与类型匹配；同步会明确设置为公开。若需更换入口或类型，可在灵感流管理页面修改，并确认新入口在 GitHub 的发布范围内。上传期间不要同时编辑、发布该灵感流，以免触发冲突检查。
+同步脚本保留灵感流当前名称和标签，保持 Gallery ID 和 URL，明确设置为公开的 `website`，入口固定为 `scripts/sync_gallery.py` 中的 `ENTRY_FILE`（`course_content/html/index.html`）。入口必须在发布清单中且后缀为 `.html`；后续更换入口应修改该常量并提交 GitHub，以免下次同步覆盖网页设置。上传期间不要同时编辑、发布该灵感流，以免触发冲突检查。
 
 ## 课程文件与运行目录
 
@@ -49,7 +49,7 @@ python build_html.py
 python -m http.server 8000
 ```
 
-浏览器打开 `http://localhost:8000/course_content/html/index.html`，检查课程导航、正文、图片、公式和代码显示。构建使用 nbformat、nbconvert、BeautifulSoup 和 Pygments，采用 D2L 风格侧栏与本页目录，图片嵌入 HTML，样式和 MathJax 从本地加载。**构建不执行 notebook，也不运行训练或填写练习。**
+浏览器打开 `http://localhost:8000/course_content/html/index.html`，检查课程导航、正文、图片、公式和代码显示。构建使用 nbformat、nbconvert、BeautifulSoup 和 Pygments，采用 D2L 风格侧栏与本页目录，图片嵌入 HTML，样式和 MathJax 从本地加载。**构建不执行 notebook，也不运行训练或填写练习。** HTML 不展示开头的适配来源说明 cell 和持久化目录下载初始化 cell；这两个 cell 在 ipynb 中完整保留。每页顶部的“查看和运行 Notebook”指向该 notebook 在 Gallery 的 `/files/` URL。
 
 Notebook 是正文来源。不要只修改生成的 HTML，否则下一次构建会覆盖修改；页面布局、链接转换等应修改 `build_html.py`。本地重新生成的 HTML 可与 notebook 一起提交，保持 GitHub 中的预览文件更新。Action 还会再次构建 HTML 后上传到 Gallery，但不会自动把生成结果提交回 GitHub。
 
@@ -114,7 +114,7 @@ git push origin main
 
 以下为产品改进心愿单：
 
-- [ ] Gallery 的 files 增加每个文件的 `path` / `name` 及稳定 URL，方便直接分享、引用指定文件，并支持嵌套目录。例如希望提供 `https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope/files/README.md`。这里是期望的 URL 形式。
+- [x] Gallery 已支持每个文件的稳定 URL，包括嵌套目录。例如：`https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope/files/README.md`。课程页面已使用此路由连接对应 Notebook。
 - [ ] 运行后文件直接存入持久化目录
 
 验收时应覆盖 notebook 与图片/模块同目录、嵌套目录、Gallery 临时挂载目录和 `/mnt/workspace` 持久化目录；打开 notebook 后无需手动 `os.chdir` 或插入 `sys.path`，即可正确显示图片并导入相应课程模块。
