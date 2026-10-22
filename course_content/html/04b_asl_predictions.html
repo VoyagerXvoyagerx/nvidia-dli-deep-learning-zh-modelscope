@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>04b · 模型部署与预测 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
-<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04b_asl_predictions.ipynb" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
+<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04b_asl_predictions.ipynb" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
 <aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="active" href="04b_asl_predictions.html" aria-current=page>04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
 <main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 04b · 模型部署与预测</div><h1 class="page-title">04b · 模型部署与预测</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=61e9f4ec"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -68,7 +68,9 @@
 <div class="input">
 <div class="inner_cell">
 <div class="input_area">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"model.pth"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">(),</span> <span class="s2">"请先完成 04a_asl_augmentation.ipynb 训练并保存 model.pth"</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="k">assert</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"model.pth"</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">(),</span> <span class="s2">"请先完成 04a_asl_augmentation.ipynb 训练并保存 model.pth"</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'model.pth'</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">model</span>
 </pre></div>
@@ -507,4 +509,10 @@
 document.querySelector('.menu').addEventListener('click',()=>{const n=document.querySelector('.sidebar');n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',n.classList.contains('open'))});
 document.querySelector('.search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase();let n=0;document.querySelectorAll('.chapters li').forEach(li=>{const ok=li.textContent.toLocaleLowerCase().includes(q);li.hidden=!ok;n+=ok});document.querySelector('.empty-search').style.display=n?'none':'block'});
 document.querySelectorAll('.highlight').forEach(block=>{const pre=block.querySelector('pre');if(!pre)return;const b=document.createElement('button');b.type='button';b.className='copy';b.textContent='复制';b.setAttribute('aria-label','复制代码');b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200)});block.append(b)});
+// Close the mobile drawer on navigation, outside tap, Escape or desktop resize.
+function closeCourseMenu(){document.querySelector('.sidebar').classList.remove('open');document.querySelector('.menu').setAttribute('aria-expanded','false')}
+document.querySelector('.sidebar').addEventListener('click',e=>{if(e.target.closest('a'))closeCourseMenu()});
+document.addEventListener('click',e=>{if(innerWidth<=760&&!e.target.closest('.sidebar,.menu'))closeCourseMenu()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCourseMenu()});
+window.addEventListener('resize',()=>{if(innerWidth>760)closeCourseMenu()});
 </script></body></html>

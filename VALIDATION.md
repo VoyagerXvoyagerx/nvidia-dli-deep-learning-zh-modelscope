@@ -67,3 +67,8 @@ All asset/model smoke checks passed.
 - 图片全部内嵌；页面没有远程 src 资源，MathJax 和 CSS 本地加载。构建不执行 Notebook。
 - 浏览器截图验证未完成：本地 Chromium 下载返回不完整 ZIP，不能据此声称已进行视觉/交互运行验证。
 - 本次未重新执行模型推理或完整 GPU 训练。
+
+
+## 2026-10-22：新版 Gallery 与移动端更新
+
+Gallery 已转移至 NVIDIA_Training_and_Certification；UUID 不变。新版 Notebook UI 提示将项目复制到持久化目录，初始化改为一行 %cd 到 course_content/tutorials，再导入本课所需函数；不再通过下载 API 复制课程或修改 sys.path。6 个原始 PPTX 一并发布，网页首页提供链接。移动端顶栏分行、菜单和操作链接44px触控区域；浏览器检查覆盖10页、320/375/390/768/1280px共50组布局，未执行课程训练。此前下载初始化方式为历史记录，以上为当前使用方式。

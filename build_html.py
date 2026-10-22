@@ -22,7 +22,7 @@ from pygments.formatters import HtmlFormatter
 
 ROOT = Path(__file__).resolve().parent
 GITHUB = "https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope"
-GALLERY = "https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope"
+GALLERY = "https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope"
 TITLES = {
     "index": "前言与课程导航",
     "00_jupyterlab": "00 · JupyterLab 入门",
@@ -55,17 +55,22 @@ code,pre{font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",m
 @media(max-width:1200px){.toc{display:none}main{margin-right:0;padding:30px 35px}}@media(max-width:760px){.topbar{padding:0 16px;gap:12px}.brand{font-size:15px}.toplinks{gap:12px}.toplinks a{font-size:12px}.menu{display:block}.sidebar{display:none;width:280px;box-shadow:3px 0 9px #0002}.sidebar.open{display:block}main{margin:64px 0 0;padding:25px 20px}.page-title{font-size:25px}.notebook h2{font-size:21px}.copy{opacity:1}}
 """
 
+CSS += '/* Responsive reader: keep rich cells inside the viewport and reserve fullscreen space. */\n.notebook,.cell,.inner_cell,.text_cell_render,.input,.input_area,.output_wrapper,.output,.output_area{min-width:0;max-width:100%}\n.notebook p,.notebook li,.notebook td,.notebook a{overflow-wrap:anywhere}\n.notebook video,.notebook iframe,.notebook svg{max-width:100%}\n@media(max-width:760px){\n html{scroll-padding-top:128px}\n .topbar{height:112px;display:grid;grid-template-columns:44px minmax(0,1fr);grid-template-rows:44px 44px;gap:4px 8px;padding:8px 12px;align-content:center}\n .menu{display:block;grid-column:1;grid-row:1;width:44px;height:44px;padding:0}\n .brand{grid-column:2;grid-row:1;min-width:0;margin-right:48px;font-size:14px;line-height:1.3;white-space:normal;overflow-wrap:anywhere}\n .toplinks{grid-column:1/-1;grid-row:2;justify-self:start;margin-left:0;margin-right:48px;max-width:calc(100% - 48px);gap:12px;flex-wrap:nowrap}\n .toplinks a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:4px 8px;font-size:13px;white-space:nowrap}\n .sidebar{top:112px;width:min(300px,calc(100vw - 24px));padding:20px 16px;max-height:calc(100dvh - 112px)}\n .chapters a{min-height:44px;display:flex;align-items:center}.search{font-size:16px}\n main{margin:112px 0 0;padding:24px 16px;min-height:calc(100dvh - 112px)}\n .page-title{font-size:24px;overflow-wrap:anywhere}.notebook h1{font-size:24px}.notebook h2{font-size:21px}\n .highlight pre{padding:16px 12px}.copy{opacity:1;min-width:44px;min-height:44px}\n .pager{flex-wrap:wrap}.pager a{min-height:44px;display:flex;align-items:center}\n}\n'
+
 JS = """
 document.querySelector('.menu').addEventListener('click',()=>{const n=document.querySelector('.sidebar');n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',n.classList.contains('open'))});
 document.querySelector('.search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase();let n=0;document.querySelectorAll('.chapters li').forEach(li=>{const ok=li.textContent.toLocaleLowerCase().includes(q);li.hidden=!ok;n+=ok});document.querySelector('.empty-search').style.display=n?'none':'block'});
 document.querySelectorAll('.highlight').forEach(block=>{const pre=block.querySelector('pre');if(!pre)return;const b=document.createElement('button');b.type='button';b.className='copy';b.textContent='复制';b.setAttribute('aria-label','复制代码');b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200)});block.append(b)});
 """
+JS += "// Close the mobile drawer on navigation, outside tap, Escape or desktop resize.\nfunction closeCourseMenu(){document.querySelector('.sidebar').classList.remove('open');document.querySelector('.menu').setAttribute('aria-expanded','false')}\ndocument.querySelector('.sidebar').addEventListener('click',e=>{if(e.target.closest('a'))closeCourseMenu()});\ndocument.addEventListener('click',e=>{if(innerWidth<=760&&!e.target.closest('.sidebar,.menu'))closeCourseMenu()});\ndocument.addEventListener('keydown',e=>{if(e.key==='Escape')closeCourseMenu()});\nwindow.addEventListener('resize',()=>{if(innerWidth>760)closeCourseMenu()});\n"
 
 
 def notebook_body(path: Path, destinations: dict[Path, str], output: Path):
     notebook = nbformat.read(path, as_version=4)
     # 仅从 HTML 预览中隐藏适配说明与目录初始化，源 Notebook 保持完整。
     notebook.cells = [cell for cell in notebook.cells if not (
+        "hide-web" in cell.metadata.get("tags", [])
+        or
         (cell.cell_type == "markdown" and "原课程：NVIDIA DLI《深度学习基础》" in cell.source and "本版本由 VoyagerX 适配" in cell.source)
         or (cell.cell_type == "code" and 'tutorial_dir = Path("/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials")' in cell.source)
     )]
@@ -95,7 +100,7 @@ def notebook_body(path: Path, destinations: dict[Path, str], output: Path):
             link["href"] = destinations[target] + fragment
         elif target.is_relative_to(ROOT):
             # Repository-only references (slides, notices, validation) still work.
-            link["href"] = GITHUB + "/blob/main/" + target.relative_to(ROOT).as_posix() + fragment
+            link["href"] = (GALLERY + "/files/" if target.suffix.lower() in {".ppt", ".pptx"} else GITHUB + "/blob/main/") + target.relative_to(ROOT).as_posix() + fragment
     toc = []
     for i, heading in enumerate(soup.find_all(["h1", "h2", "h3"])):
         if not heading.get("id"):
@@ -121,6 +126,10 @@ def build(output: Path):
             body = '<p>选择课程开始学习，点击“查看和运行 Notebook”进入对应文件完成练习。</p><ul>' + ''.join(
                 f'<li><a href="{destinations[p.resolve()]}">{html.escape(TITLES.get(p.stem, p.stem))}</a></li>'
                 for p in paths if p != path
+            ) + '</ul>'
+            body += '<h2>课程讲义（PPT）</h2><ul>' + ''.join(
+                f'<li><a href="{GALLERY}/files/{slide.relative_to(ROOT).as_posix()}" target="_blank" rel="noopener noreferrer">{html.escape(slide.name)}</a></li>'
+                for slide in sorted((ROOT / 'course_content/slides').glob('*.pptx'))
             ) + '</ul>'
         chapters = "".join(f'<li><a class="{"active" if p == path else ""}" href="{destinations[p.resolve()]}" {"aria-current=page" if p == path else ""}>{html.escape(TITLES.get(p.stem,p.stem))}</a></li>' for p in paths)
         toc = "".join(f'<a class="depth-{depth}" href="#{html.escape(anchor,quote=True)}">{html.escape(text)}</a>' for depth, anchor, text in headings)

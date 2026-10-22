@@ -12,11 +12,12 @@ spec.loader.exec_module(sync)
 
 class PublisherTests(unittest.TestCase):
     def test_github_only_files_are_never_selected(self):
-        for path in ["ADAPTATION_REPORT.md", "REUSE.toml", "smoke_test.ipynb", "THIRD_PARTY_NOTICES.md", "VALIDATION.md", ".github/workflows/sync-gallery.yml", "scripts/sync_gallery.py", "tests/test_gallery_sync.py", "requirements-gallery-sync.txt", "course_content/environment/image.txt", "course_content/slides/a.pdf", "course_content/tutorials/tutorial_assets/model.bin", "course_content/tutorials/.ipynb_checkpoints/a.ipynb"]:
+        for path in ["ADAPTATION_REPORT.md", "REUSE.toml", "smoke_test.ipynb", "THIRD_PARTY_NOTICES.md", "VALIDATION.md", ".github/workflows/sync-gallery.yml", "scripts/sync_gallery.py", "tests/test_gallery_sync.py", "requirements-gallery-sync.txt", "course_content/environment/image.txt", "course_content/tutorials/tutorial_assets/model.bin", "course_content/tutorials/.ipynb_checkpoints/a.ipynb"]:
             with self.subTest(path=path):
                 self.assertFalse(sync.selected(path))
         self.assertTrue(sync.selected("course_content/tutorials/new_lesson.ipynb"))
         self.assertTrue(sync.selected("course_content/html/new_lesson.html"))
+        self.assertTrue(sync.selected("course_content/slides/part1.pptx"))
 
     def test_invalid_upload_response_aborts_before_put(self):
         client = sync.GalleryClient("test-token", "test-gallery")
@@ -49,7 +50,7 @@ class PublisherTests(unittest.TestCase):
             self.assertNotIn("cookies", put.call_args.kwargs)
 
     def run_publish(self, change=False, bad_size=False, website=False, override=False):
-        original = {"Name": "course", "Owner": "VoyagerX", "Role": "admin", "Category": "notebook", "EntryFile": "index.ipynb", "Files": ["old.txt"], "Label": ["course"], "Private": False, "GmtUpdated": "original"}
+        original = {"Name": "course", "Owner": sync.GALLERY_OWNER, "Role": "write", "Category": "notebook", "EntryFile": "index.ipynb", "Files": ["old.txt"], "Label": ["course"], "Private": False, "GmtUpdated": "original"}
         name = "index.html" if website else "index.ipynb"
         if website:
             original.update(Category="website", EntryFile=name)

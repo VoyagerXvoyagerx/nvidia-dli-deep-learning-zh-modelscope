@@ -22,12 +22,14 @@ import requests
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://modelscope.cn"
 GALLERY_ID = "cb1503c2-1458-4f67-b9c3-bd505091cb47"
-GALLERY_URL = BASE + "/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope"
+GALLERY_OWNER = os.environ.get("MODELSCOPE_GALLERY_OWNER", "NVIDIA_Training_and_Certification")
+GALLERY_URL = BASE + f"/gallery/{GALLERY_OWNER}/nvidia-dli-deep-learning-zh-modelscope"
 ENTRY_FILE = "course_content/html/index.html"
 ROOT_FILES = {"LICENSE", "README.md", "CONTRIBUTING.md", "index.ipynb", "build_html.py"}
 EXCLUDED_FILES = {"course_content/README.md"}  # Replaced in Gallery by CONTRIBUTING.md; keep the 50-file budget.
-EXCLUDED_DIRS = {"environment", "slides", "__pycache__", ".ipynb_checkpoints", "tutorial_assets"}
-MAX_FILES = 50
+EXCLUDED_DIRS = {"environment", "__pycache__", ".ipynb_checkpoints", "tutorial_assets"}
+MAX_FILES = 128
+MAX_FILE_BYTES = 64 * 1024 * 1024  # Client budget for the original PPTX; web OSS upload, not OpenAPI /files/upload.
 
 
 class SyncError(RuntimeError):
@@ -61,8 +63,8 @@ def manifest(root: Path) -> list[str]:
         p = root / name
         if p.is_symlink() or not p.resolve().is_relative_to(root.resolve()):
             raise SyncError(f"Unsupported symlink/path: {name}")
-        if p.stat().st_size > 5 * 1024 * 1024:
-            raise SyncError(f"File exceeds 5 MiB: {name}")
+        if p.stat().st_size > MAX_FILE_BYTES:
+            raise SyncError(f"File exceeds 64 MiB client budget: {name}")
         if p.suffix == ".ipynb":
             nb = json.loads(p.read_text())
             if not any("".join(c.get("source", [])).strip() for c in nb.get("cells", [])):
@@ -137,8 +139,8 @@ def fingerprint(gallery):
 
 def publish(client, root, paths, *, entry_file=None):
     original = client.gallery()
-    if original.get("Owner") != "VoyagerX" or original.get("Role") != "admin":
-        raise SyncError("Token must have admin access to the VoyagerX Gallery")
+    if original.get("Owner") != GALLERY_OWNER or original.get("Role") not in {"admin", "write"}:
+        raise SyncError("Token must have admin or write access to the configured organization Gallery")
     entry = entry_file if entry_file is not None else original.get("EntryFile", "")
     category = "website" if entry_file is not None else original.get("Category")
     suffixes = {"notebook": ".ipynb", "website": ".html", "pdf": ".pdf", "file": None}

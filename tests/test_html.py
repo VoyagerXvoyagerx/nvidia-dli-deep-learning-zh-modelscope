@@ -28,5 +28,7 @@ class HtmlTests(unittest.TestCase):
                     self.assertEqual(links[0]['href'], build_html.GALLERY + '/files/' + path.relative_to(root).as_posix())
                     self.assertNotIn('本版本由 VoyagerX 适配', page)
                     self.assertNotIn('tutorial_dir', page)
+                    self.assertNotIn('%cd', page)
+                    self.assertIn('NVIDIA_Training_and_Certification', links[0]['href'])
                     self.assertTrue(soup.select_one('article').get_text(strip=True))
                     self.assertEqual(path.read_bytes(), originals[path])

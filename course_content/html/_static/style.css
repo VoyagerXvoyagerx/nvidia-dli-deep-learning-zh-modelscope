@@ -15,6 +15,24 @@ code,pre{font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",m
 .pager{display:flex;justify-content:space-between;gap:20px;margin-top:50px;padding-top:24px;border-top:1px solid var(--line);font-size:14px}.footer{margin-top:35px;color:var(--muted);font-size:12px}.empty-search{font-size:13px;color:var(--muted);display:none}
 @media(min-width:1800px){main{margin-left:calc(280px + (100vw - 1800px)/2)}}
 @media(max-width:1200px){.toc{display:none}main{margin-right:0;padding:30px 35px}}@media(max-width:760px){.topbar{padding:0 16px;gap:12px}.brand{font-size:15px}.toplinks{gap:12px}.toplinks a{font-size:12px}.menu{display:block}.sidebar{display:none;width:280px;box-shadow:3px 0 9px #0002}.sidebar.open{display:block}main{margin:64px 0 0;padding:25px 20px}.page-title{font-size:25px}.notebook h2{font-size:21px}.copy{opacity:1}}
+/* Responsive reader: keep rich cells inside the viewport and reserve fullscreen space. */
+.notebook,.cell,.inner_cell,.text_cell_render,.input,.input_area,.output_wrapper,.output,.output_area{min-width:0;max-width:100%}
+.notebook p,.notebook li,.notebook td,.notebook a{overflow-wrap:anywhere}
+.notebook video,.notebook iframe,.notebook svg{max-width:100%}
+@media(max-width:760px){
+ html{scroll-padding-top:128px}
+ .topbar{height:112px;display:grid;grid-template-columns:44px minmax(0,1fr);grid-template-rows:44px 44px;gap:4px 8px;padding:8px 12px;align-content:center}
+ .menu{display:block;grid-column:1;grid-row:1;width:44px;height:44px;padding:0}
+ .brand{grid-column:2;grid-row:1;min-width:0;margin-right:48px;font-size:14px;line-height:1.3;white-space:normal;overflow-wrap:anywhere}
+ .toplinks{grid-column:1/-1;grid-row:2;justify-self:start;margin-left:0;margin-right:48px;max-width:calc(100% - 48px);gap:12px;flex-wrap:nowrap}
+ .toplinks a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:4px 8px;font-size:13px;white-space:nowrap}
+ .sidebar{top:112px;width:min(300px,calc(100vw - 24px));padding:20px 16px;max-height:calc(100dvh - 112px)}
+ .chapters a{min-height:44px;display:flex;align-items:center}.search{font-size:16px}
+ main{margin:112px 0 0;padding:24px 16px;min-height:calc(100dvh - 112px)}
+ .page-title{font-size:24px;overflow-wrap:anywhere}.notebook h1{font-size:24px}.notebook h2{font-size:21px}
+ .highlight pre{padding:16px 12px}.copy{opacity:1;min-width:44px;min-height:44px}
+ .pager{flex-wrap:wrap}.pager a{min-height:44px;display:flex;align-items:center}
+}
 pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
 span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }

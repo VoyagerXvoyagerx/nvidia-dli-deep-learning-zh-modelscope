@@ -4,9 +4,9 @@
 
 ## 在 ModelScope Notebook 中运行
 
-1. 在本 Gallery 点击“运行”，保留全部文件和目录结构。
+1. 在本 Gallery 点击“运行”，按新版 Notebook 弹窗把项目复制到 `/mnt/workspace` 持久化存储，保留全部文件和目录结构。
 2. 打开 `course_content/tutorials/` 中的课程 notebook，按 00、01、02、03、04a、04b、05a、05b、06 的顺序学习。
-3. 直接运行初始化单元格：检查 `/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials/`；不存在则从公开灵感流下载 `course_content` 到 `/mnt/workspace/fundamentals-of-deep-learning-zh/`，然后切换到 `tutorials/`。
+3. 初始化只需一行 `%cd "/mnt/workspace/Gallery: NVIDIA_Training_and_Certification_NVIDIA-DLI-Deep-Learning-ZH-ModelScope/course_content/tutorials"`，随后导入本课需要的 helper；不再自动下载项目或修改 sys.path。实际复制目录若被重命名，应同步调整该行路径。
 4. 使用镜像预装库：PyTorch 2.13.0、TorchVision 0.28.0、Transformers 5.16.1、ModelScope 1.40.1 等。无需 pip 安装、降级或版本断言。
 5. 模型和数据首次从 modelscope.cn 下载，后续使用 `tutorial_assets/` 缓存。Hugging Face/Kaggle/PyTorch 外部下载被替换，无外网备用下载路径。
 
@@ -38,7 +38,7 @@ ASL 保留原始 Parquet，并按照原课程算法生成 28×28 灰度 CSV：�
 
 ## HTML 课程预览
 
-入口：[course_content/html/index.html](course_content/html/index.html)。页面采用 D2L 风格的课程侧栏、本页目录、蓝色顶栏和代码高亮。图片嵌入 HTML，MathJax 与样式从本地加载。构建不执行 Notebook。
+入口：[course_content/html/index.html](course_content/html/index.html)。页面采用 D2L 风格的课程侧栏、本页目录、蓝色顶栏和代码高亮。图片嵌入 HTML，MathJax 与样式从本地加载。构建不执行 Notebook。页面适配手机和平板：窄屏顶栏分行、抽屉目录、44px 触控区域，代码与表格局部滚动。
 
 在仓库根目录运行：
 
@@ -50,15 +50,15 @@ python build_html.py
 
 ## GitHub 与 Gallery 文件范围
 
-报告、`REUSE.toml`、`smoke_test.ipynb`、第三方来源说明、`VALIDATION.md`、`course_content/README.md`、`course_content/environment/` 和 `course_content/slides/` 仅在 [GitHub](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope) 保留。灵感流仅提供课程运行与预览所需文件。首次下载会跳过接口返回的空链接并打印文件名；这表示对应文件未下载。目录存在时不会自动更新。
+报告、`REUSE.toml`、`smoke_test.ipynb`、第三方来源说明、`VALIDATION.md`、`course_content/README.md`、`course_content/environment/` 仅在 [GitHub](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope) 保留。灵感流仅提供课程运行与预览所需文件。`course_content/slides/` 的 6 个原始 PPTX 同步到 Gallery，可在网页首页打开。平台复制后的持久化项目不会因 Gallery 发布自动覆盖；需要新内容时请通过 IDE 更新副本并保留自己的练习和模型。
 
 ## GitHub 提交后自动发布灵感流
 
-推送到 `main` 后，[Publish ModelScope Gallery](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/actions/workflows/sync-gallery.yml) 自动测试同步脚本、从 notebook 重建 HTML，并将课程上传、发布到[现有公开灵感流](https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope)。保留灵感流当前名称和标签，并设置为公开的 `website`，入口固定为 `course_content/html/index.html`；入口必须在发布清单内。也可在 Actions 页面点击 **Run workflow** 手动重试。排队任务取执行时最新的 `main`；上传与发布串行执行，不取消正在发布的任务。HTML 构建不执行课程训练，也不向 GitHub 自动提交文件。
+推送到 `main` 后，[Publish ModelScope Gallery](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/actions/workflows/sync-gallery.yml) 自动测试同步脚本、从 notebook 重建 HTML，并将课程上传、发布到[现有公开灵感流](https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope)。保留灵感流当前名称和标签，并设置为公开的 `website`，入口固定为 `course_content/html/index.html`；入口必须在发布清单内。也可在 Actions 页面点击 **Run workflow** 手动重试。排队任务取执行时最新的 `main`；上传与发布串行执行，不取消正在发布的任务。HTML 构建不执行课程训练，也不向 GitHub 自动提交文件。
 
-认证由仓库 Actions Secret `MODELSCOPE_API_TOKEN` 提供，需使用有该灵感流管理员权限的 VoyagerX token。密钥不会写入源码或发往 OSS 文件上传地址。工作流、同步脚本、依赖列表和自动化测试仅在 GitHub 保留。
+认证由仓库 Actions Secret `MODELSCOPE_API_TOKEN` 提供，需使用有该组织灵感流写入或管理员权限的 ModelScope token。密钥不会写入源码或发往 OSS 文件上传地址。工作流、同步脚本、依赖列表和自动化测试仅在 GitHub 保留。
 
-同步文件从 Git 跟踪文件中选择根目录 `LICENSE`、`README.md`、`CONTRIBUTING.md`、`index.ipynb`、`build_html.py`，以及 `LICENSES/` 和 `course_content/`，并加入本次生成的 HTML。上述 GitHub 专属目录、运行缓存和隐藏文件除外。当前共 50 个文件，达到同步脚本采用的文件预算（参考创建 OpenAPI，不代表网页更新接口的官方限制）；新增文件超过上限会使 Action 失败，需调整发布范围后重试，不会默默遗漏新课程。上传失败、草稿文件大小不符或检测到灵感流被同时修改时，不执行发布。平台内容审核可能使部分已发布文件暂时没有下载链接，文件名会显示在 Action Summary 中。
+同步文件从 Git 跟踪文件中选择根目录 `LICENSE`、`README.md`、`CONTRIBUTING.md`、`index.ipynb`、`build_html.py`，以及 `LICENSES/` 和 `course_content/`，并加入本次生成的 HTML。上述 GitHub 专属目录、运行缓存和隐藏文件除外。当前共 56 个文件（含 6 个 PPTX）；同步脚本采用 128 文件、单文件 64 MiB 的客户端预算（不代表官方创建 OpenAPI 的限制）；新增文件超过上限会使 Action 失败，需调整发布范围后重试，不会默默遗漏新课程。上传失败、草稿文件大小不符或检测到灵感流被同时修改时，不执行发布。平台内容审核可能使部分已发布文件暂时没有下载链接，文件名会显示在 Action Summary 中。
 
 接口说明：公开 OpenAPI 的 `POST /openapi/v1/galleries` 目前只支持创建，未提供更新已有 Gallery 的接口。本工作流为保持 ID 和 URL，使用 Gallery 网页的 HTTP API：获取信息 `GET /api/v1/gallery`，获取草稿上传地址 `POST /api/v1/gallery/square/files/upload`，校验草稿 `GET /api/v1/gallery/square/files`，更新文件清单 `PUT /api/v1/gallery`，发布 `PUT /api/v1/gallery/publish`。这些网页接口可能随平台改版变化；认证或接口变化会在 Actions 中报错。
 
@@ -71,4 +71,4 @@ python build_html.py
 python scripts/sync_gallery.py --dry-run
 ```
 
-课程维护、灵感流类型、HTML 构建、自动发布和魔搭产品侧 TODO，详见 [CONTRIBUTING.md](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/CONTRIBUTING.md)。该指南也同步到 Gallery；为维持 50 文件预算，重复的 `course_content/README.md` 仅保留在 GitHub。
+课程维护、灵感流类型、HTML 构建、自动发布和魔搭产品侧 TODO，详见 [CONTRIBUTING.md](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/CONTRIBUTING.md)。该指南也同步到 Gallery；为避免重复，重复的 `course_content/README.md` 仅保留在 GitHub。

@@ -3,13 +3,13 @@
 本仓库是 NVIDIA DLI《深度学习基础》中文课程的 ModelScope 适配版。日常维护以 GitHub 的 `main` 分支为准：修改课程源文件、提交到 GitHub，由 GitHub Action 构建 HTML 并更新同一个公开灵感流。
 
 - GitHub：https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope
-- 灵感流：https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope
+- 灵感流：https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope
 - Gallery ID：`cb1503c2-1458-4f67-b9c3-bd505091cb47`
 - 自动发布：https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/actions/workflows/sync-gallery.yml
 
 ## 灵感流类型与入口
 
-当前灵感流属于个人用户 **VoyagerX**，设置为公开，类型为 **`website`**，入口文件为 **`course_content/html/index.html`**。Gallery 也包含 `index.ipynb` 和各课程 notebook，供下载、查看或在 ModelScope Notebook/IDE 中运行练习。
+当前灵感流属于组织 **NVIDIA_Training_and_Certification**，设置为公开，类型为 **`website`**，入口文件为 **`course_content/html/index.html`**。Gallery 也包含 `index.ipynb` 和各课程 notebook，供下载、查看或在 ModelScope Notebook/IDE 中运行练习。
 
 类型与入口后缀的规则如下，后缀不区分大小写：
 
@@ -37,7 +37,7 @@
 
 编辑 notebook 时保留原课程练习、资源相对路径和许可证归属。新增模型、数据下载应通过 ModelScope 仓库完成，避免恢复 Hugging Face、Kaggle 或 PyTorch 外部下载；课程镜像已有依赖，不要添加重复安装或降级命令。
 
-Notebook 初始化使用持久化目录 `/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials/`：若该目录不存在，则从公开 Gallery 下载 `course_content/`，保存到 `/mnt/workspace/fundamentals-of-deep-learning-zh/`，随后切换工作目录并加入 Python 导入路径。API 返回空下载链接时会跳过并打印文件名。目录存在时不会自动重新下载；已有 Notebook 会话的本地文件需要按需重新下载更新。Gallery 临时挂载目录与 `/mnt/workspace` 的实际工作目录可能不同，排查相对路径时应检查当前工作目录。
+新版 ModelScope Notebook 会提示将 Gallery 临时项目复制到持久化存储；先按弹窗完成复制并保留目录。Notebook 初始化只需 `%cd "/mnt/workspace/Gallery: NVIDIA_Training_and_Certification_NVIDIA-DLI-Deep-Learning-ZH-ModelScope/course_content/tutorials"`，然后导入本课 helper。该子目录包含 modelscope_assets.py、utils.py 和 data/，因此不需要 requests 下载课程、递归找文件或 sys.path.insert。若 IDE 复制目标名称不同，按实际路径修改这一行。发布新版本不会自动覆盖已复制的练习，更新时保留用户改动和 model.pth。
 
 ## 本地构建 HTML
 
@@ -75,7 +75,7 @@ git push origin main
 1. 拉取执行时最新的 `main`，安装构建与发布依赖。
 2. 运行同步脚本测试，从 notebook 重建 HTML。
 3. 筛选发布文件并检查数量、大小、路径与 notebook 内容。
-4. 读取现有 Gallery，检查 VoyagerX 管理权限及入口类型。
+4. 读取现有 Gallery，检查组织所有者、写入/管理员权限及入口类型。
 5. 每批获取 6 个文件的草稿上传 URL，并发通过文件流上传到 OSS；遇到地址过期或可重试错误，会重新获取地址、从文件开头重试，并记录异常类型。
 6. 检查草稿文件大小，并确认上传期间 Gallery 的已发布信息没有被修改。
 7. 更新完整文件清单，再调用发布接口。
@@ -83,17 +83,17 @@ git push origin main
 
 这是**全量同步**，每次上传全部选定文件，以新的清单发布；不只上传 Git diff 中的文件。移出清单的文件不再列在发布结果中，但脚本不负责清理旧草稿对象。任务串行执行，不取消正在上传、发布的任务；排队任务会使用执行时最新的 `main`。
 
-认证使用仓库 Actions Secret **`MODELSCOPE_API_TOKEN`**，该 token 需要当前 VoyagerX Gallery 的管理员权限。密钥不写入源码；ModelScope 请求使用 Bearer token 和 `m_session_id` Cookie，OSS 上传只使用签名 URL，不附带 ModelScope token。
+认证使用仓库 Actions Secret **`MODELSCOPE_API_TOKEN`**，该 token 需要 NVIDIA_Training_and_Certification 组织 Gallery 的 write 或 admin 权限。密钥不写入源码；ModelScope 请求使用 Bearer token 和 `m_session_id` Cookie，OSS 上传只使用签名 URL，不附带 ModelScope token。
 
 发布失败时先查看对应步骤的日志。上传失败、草稿大小不符或并发修改检查失败会阻止发布；更新清单和发布是两个请求，不是数据库事务，不承诺自动回滚。修复后可重新运行工作流。平台内容审核可能让部分已发布文件暂时没有下载链接，具体路径见 Action Summary。
 
 ### 发布范围
 
-同时保留在 GitHub 和 Gallery：根目录的 `LICENSE`、`README.md`、`CONTRIBUTING.md`、`index.ipynb`、`build_html.py`，以及 `LICENSES/`、课程 notebook、图片、辅助代码与 HTML 预览。
+同时保留在 GitHub 和 Gallery：根目录的 `LICENSE`、`README.md`、`CONTRIBUTING.md`、`index.ipynb`、`build_html.py`，以及 `LICENSES/`、课程 notebook、图片、辅助代码、6 个原始 PPTX（`course_content/slides/`）与 HTML 预览。
 
-仅保留在 GitHub：`ADAPTATION_REPORT.md`、`REUSE.toml`、`smoke_test.ipynb`、`THIRD_PARTY_NOTICES.md`、`VALIDATION.md`、`course_content/README.md`、`course_content/environment/`、`course_content/slides/`，以及工作流、同步脚本、测试和发布依赖列表。隐藏文件、运行缓存和 `model.pth` 不发布。
+仅保留在 GitHub：`ADAPTATION_REPORT.md`、`REUSE.toml`、`smoke_test.ipynb`、`THIRD_PARTY_NOTICES.md`、`VALIDATION.md`、`course_content/README.md`、`course_content/environment/`，以及工作流、同步脚本、测试和发布依赖列表。隐藏文件、运行缓存和 `model.pth` 不发布。
 
-同步脚本采用 **50 文件预算**，(API 实际没有这个 50 的限制)。为加入本指南，重复的 `course_content/README.md` 改为仅保留在 GitHub。新增文件超过预算时，先调整 `scripts/sync_gallery.py` 的发布范围，再通过 `--dry-run` 检查，不能默默跳过新课程。脚本还检查单文件不超过 5 MiB。
+同步脚本采用 **128 文件、单文件 64 MiB 的客户端预算**，当前发布清单为 56 文件，包含 6 个 PPTX；最大 PPTX 约 20 MiB，使用网页 OSS 文件流上传。该预算不是官方创建 `/openapi/v1/files/upload` 的 5 MB、50 文件限制的声明。不能再把创建接口的上限套到网页更新流程；发布前仍用 dry-run 检查实际清单和大小。重复的 course_content/README.md 保留在 GitHub。
 
 ### Gallery OpenAPI 使用说明
 
@@ -114,7 +114,11 @@ git push origin main
 
 以下为产品改进心愿单：
 
-- [x] Gallery 已支持每个文件的稳定 URL，包括嵌套目录。例如：`https://modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope/files/README.md`。课程页面已使用此路由连接对应 Notebook。
+- [x] Gallery 已支持每个文件的稳定 URL，包括嵌套目录。例如：`https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/README.md`。课程页面已使用此路由连接对应 Notebook。
 - [ ] 运行后文件直接存入持久化目录
 
 验收时应覆盖 notebook 与图片/模块同目录、嵌套目录、Gallery 临时挂载目录和 `/mnt/workspace` 持久化目录；打开 notebook 后无需手动 `os.chdir` 或插入 `sys.path`，即可正确显示图片并导入相应课程模块。
+
+## 移动端验收
+
+检查 320/390/768/1280px 视口。窄屏顶栏分行并留出右上角全屏区域；Notebook/GitHub 在新标签页打开；菜单展开后可通过导航、点外部或 Escape 收起；触控按钮至少44px；页面无整体横向溢出，代码块和表格可局部滚动。Gallery 嵌入与独立页面均需抽查。

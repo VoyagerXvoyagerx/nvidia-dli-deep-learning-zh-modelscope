@@ -77,3 +77,8 @@ ASL 镜像保留原始 Parquet，同时提供按原课程规则生成的 CSV：2
 - 报告、REUSE、smoke_test、第三方来源、验证记录、environment 与 slides 在完整 GitHub 版本保留；Gallery 清理这些文件，入口改用 GitHub 链接。
 - 已恢复原课程的 part3.pptx 与 imagenet_class_index.json；Gallery 公共下载接口此前对这两个待审核文件返回空 URL。
 - 预览只展示 Notebook 已保存的输出，不生成训练结果。
+
+
+## 2026-10-22：新版 Gallery 与移动端更新
+
+Gallery 已转移至 NVIDIA_Training_and_Certification；UUID 不变。新版 Notebook UI 提示将项目复制到持久化目录，初始化改为一行 %cd 到 course_content/tutorials，再导入本课所需函数；不再通过下载 API 复制课程或修改 sys.path。6 个原始 PPTX 一并发布，网页首页提供链接。移动端顶栏分行、菜单和操作链接44px触控区域；浏览器检查覆盖10页、320/375/390/768/1280px共50组布局，未执行课程训练。此前下载初始化方式为历史记录，以上为当前使用方式。
