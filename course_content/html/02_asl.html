@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02 · 神经网络训练与美国手语 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css">
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02 · 神经网络训练与美国手语 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css?v=0a01e334c196">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
 <body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/02_asl.ipynb" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
 <aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="active" href="02_asl.html" aria-current=page>02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" >04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
@@ -849,13 +849,63 @@
 </div>
 </div>
 </article><nav class="pager" aria-label="上一课与下一课"><a rel="prev" href="01_mnist.html">← 01 · 深度学习简介与 MNIST</a><a rel="next" href="03_asl_cnn.html">03 · 卷积神经网络 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2><a class="depth-1" href="#2.-%E7%BE%8E%E5%9B%BD%E6%89%8B%E8%AF%AD%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB">2. 美国手语数据集的图像分类</a><a class="depth-2" href="#2.1-%E7%9B%AE%E6%A0%87">2.1 目标</a><a class="depth-2" href="#2.2-%E6%89%8B%E8%AF%AD%E6%95%B0%E6%8D%AE%E9%9B%86">2.2 手语数据集</a><a class="depth-3" href="#2.2.1-ModelScope%EF%BC%88%E9%AD%94%E6%90%AD%EF%BC%89">2.2.1 ModelScope（魔搭）</a><a class="depth-2" href="#2.3-%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86">2.3 加载数据集</a><a class="depth-3" href="#2.3.1-%E8%AF%BB%E5%85%A5%E6%95%B0%E6%8D%AE">2.3.1 读入数据</a><a class="depth-3" href="#2.3.2-%E6%8E%A2%E7%B4%A2%E6%95%B0%E6%8D%AE">2.3.2 探索数据</a><a class="depth-3" href="#2.3.3-%E6%8F%90%E5%8F%96%E6%A0%87%E7%AD%BE">2.3.3 提取标签</a><a class="depth-3" href="#2.3.4-%E6%8F%90%E5%8F%96%E5%9B%BE%E5%83%8F">2.3.4 提取图像</a><a class="depth-3" href="#2.3.5-%E6%80%BB%E7%BB%93%E8%AE%AD%E7%BB%83%E5%92%8C%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE">2.3.5 总结训练和测试数据</a><a class="depth-2" href="#2.4-%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96">2.4 数据可视化</a><a class="depth-3" href="#2.4.1-%E5%AF%B9%E5%9B%BE%E5%83%8F%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E5%BD%92%E4%B8%80%E5%8C%96">2.4.1 对图像数据进行归一化</a><a class="depth-3" href="#2.4.2-%E5%AE%9A%E5%88%B6%E6%95%B0%E6%8D%AE%E9%9B%86">2.4.2 定制数据集</a><a class="depth-2" href="#2.5-%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9E%8B">2.5 构建模型</a><a class="depth-2" href="#2.6-%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B">2.6 训练模型</a><a class="depth-3" href="#2.6.1-%E8%AE%AD%E7%BB%83%E5%87%BD%E6%95%B0">2.6.1 训练函数</a><a class="depth-3" href="#2.6.2-%E9%AA%8C%E8%AF%81%E5%87%BD%E6%95%B0">2.6.2 验证函数</a><a class="depth-3" href="#2.6.3-%E8%AE%A1%E7%AE%97%E5%87%86%E7%A1%AE%E7%8E%87">2.6.3 计算准确率</a><a class="depth-3" href="#2.6.3-%E8%AE%AD%E7%BB%83%E5%BE%AA%E7%8E%AF">2.6.3 训练循环</a><a class="depth-3" href="#2.6.4-%E8%AE%A8%E8%AE%BA%EF%BC%9A%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F">2.6.4 讨论：发生了什么？</a><a class="depth-2" href="#2.7-%E6%80%BB%E7%BB%93">2.7 总结</a><a class="depth-3" href="#2.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">2.7.1 清理显存</a><a class="depth-3" href="#2.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">2.7.2 下一步</a></aside><script>
-document.querySelector('.menu').addEventListener('click',()=>{const n=document.querySelector('.sidebar');n.classList.toggle('open');document.querySelector('.menu').setAttribute('aria-expanded',n.classList.contains('open'))});
-document.querySelector('.search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase();let n=0;document.querySelectorAll('.chapters li').forEach(li=>{const ok=li.textContent.toLocaleLowerCase().includes(q);li.hidden=!ok;n+=ok});document.querySelector('.empty-search').style.display=n?'none':'block'});
-document.querySelectorAll('.highlight').forEach(block=>{const pre=block.querySelector('pre');if(!pre)return;const b=document.createElement('button');b.type='button';b.className='copy';b.textContent='复制';b.setAttribute('aria-label','复制代码');b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}b.textContent='已复制';setTimeout(()=>b.textContent='复制',1200)});block.append(b)});
-// Close the mobile drawer on navigation, outside tap, Escape or desktop resize.
-function closeCourseMenu(){document.querySelector('.sidebar').classList.remove('open');document.querySelector('.menu').setAttribute('aria-expanded','false')}
-document.querySelector('.sidebar').addEventListener('click',e=>{if(e.target.closest('a'))closeCourseMenu()});
-document.addEventListener('click',e=>{if(innerWidth<=760&&!e.target.closest('.sidebar,.menu'))closeCourseMenu()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCourseMenu()});
-window.addEventListener('resize',()=>{if(innerWidth>760)closeCourseMenu()});
+(()=>{
+ const sidebar=document.querySelector('.sidebar'),menu=document.querySelector('.menu');
+ const mobile=matchMedia('(max-width:1024px)');
+ sidebar.id='course-navigation';menu.setAttribute('aria-controls',sidebar.id);
+ const heading=document.createElement('div');heading.className='drawer-head';
+ const headingText=document.createElement('strong');headingText.textContent='课程目录';
+ const close=document.createElement('button');close.type='button';close.className='menu-close';close.setAttribute('aria-label','关闭课程目录');close.textContent='×';heading.append(headingText,close);sidebar.prepend(heading);
+ const actions=document.createElement('nav');actions.className='drawer-actions';actions.setAttribute('aria-label','Notebook 与源码');
+ document.querySelectorAll('.toplinks a').forEach(link=>actions.append(link.cloneNode(true)));sidebar.append(actions);
+ const backdrop=document.createElement('button');backdrop.type='button';backdrop.className='nav-backdrop';backdrop.hidden=true;backdrop.tabIndex=-1;backdrop.setAttribute('aria-label','关闭课程目录遮罩');document.body.append(backdrop);
+ let previousFocus;
+ function setOpen(open,restore=true){
+  open=!!open&&mobile.matches;
+  if(open)previousFocus=document.activeElement;
+  sidebar.classList.toggle('open',open);document.body.classList.toggle('nav-open',open);menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'关闭课程目录':'打开课程目录');backdrop.hidden=!open;
+  sidebar.inert=mobile.matches&&!open;sidebar.setAttribute('aria-hidden',String(mobile.matches&&!open));
+  if(open){sidebar.setAttribute('role','dialog');sidebar.setAttribute('aria-modal','true');close.focus()}
+  else{sidebar.removeAttribute('role');sidebar.removeAttribute('aria-modal');if(restore&&previousFocus?.isConnected)previousFocus.focus()}
+ }
+ menu.addEventListener('click',()=>setOpen(!sidebar.classList.contains('open')));close.addEventListener('click',()=>setOpen(false));backdrop.addEventListener('click',()=>setOpen(false));
+ sidebar.addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false,false)});
+ document.addEventListener('keydown',e=>{
+  if(!sidebar.classList.contains('open'))return;
+  if(e.key==='Escape'){e.preventDefault();setOpen(false)}
+  if(e.key==='Tab'){
+   const targets=[...sidebar.querySelectorAll('a[href],button,input')].filter(el=>el.getClientRects().length&&!el.disabled);const first=targets[0],last=targets.at(-1);
+   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+  }
+ });
+ mobile.addEventListener('change',()=>setOpen(false,false));setOpen(false,false);
+ document.querySelector('.search').addEventListener('input',e=>{
+  const q=e.target.value.toLocaleLowerCase();let n=0;
+  document.querySelectorAll('.chapters li').forEach(li=>{const ok=li.textContent.toLocaleLowerCase().includes(q);li.hidden=!ok;n+=ok});document.querySelector('.empty-search').style.display=n?'none':'block';
+ });
+ document.querySelectorAll('.notebook table').forEach(table=>{
+  if(table.parentElement.classList.contains('table-scroll'))return;
+  const wrapper=document.createElement('div');wrapper.className='table-scroll';wrapper.tabIndex=0;wrapper.setAttribute('role','region');wrapper.setAttribute('aria-label','表格，可左右滚动');table.before(wrapper);wrapper.append(table);
+ });
+ const refreshers=[];
+ document.querySelectorAll('.notebook pre').forEach((pre,index)=>{
+  pre.classList.add('code-scroll');pre.tabIndex=0;pre.setAttribute('role','region');pre.setAttribute('aria-label','代码或输出内容，可左右滚动');
+  const controls=document.createElement('div');controls.className='scroll-controls';controls.hidden=true;
+  const label=document.createElement('label');const range=document.createElement('input');range.type='range';range.min='0';range.step='1';range.value='0';range.className='code-scrollbar';range.id='code-scroll-'+index;range.setAttribute('aria-label','横向滚动代码');label.htmlFor=range.id;
+  const hint=document.createElement('span');hint.textContent='左右滑动或拖动滑条查看完整内容';const position=document.createElement('span');position.setAttribute('aria-hidden','true');label.append(hint,position);controls.append(label,range);pre.after(controls);
+  const sync=()=>{range.value=String(pre.scrollLeft);position.textContent=Math.round(pre.scrollLeft/Math.max(1,pre.scrollWidth-pre.clientWidth)*100)+'%'};
+  const refresh=()=>{const max=Math.max(0,pre.scrollWidth-pre.clientWidth);controls.hidden=max<2;range.max=String(max);sync()};
+  range.addEventListener('input',()=>{pre.scrollLeft=Number(range.value);sync()});pre.addEventListener('scroll',sync,{passive:true});refreshers.push(refresh);
+  if(window.ResizeObserver)new ResizeObserver(refresh).observe(pre);
+  const block=pre.closest('.highlight');
+  if(block){
+   const copy=document.createElement('button');copy.type='button';copy.className='copy';copy.textContent='复制';copy.setAttribute('aria-label','复制代码');copy.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}
+    copy.textContent='已复制';setTimeout(()=>copy.textContent='复制',1200);
+   });block.append(copy);
+  }
+  refresh();
+ });
+ const refresh=()=>refreshers.forEach(fn=>fn());window.addEventListener('resize',refresh);document.fonts?.ready.then(refresh);window.addEventListener('load',refresh);
+})();
 </script></body></html>

@@ -35,6 +35,10 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Rebuild HTML without executing notebooks
         run: python build_html.py
+      - name: Install browser for responsive layout checks
+        run: python -m playwright install --with-deps chromium
+      - name: Check mobile navigation, page width and code scrolling
+        run: python scripts/check_mobile.py course_content/html
       - name: Validate Gallery file selection
         run: python scripts/sync_gallery.py --dry-run
       - name: Upload and publish existing Gallery

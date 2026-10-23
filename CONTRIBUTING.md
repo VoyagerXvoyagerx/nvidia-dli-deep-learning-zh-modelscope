@@ -73,7 +73,7 @@ git push origin main
 向 `main` 推送提交会触发 **Publish ModelScope Gallery**，也可从 Actions 页面选择 `main`，点击 **Run workflow** 手动执行。工作流使用 Ubuntu 24.04、Python 3.12，过程如下：
 
 1. 拉取执行时最新的 `main`，安装构建与发布依赖。
-2. 运行同步脚本测试，从 notebook 重建 HTML。
+2. 运行同步脚本测试，从 notebook 重建 HTML，并通过 Chromium 移动视口与 iframe 布局测试后继续发布。
 3. 筛选发布文件并检查数量、大小、路径与 notebook 内容。
 4. 读取现有 Gallery，检查组织所有者、写入/管理员权限及入口类型。
 5. 每批获取 6 个文件的草稿上传 URL，并发通过文件流上传到 OSS；遇到地址过期或可重试错误，会重新获取地址、从文件开头重试，并记录异常类型。
@@ -121,4 +121,13 @@ git push origin main
 
 ## 移动端验收
 
-检查 320/390/768/1280px 视口。窄屏顶栏分行并留出右上角全屏区域；Notebook/GitHub 在新标签页打开；菜单展开后可通过导航、点外部或 Escape 收起；触控按钮至少44px；页面无整体横向溢出，代码块和表格可局部滚动。Gallery 嵌入与独立页面均需抽查。
+课程网页在 1024px 及以下默认收起侧栏，菜单展开为带遮罩的抽屉；Notebook/GitHub 操作放在抽屉中，继续在新标签页打开。正文自适应，代码与输出保留格式、在块内左右滑动；长代码提供可拖动滑条，表格局部滚动。CSS 链接按内容哈希更新，避免命中旧样式缓存。
+
+```bash
+python -m playwright install chromium
+python scripts/check_mobile.py course_content/html --screenshots /tmp/mobile-qa
+```
+
+脚本检查全部课程的 320/375/390/768/820/1024/1280px 视口，并分别验证独立页面与 sandbox iframe。它验证抽屉实际不可见/不可聚焦、展开后可关闭，页面无整体横向溢出，以及拖动滑条、触摸左右滑动确实改变代码滚动位置。GitHub Action 在发布之前执行同一检查，失败即阻止发布。桌面保留常驻侧栏。
+
+截至 2026-10-23，生产 Gallery 容器尚不支持移动端预览，预发环境刚支持。实际嵌入验收应使用 [预发课程页面](https://pre.modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope)，检查移动端、嵌入与全屏。预发不可访问时记录具体错误，不能把本地 iframe 测试当作平台验收通过。内容发布仍使用生产 GitHub 同步配置；不要将生产 token 发往预发。
