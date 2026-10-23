@@ -72,3 +72,7 @@ All asset/model smoke checks passed.
 ## 2026-10-22：新版 Gallery 与移动端更新
 
 Gallery 已转移至 NVIDIA_Training_and_Certification；UUID 不变。新版 Notebook UI 提示将项目复制到持久化目录，初始化改为一行 %cd 到 course_content/tutorials，再导入本课所需函数；不再通过下载 API 复制课程或修改 sys.path。6 个原始 PPTX 一并发布，网页首页提供链接。移动端顶栏分行、菜单和操作链接44px触控区域；浏览器检查覆盖10页、320/375/390/768/1280px共50组布局，未执行课程训练。此前下载初始化方式为历史记录，以上为当前使用方式。
+
+## 2026-10-23 资源所有者迁移核验
+
+六个仓库的数值 ID 和 50 个文件的远端 SHA-256、大小、Git 版本在转移前后保持一致；公开访问、README 实际下载校验及大文件载荷抽样通过，六个原个人路径均为 404。下载源现为 NVIDIA_Training_and_Certification。该核验不代表重新运行了上述历史前向推理或完整训练。完整结果见 [COURSE_ASSETS.md](COURSE_ASSETS.md) 和 [course_assets_manifest.json](course_assets_manifest.json)。

@@ -16,14 +16,16 @@
 
 | 类型 | ModelScope 仓库 | 原来源 | 许可 |
 |---|---|---|---|
-| 数据集 | [VoyagerX/mnist](https://modelscope.cn/datasets/VoyagerX/mnist) | TorchVision OSSCI MNIST 原始 IDX；许可信息来自 ylecun/mnist | MIT |
-| 数据集 | [VoyagerX/asl-hg](https://modelscope.cn/datasets/VoyagerX/asl-hg) | juanjodurillo/asl-hg；原始记录 DOI 10.17632/j4y5w2c8w9.1 | CC-BY-4.0 |
-| 数据集 | [VoyagerX/penny-the-corgi](https://modelscope.cn/datasets/VoyagerX/penny-the-corgi) | Kaggle danielledetering/penny-the-corgi，版本 1 | CC-BY-4.0 |
-| 模型 | [VoyagerX/vgg16-imagenet1k](https://modelscope.cn/models/VoyagerX/vgg16-imagenet1k) | TorchVision 原始 vgg16-397923af.pth；timm/vgg16.tv_in1k 模型卡 | BSD-3-Clause |
-| 模型 | [VoyagerX/bert-base-cased](https://modelscope.cn/models/VoyagerX/bert-base-cased) | Google BERT，经 ModelScope google-bert 仓库获取 | Apache-2.0 |
-| 模型 | [VoyagerX/bert-large-uncased-whole-word-masking-finetuned-squad](https://modelscope.cn/models/VoyagerX/bert-large-uncased-whole-word-masking-finetuned-squad) | Google BERT SQuAD，经 ModelScope google-bert 仓库获取 | Apache-2.0 |
+| 数据集 | [NVIDIA_Training_and_Certification/mnist](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/mnist) | TorchVision OSSCI MNIST 原始 IDX；许可信息来自 ylecun/mnist | MIT |
+| 数据集 | [NVIDIA_Training_and_Certification/asl-hg](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/asl-hg) | juanjodurillo/asl-hg；原始记录 DOI 10.17632/j4y5w2c8w9.1 | CC-BY-4.0 |
+| 数据集 | [NVIDIA_Training_and_Certification/penny-the-corgi](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/penny-the-corgi) | Kaggle danielledetering/penny-the-corgi，版本 1 | CC-BY-4.0 |
+| 模型 | [NVIDIA_Training_and_Certification/vgg16-imagenet1k](https://modelscope.cn/models/NVIDIA_Training_and_Certification/vgg16-imagenet1k) | TorchVision 原始 vgg16-397923af.pth；timm/vgg16.tv_in1k 模型卡 | BSD-3-Clause |
+| 模型 | [NVIDIA_Training_and_Certification/bert-base-cased](https://modelscope.cn/models/NVIDIA_Training_and_Certification/bert-base-cased) | Google BERT，经 ModelScope google-bert 仓库获取 | Apache-2.0 |
+| 模型 | [NVIDIA_Training_and_Certification/bert-large-uncased-whole-word-masking-finetuned-squad](https://modelscope.cn/models/NVIDIA_Training_and_Certification/bert-large-uncased-whole-word-masking-finetuned-squad) | Google BERT SQuAD，经 ModelScope google-bert 仓库获取 | Apache-2.0 |
 
 ASL 保留原始 Parquet，并按照原课程算法生成 28×28 灰度 CSV：去掉 0–9、J、Z，按字母排序重新映射为 24 类，训练 19,200 张、验证 4,800 张。没有替换为其他手语 MNIST 数据集。柯基数据保留原版两类目录和 202 张图片（Penny 116 张、Not_Penny 86 张）。
+
+资源已于 2026-10-23 从 VoyagerX 转移至 NVIDIA_Training_and_Certification，保持公开。完整清单、文件数量/大小与核验方法见 [COURSE_ASSETS.md](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/COURSE_ASSETS.md)。
 
 ## 验证与限制
 

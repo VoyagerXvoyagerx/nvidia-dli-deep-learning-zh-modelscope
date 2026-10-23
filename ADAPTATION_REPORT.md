@@ -1,21 +1,21 @@
 # NVIDIA DLI 深度学习基础：魔搭适配改动报告
 
-更新日期：2026-10-08。适配者：VoyagerX。
+更新日期：2026-10-23。适配者：VoyagerX。
 
 原版：[NVDLI/fundamentals-of-deep-learning-zh](https://github.com/NVDLI/fundamentals-of-deep-learning-zh)。
-公开适配版：[NVIDIA DLI at ModelScope Notebook](https://www.modelscope.cn/gallery/VoyagerX/nvidia-dli-deep-learning-zh-modelscope)。
+公开适配版：[NVIDIA DLI at ModelScope Notebook](https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope)。
 
 ## 相比原版的改动
 
 | 范围 | 原版 | 魔搭适配版 |
 |---|---|---|
 | 运行环境 | 原仓库部署及依赖安装流程 | 使用用户提供的 ModelScope Notebook 镜像预装库；所有 notebook 均无需 pip 安装或依赖降级 |
-| 数据下载 | MNIST 从 TorchVision 外部下载站；ASL 从 Hugging Face；柯基从 Kaggle | 三个数据集统一从 VoyagerX 的公开 ModelScope 仓库下载，保留原始来源和许可说明 |
+| 数据下载 | MNIST 从 TorchVision 外部下载站；ASL 从 Hugging Face；柯基从 Kaggle | 三个数据集统一从 NVIDIA_Training_and_Certification 组织的公开 ModelScope 仓库下载，保留原始来源和许可说明 |
 | 模型下载 | VGG16 由 TorchVision 下载权重，BERT 通过 Hugging Face 模型标识加载 | VGG16 从 ModelScope 获取原始权重后加载；BERT 从 ModelScope 下载到本地，使用 `local_files_only=True` |
 | 资源辅助代码 | 各课程分别触发外部下载 | 新增 `modelscope_assets.py`，负责按需下载、缓存、解压、完整性检查，以及 HF 离线设置；无外部备用下载路径 |
 | 工作目录 | 相对路径依赖 Notebook 的当前工作目录 | 所有 11 个 notebook 检查固定目录 `/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials/`，不存在时从公开灵感流下载整个 `course_content`，保存到 `/mnt/workspace/fundamentals-of-deep-learning-zh/`；随后切换到 `tutorials/` 并加入 Python 导入路径 |
 | 初始化与导入 | 先前适配版含统一安装、版本检查和全量辅助函数导入 | 删除安装单元格、PyTorch/TorchVision 版本断言、无关导入及重复导入；每个课程仅导入实际使用的辅助函数 |
-| 开头与平台说明 | NVIDIA 原版标题；02 中介绍 Hugging Face Hub | 所有 11 个 notebook 开头统一为用户指定的 NVIDIA DLI at ModelScope Notebook 介绍；02 改为介绍 ModelScope 和 VoyagerX/asl-hg |
+| 开头与平台说明 | NVIDIA 原版标题；02 中介绍 Hugging Face Hub | 所有 11 个 notebook 开头统一为用户指定的 NVIDIA DLI at ModelScope Notebook 介绍；02 改为介绍 ModelScope 和 NVIDIA_Training_and_Certification/asl-hg |
 | Notebook 许可证单元格 | 独立 SPDX 注释单元格 | 按用户要求删除；仓库 `LICENSE`、`LICENSES/`、第三方归属及资源许可保留 |
 | 执行兼容性 | 原版部分代码直接依赖 CUDA、默认编译模型 | 保留 CPU/GPU 设备选择；`maybe_compile` 默认使用普通执行，设置 `DLI_USE_TORCH_COMPILE=1` 可启用编译 |
 | 课程完整性 | 课程讲解、训练任务、练习和配套材料 | 保留其余正文、学习任务、FIXME/TODO 练习、图片、辅助代码和六份 PPT；未填写练习答案或缩短训练 |
@@ -42,12 +42,12 @@
 
 | 类型 | ModelScope 仓库 | 原始来源 |
 |---|---|---|
-| MNIST | [VoyagerX/mnist](https://modelscope.cn/datasets/VoyagerX/mnist) | TorchVision 使用的原始 MNIST IDX 文件 |
-| ASL | [VoyagerX/asl-hg](https://modelscope.cn/datasets/VoyagerX/asl-hg) | `juanjodurillo/asl-hg`；原始 ASL-HG 数据记录 DOI 10.17632/j4y5w2c8w9.1 |
-| 柯基 | [VoyagerX/penny-the-corgi](https://modelscope.cn/datasets/VoyagerX/penny-the-corgi) | Kaggle `danielledetering/penny-the-corgi`，版本 1 |
-| VGG16 | [VoyagerX/vgg16-imagenet1k](https://modelscope.cn/models/VoyagerX/vgg16-imagenet1k) | TorchVision `vgg16-397923af.pth` |
-| BERT 掩码模型 | [VoyagerX/bert-base-cased](https://modelscope.cn/models/VoyagerX/bert-base-cased) | Google BERT `bert-base-cased` |
-| BERT 问答模型 | [VoyagerX/bert-large-uncased-whole-word-masking-finetuned-squad](https://modelscope.cn/models/VoyagerX/bert-large-uncased-whole-word-masking-finetuned-squad) | Google BERT SQuAD 问答权重 |
+| MNIST | [NVIDIA_Training_and_Certification/mnist](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/mnist) | TorchVision 使用的原始 MNIST IDX 文件 |
+| ASL | [NVIDIA_Training_and_Certification/asl-hg](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/asl-hg) | `juanjodurillo/asl-hg`；原始 ASL-HG 数据记录 DOI 10.17632/j4y5w2c8w9.1 |
+| 柯基 | [NVIDIA_Training_and_Certification/penny-the-corgi](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/penny-the-corgi) | Kaggle `danielledetering/penny-the-corgi`，版本 1 |
+| VGG16 | [NVIDIA_Training_and_Certification/vgg16-imagenet1k](https://modelscope.cn/models/NVIDIA_Training_and_Certification/vgg16-imagenet1k) | TorchVision `vgg16-397923af.pth` |
+| BERT 掩码模型 | [NVIDIA_Training_and_Certification/bert-base-cased](https://modelscope.cn/models/NVIDIA_Training_and_Certification/bert-base-cased) | Google BERT `bert-base-cased` |
+| BERT 问答模型 | [NVIDIA_Training_and_Certification/bert-large-uncased-whole-word-masking-finetuned-squad](https://modelscope.cn/models/NVIDIA_Training_and_Certification/bert-large-uncased-whole-word-masking-finetuned-squad) | Google BERT SQuAD 问答权重 |
 
 ASL 镜像保留原始 Parquet，同时提供按原课程规则生成的 CSV：28×28 灰度、去除数字和 J/Z、24 类，训练 19,200 张、验证 4,800 张。没有替换成其他手语 MNIST 数据集。柯基数据含 Penny 116 张、Not_Penny 86 张，保留两类目录。资源的首次下载和以后缓存读取均由 ModelScope helper 管理。
 
@@ -82,3 +82,7 @@ ASL 镜像保留原始 Parquet，同时提供按原课程规则生成的 CSV：2
 ## 2026-10-22：新版 Gallery 与移动端更新
 
 Gallery 已转移至 NVIDIA_Training_and_Certification；UUID 不变。新版 Notebook UI 提示将项目复制到持久化目录，初始化改为一行 %cd 到 course_content/tutorials，再导入本课所需函数；不再通过下载 API 复制课程或修改 sys.path。6 个原始 PPTX 一并发布，网页首页提供链接。移动端顶栏分行、菜单和操作链接44px触控区域；浏览器检查覆盖10页、320/375/390/768/1280px共50组布局，未执行课程训练。此前下载初始化方式为历史记录，以上为当前使用方式。
+
+## 2026-10-23 资源所有者迁移
+
+课程使用的三个数据集和三个模型已直接转移至 NVIDIA_Training_and_Certification，全部公开。50 个文件的远端摘要、大小和 Git 版本保持一致，六个原个人路径均返回 404。下载 helper、Notebook 来源说明及课程网页已改为组织资源地址。完整清单和核验方法见 [COURSE_ASSETS.md](COURSE_ASSETS.md)。

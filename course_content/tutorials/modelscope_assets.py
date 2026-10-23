@@ -10,13 +10,13 @@ from modelscope.hub.snapshot_download import dataset_snapshot_download, snapshot
 
 ASSET_DIR = Path(os.environ.get('DLI_ASSET_DIR', './tutorial_assets')).resolve()
 REPOS = {
-    'mnist': 'VoyagerX/mnist',
-    'asl': 'VoyagerX/asl-hg',
-    'corgi': 'VoyagerX/penny-the-corgi',
-    'vgg16': 'VoyagerX/vgg16-imagenet1k',
-    'bert-base-cased': 'VoyagerX/bert-base-cased',
+    'mnist': 'NVIDIA_Training_and_Certification/mnist',
+    'asl': 'NVIDIA_Training_and_Certification/asl-hg',
+    'corgi': 'NVIDIA_Training_and_Certification/penny-the-corgi',
+    'vgg16': 'NVIDIA_Training_and_Certification/vgg16-imagenet1k',
+    'bert-base-cased': 'NVIDIA_Training_and_Certification/bert-base-cased',
     'bert-large-uncased-whole-word-masking-finetuned-squad':
-        'VoyagerX/bert-large-uncased-whole-word-masking-finetuned-squad',
+        'NVIDIA_Training_and_Certification/bert-large-uncased-whole-word-masking-finetuned-squad',
 }
 
 def _fetch(kind, repo_id, patterns, required):
