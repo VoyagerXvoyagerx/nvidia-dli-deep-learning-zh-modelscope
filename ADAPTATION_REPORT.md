@@ -45,9 +45,9 @@
 | MNIST | [NVIDIA_Training_and_Certification/mnist](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/mnist) | TorchVision 使用的原始 MNIST IDX 文件 |
 | ASL | [NVIDIA_Training_and_Certification/asl-hg](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/asl-hg) | `juanjodurillo/asl-hg`；原始 ASL-HG 数据记录 DOI 10.17632/j4y5w2c8w9.1 |
 | 柯基 | [NVIDIA_Training_and_Certification/penny-the-corgi](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/penny-the-corgi) | Kaggle `danielledetering/penny-the-corgi`，版本 1 |
-| VGG16 | [NVIDIA_Training_and_Certification/vgg16-imagenet1k](https://modelscope.cn/models/NVIDIA_Training_and_Certification/vgg16-imagenet1k) | TorchVision `vgg16-397923af.pth` |
-| BERT 掩码模型 | [NVIDIA_Training_and_Certification/bert-base-cased](https://modelscope.cn/models/NVIDIA_Training_and_Certification/bert-base-cased) | Google BERT `bert-base-cased` |
-| BERT 问答模型 | [NVIDIA_Training_and_Certification/bert-large-uncased-whole-word-masking-finetuned-squad](https://modelscope.cn/models/NVIDIA_Training_and_Certification/bert-large-uncased-whole-word-masking-finetuned-squad) | Google BERT SQuAD 问答权重 |
+| VGG16 | [timm/vgg16.tv_in1k](https://modelscope.cn/models/timm/vgg16.tv_in1k) | 魔搭已有 `timm/vgg16.tv_in1k` 的 safetensors 权重；映射六个分类层参数并 reshape，保持 TorchVision VGG16 接口 |
+| BERT 掩码模型 | [google-bert/bert-base-cased](https://modelscope.cn/models/google-bert/bert-base-cased) | Google BERT `bert-base-cased` |
+| BERT 问答模型 | [google-bert/bert-large-uncased-whole-word-masking-finetuned-squad](https://modelscope.cn/models/google-bert/bert-large-uncased-whole-word-masking-finetuned-squad) | Google BERT SQuAD 问答权重 |
 
 ASL 镜像保留原始 Parquet，同时提供按原课程规则生成的 CSV：28×28 灰度、去除数字和 J/Z、24 类，训练 19,200 张、验证 4,800 张。没有替换成其他手语 MNIST 数据集。柯基数据含 Penny 116 张、Not_Penny 86 张，保留两类目录。资源的首次下载和以后缓存读取均由 ModelScope helper 管理。
 
@@ -86,3 +86,7 @@ Gallery 已转移至 NVIDIA_Training_and_Certification；UUID 不变。新版 No
 ## 2026-10-23 资源所有者迁移
 
 课程使用的三个数据集和三个模型已直接转移至 NVIDIA_Training_and_Certification，全部公开。50 个文件的远端摘要、大小和 Git 版本保持一致，六个原个人路径均返回 404。下载 helper、Notebook 来源说明及课程网页已改为组织资源地址。完整清单和核验方法见 [COURSE_ASSETS.md](COURSE_ASSETS.md)。
+
+## 2026-10-23：复用现有魔搭模型
+
+优先检查 HF 同 repo_id 的魔搭模型；两个 BERT 使用 `google-bert`，VGG16 使用 `timm/vgg16.tv_in1k`。数据集继续使用组织仓库。BERT 所需的每库五个文件 SHA-256 与原备份一致；VGG16 格式转换的前向核验见 VALIDATION.md。此前的组织迁移段落保留为历史记录，当前资源以 COURSE_ASSETS.md 为准。

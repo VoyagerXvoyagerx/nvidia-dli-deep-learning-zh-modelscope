@@ -13,10 +13,10 @@ REPOS = {
     'mnist': 'NVIDIA_Training_and_Certification/mnist',
     'asl': 'NVIDIA_Training_and_Certification/asl-hg',
     'corgi': 'NVIDIA_Training_and_Certification/penny-the-corgi',
-    'vgg16': 'NVIDIA_Training_and_Certification/vgg16-imagenet1k',
-    'bert-base-cased': 'NVIDIA_Training_and_Certification/bert-base-cased',
+    'vgg16': 'timm/vgg16.tv_in1k',
+    'bert-base-cased': 'google-bert/bert-base-cased',
     'bert-large-uncased-whole-word-masking-finetuned-squad':
-        'NVIDIA_Training_and_Certification/bert-large-uncased-whole-word-masking-finetuned-squad',
+        'google-bert/bert-large-uncased-whole-word-masking-finetuned-squad',
 }
 
 def _fetch(kind, repo_id, patterns, required):
@@ -96,12 +96,23 @@ def prepare_corgi(data_dir='data'):
     return folder
 
 def load_vgg16():
-    import torch
+    from safetensors.torch import load_file
     from torchvision.models import vgg16
-    folder = _fetch('models', REPOS['vgg16'], ['vgg16-397923af.pth'],
-                    ['vgg16-397923af.pth'])
+    folder = _fetch('models', REPOS['vgg16'], ['model.safetensors'],
+                    ['model.safetensors'])
     model = vgg16(weights=None)
-    state = torch.load(folder / 'vgg16-397923af.pth', map_location='cpu', weights_only=True)
+    state = load_file(str(folder / 'model.safetensors'), device='cpu')
+    # timm stores the original TorchVision classifier as convolutional layers.
+    target = model.state_dict()
+    for source, destination in [
+        ('pre_logits.fc1.weight', 'classifier.0.weight'),
+        ('pre_logits.fc1.bias', 'classifier.0.bias'),
+        ('pre_logits.fc2.weight', 'classifier.3.weight'),
+        ('pre_logits.fc2.bias', 'classifier.3.bias'),
+        ('head.fc.weight', 'classifier.6.weight'),
+        ('head.fc.bias', 'classifier.6.bias'),
+    ]:
+        state[destination] = state.pop(source).reshape(target[destination].shape)
     model.load_state_dict(state, strict=True)
     return model
 

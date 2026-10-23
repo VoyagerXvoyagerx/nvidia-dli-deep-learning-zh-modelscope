@@ -1,0 +1,422 @@
+{
+  "date": "2026-10-23",
+  "operation": "ownership_transfer",
+  "owner": "NVIDIA_Training_and_Certification",
+  "total_bytes": 3010774389,
+  "repositories": [
+    {
+      "repo_type": "dataset",
+      "old_repo_id": "VoyagerX/mnist",
+      "repo_id": "NVIDIA_Training_and_Certification/mnist",
+      "repository_numeric_id": 222462,
+      "visibility": "public",
+      "license": "mit",
+      "total_bytes": 11600109,
+      "file_count": 8,
+      "files": {
+        ".gitattributes": {
+          "Size": 3818,
+          "Sha256": "53b61e55812199dea8ffe90c52485e2ec5e5bdae1eed92cab20063003da14e29",
+          "Revision": "dee2c94eb1de96bb9590b682661e52189948d2af",
+          "IsLFS": false
+        },
+        "LICENSE": {
+          "Size": 203,
+          "Sha256": "fc459f3b02342b8bece74804982cd5e936980488699d7aa3088e08871f373174",
+          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
+          "IsLFS": false
+        },
+        "manifest.json": {
+          "Size": 693,
+          "Sha256": "24bdf9896b717ff771f673a2b7ed7747b6464c92d5e245df9ddcf266338770e6",
+          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
+          "IsLFS": false
+        },
+        "README.md": {
+          "Size": 673,
+          "Sha256": "42874f768e8573aa2e2f4d27d0795329ecd5470c5c44056ff6aed036dd2f9252",
+          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
+          "IsLFS": false
+        },
+        "raw/t10k-images-idx3-ubyte.gz": {
+          "Size": 1648877,
+          "Sha256": "8d422c7b0a1c1c79245a5bcf07fe86e33eeafee792b84584aec276f5a2dbc4e6",
+          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
+          "IsLFS": true
+        },
+        "raw/t10k-labels-idx1-ubyte.gz": {
+          "Size": 4542,
+          "Sha256": "f7ae60f92e00ec6debd23a6088c31dbd2371eca3ffa0defaefb259924204aec6",
+          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
+          "IsLFS": true
+        },
+        "raw/train-images-idx3-ubyte.gz": {
+          "Size": 9912422,
+          "Sha256": "440fcabf73cc546fa21475e81ea370265605f56be210a4024d2ca8f203523609",
+          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
+          "IsLFS": true
+        },
+        "raw/train-labels-idx1-ubyte.gz": {
+          "Size": 28881,
+          "Sha256": "3552534a0a558bbed6aed32b30c495cca23d567ec52cac8be1a0730e8010255c",
+          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
+          "IsLFS": true
+        }
+      },
+      "verification": {
+        "same_repository_id": true,
+        "same_files_sizes_sha256_revisions": true,
+        "anonymous_readme_sha256_verified": true,
+        "anonymous_payload_sample_verified": "raw/train-images-idx3-ubyte.gz",
+        "old_personal_route_http_status": 404
+      }
+    },
+    {
+      "repo_type": "dataset",
+      "old_repo_id": "VoyagerX/asl-hg",
+      "repo_id": "NVIDIA_Training_and_Certification/asl-hg",
+      "repository_numeric_id": 222466,
+      "visibility": "public",
+      "license": "cc-by-4.0",
+      "total_bytes": 458354865,
+      "file_count": 11,
+      "files": {
+        ".gitattributes": {
+          "Size": 3904,
+          "Sha256": "6eaaf21d88fcbe3e8d9c4d99b76ebf80c717ef1d8f42c4f2c0b39c18ddae0e8b",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": false
+        },
+        "data/.train-00000-of-00001.parquet.part.jS1RCP": {
+          "Size": 12320768,
+          "Sha256": "4a6ca3997c702ae60c96617b2685e435df989876386c3d644c5e569e9fdee3b8",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": true
+        },
+        "dataset_infos.json": {
+          "Size": 203,
+          "Sha256": "be79c185ff454a31678642d592eeb1f764c603a51483a52c3501a734f4d0819d",
+          "Revision": "c23557e8d85eb88b9a5b88486e5fed42db3c9097",
+          "IsLFS": false
+        },
+        "label_mapping.json": {
+          "Size": 717,
+          "Sha256": "3ca8820f5326f9f83d7d470f4904ff43e02a27baa2048bb8fc7f61b1163824da",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": false
+        },
+        "LICENSE": {
+          "Size": 18657,
+          "Sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": false
+        },
+        "manifest.json": {
+          "Size": 829,
+          "Sha256": "7ec08655137827a66b3f9b3df2d6030784a81447097778d2c96e9e737af7add6",
+          "Revision": "95c6c33de712bd5243a766a83abc01ab27e0947a",
+          "IsLFS": false
+        },
+        "README.md": {
+          "Size": 920,
+          "Sha256": "fd03ebd4b84a7e0f04fb8c287ed7d1b6cede60e46acd5f6cb1caca0568b2911e",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": false
+        },
+        "csv/sign_mnist_train.csv": {
+          "Size": 56625762,
+          "Sha256": "e0588136caf8237ccbd640dccd47e722a5bb84236924e87066ec844140bf06f2",
+          "Revision": "95c6c33de712bd5243a766a83abc01ab27e0947a",
+          "IsLFS": true
+        },
+        "csv/sign_mnist_valid.csv": {
+          "Size": 14152765,
+          "Sha256": "4aba3fb615019445ebca7ddd266f3b9c8b515b2b7f0084afe7482462a62a87c7",
+          "Revision": "95c6c33de712bd5243a766a83abc01ab27e0947a",
+          "IsLFS": true
+        },
+        "data/test-00000-of-00001.parquet": {
+          "Size": 74646896,
+          "Sha256": "05074c1512b3922e893578f8bcf81a22f5ae69b96ce983a2edc3cd4bf21bcb11",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": true
+        },
+        "data/train-00000-of-00001.parquet": {
+          "Size": 300583444,
+          "Sha256": "a7636b8d71f6351d86f63e47923b718b105393ce4c9bb8c6eeed5a11c214e7ee",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": true
+        }
+      },
+      "verification": {
+        "same_repository_id": true,
+        "same_files_sizes_sha256_revisions": true,
+        "anonymous_readme_sha256_verified": true,
+        "anonymous_payload_sample_verified": "data/train-00000-of-00001.parquet",
+        "old_personal_route_http_status": 404
+      }
+    },
+    {
+      "repo_type": "dataset",
+      "old_repo_id": "VoyagerX/penny-the-corgi",
+      "repo_id": "NVIDIA_Training_and_Certification/penny-the-corgi",
+      "repository_numeric_id": 222463,
+      "visibility": "public",
+      "license": "cc-by-4.0",
+      "total_bytes": 209604448,
+      "file_count": 5,
+      "files": {
+        ".gitattributes": {
+          "Size": 3818,
+          "Sha256": "53b61e55812199dea8ffe90c52485e2ec5e5bdae1eed92cab20063003da14e29",
+          "Revision": "17952978bac3a2c79b6fa8c376fc36cd0eaf692a",
+          "IsLFS": false
+        },
+        "LICENSE": {
+          "Size": 18657,
+          "Sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+          "Revision": "5012bb7fe660d3645c8bb59666375ecb508ad840",
+          "IsLFS": false
+        },
+        "manifest.json": {
+          "Size": 258,
+          "Sha256": "f62253051b979b578c5cee163a9afd551b816422e6209dce2f564a524dac4af7",
+          "Revision": "5012bb7fe660d3645c8bb59666375ecb508ad840",
+          "IsLFS": false
+        },
+        "penny-the-corgi.zip": {
+          "Size": 209581039,
+          "Sha256": "d3b78c1222975968c1b90b0057872531b0a6e2b5d62a2f435c53bf6eefc96332",
+          "Revision": "5012bb7fe660d3645c8bb59666375ecb508ad840",
+          "IsLFS": true
+        },
+        "README.md": {
+          "Size": 676,
+          "Sha256": "bf2a920ab5fcf810cad1688afff8cf3e0d04d13f71934bbf6370b70a696576ac",
+          "Revision": "5012bb7fe660d3645c8bb59666375ecb508ad840",
+          "IsLFS": false
+        }
+      },
+      "verification": {
+        "same_repository_id": true,
+        "same_files_sizes_sha256_revisions": true,
+        "anonymous_readme_sha256_verified": true,
+        "anonymous_payload_sample_verified": "penny-the-corgi.zip",
+        "old_personal_route_http_status": 404
+      }
+    },
+    {
+      "repo_type": "model",
+      "old_repo_id": "VoyagerX/vgg16-imagenet1k",
+      "repo_id": "NVIDIA_Training_and_Certification/vgg16-imagenet1k",
+      "repository_numeric_id": 1599374,
+      "visibility": "public",
+      "license": "bsd-3-clause",
+      "total_bytes": 553442363,
+      "file_count": 6,
+      "files": {
+        ".gitattributes": {
+          "Size": 2075,
+          "Sha256": "247a3cfc672484dd40bdf07af0f83ee7a4457e9a995dadb47eedc36c630103b6",
+          "Revision": "adc9f29cae52a6973ef047760ce819635f53a956",
+          "IsLFS": false
+        },
+        "LICENSE": {
+          "Size": 1517,
+          "Sha256": "6502f676851cfe25f8af75531dfb32375b7325b73c37e7b43741fa422893e71d",
+          "Revision": "6a0d790fcb0c76eb810d7976e2dc4cff977b69b1",
+          "IsLFS": false
+        },
+        "README.md": {
+          "Size": 851,
+          "Sha256": "9d0ebb6d058cb97ed36cfcbfef9e191c838947ab605f02a6ef106d6f4a072a17",
+          "Revision": "6a0d790fcb0c76eb810d7976e2dc4cff977b69b1",
+          "IsLFS": false
+        },
+        "UPSTREAM_MODEL_CARD.md": {
+          "Size": 3649,
+          "Sha256": "187484ca838f7e66b978f82d5128241fb5f92f3f0a0ce6acbf2bca3ebc9988aa",
+          "Revision": "6a0d790fcb0c76eb810d7976e2dc4cff977b69b1",
+          "IsLFS": false
+        },
+        "manifest.json": {
+          "Size": 390,
+          "Sha256": "ef33e686d44705159d02f927abf6088ba846f97836f13a1205aae6af34841cbb",
+          "Revision": "6a0d790fcb0c76eb810d7976e2dc4cff977b69b1",
+          "IsLFS": false
+        },
+        "vgg16-397923af.pth": {
+          "Size": 553433881,
+          "Sha256": "397923af8e79cdbb6a7127f12361acd7a2f83e06b05044ddf496e83de57a5bf0",
+          "Revision": "6a0d790fcb0c76eb810d7976e2dc4cff977b69b1",
+          "IsLFS": true
+        }
+      },
+      "verification": {
+        "same_repository_id": true,
+        "same_files_sizes_sha256_revisions": true,
+        "anonymous_readme_sha256_verified": true,
+        "anonymous_payload_sample_verified": "vgg16-397923af.pth",
+        "old_personal_route_http_status": 404
+      }
+    },
+    {
+      "repo_type": "model",
+      "old_repo_id": "VoyagerX/bert-base-cased",
+      "repo_id": "NVIDIA_Training_and_Certification/bert-base-cased",
+      "repository_numeric_id": 1599367,
+      "visibility": "public",
+      "license": "apache-2.0",
+      "total_bytes": 436429850,
+      "file_count": 10,
+      "files": {
+        ".gitattributes": {
+          "Size": 2248,
+          "Sha256": "f50628594059e4617028a39cd843e8f7163a6d617e8a1368a91d31a4d101609f",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": false
+        },
+        "LICENSE": {
+          "Size": 11358,
+          "Sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": false
+        },
+        "README.md": {
+          "Size": 722,
+          "Sha256": "466dd85f3a3f9708342c3a3bd92b8956951809b8b3707eb37e7f67ad06c16b0b",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": false
+        },
+        "UPSTREAM_README.md": {
+          "Size": 8982,
+          "Sha256": "cc8e037bc719c4776a0f78b146b315df062f8172343bbde9af25792683059080",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": false
+        },
+        "config.json": {
+          "Size": 570,
+          "Sha256": "8b73abed2d67075fd3ec0f840aa53d9cccdc9169c04a7da135c07e721910ed74",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": false
+        },
+        "manifest.json": {
+          "Size": 890,
+          "Sha256": "2eac1f86cc7e7ce9bce942789346286f1e6d0e869c5aa60c262438b38628eaa1",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": false
+        },
+        "model.safetensors": {
+          "Size": 435755784,
+          "Sha256": "1d8bdcee6021e2c25f0325e84889b61c2eb26b843eef5659c247af138d64f050",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": true
+        },
+        "tokenizer.json": {
+          "Size": 435797,
+          "Sha256": "5b3360be30cdf39081153cf9d30bfb0503c011462fc9f77f097127c83ef0f4d9",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": true
+        },
+        "tokenizer_config.json": {
+          "Size": 49,
+          "Sha256": "0f6d13e6f4da6f9e24f22ada6bc3be571123d858d7c0c05a8a7cd55a9c23c2e8",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": false
+        },
+        "vocab.txt": {
+          "Size": 213450,
+          "Sha256": "eeaa9875b23b04b4c54ef759d03db9d1ba1554838f8fb26c5d96fa551df93d02",
+          "Revision": "eb569224c7062f93231d09026d14315be5262705",
+          "IsLFS": true
+        }
+      },
+      "verification": {
+        "same_repository_id": true,
+        "same_files_sizes_sha256_revisions": true,
+        "anonymous_readme_sha256_verified": true,
+        "anonymous_payload_sample_verified": "model.safetensors",
+        "old_personal_route_http_status": 404
+      }
+    },
+    {
+      "repo_type": "model",
+      "old_repo_id": "VoyagerX/bert-large-uncased-whole-word-masking-finetuned-squad",
+      "repo_id": "NVIDIA_Training_and_Certification/bert-large-uncased-whole-word-masking-finetuned-squad",
+      "repository_numeric_id": 1599370,
+      "visibility": "public",
+      "license": "apache-2.0",
+      "total_bytes": 1341342754,
+      "file_count": 10,
+      "files": {
+        ".gitattributes": {
+          "Size": 2523,
+          "Sha256": "8f865e945759b103fd2783b32c7d94c2c7b440b530751e8bc7a0baab39c853f3",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": false
+        },
+        "LICENSE": {
+          "Size": 11358,
+          "Sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": false
+        },
+        "README.md": {
+          "Size": 921,
+          "Sha256": "8d1678a6c6a3985af67d13e2af7abbc0687251b84578195049ca3eafe726af56",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": false
+        },
+        "UPSTREAM_README.md": {
+          "Size": 6240,
+          "Sha256": "4aa9163feabd0d2c7f2970023b694de32e8ea9ca555246deef48a9930e5d9775",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": false
+        },
+        "config.json": {
+          "Size": 443,
+          "Sha256": "dc3953cfef2b3cc3f44f2005937b7344a43b64cd2fca4ba5e7a1c51b46ce7daf",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": false
+        },
+        "manifest.json": {
+          "Size": 891,
+          "Sha256": "c496a448ef154b08fd8b295ff9cf8bbbe201278f091d3992bfda3daa91e1e2d1",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": false
+        },
+        "model.safetensors": {
+          "Size": 1340622760,
+          "Sha256": "169bdc9bce1f1d4557f47775c5c38db7d3282ca3c9a387ee5fbbc126adfe4fb6",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": true
+        },
+        "tokenizer.json": {
+          "Size": 466062,
+          "Sha256": "ce64fce797c24f68df90b40a3f74f579b336a493db14bd583fd520ea0d8c9a98",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": true
+        },
+        "tokenizer_config.json": {
+          "Size": 48,
+          "Sha256": "a025160ef0431f1a392f6f050c1310f4c5d9fb6f275932dbccba73c4d214bf10",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": false
+        },
+        "vocab.txt": {
+          "Size": 231508,
+          "Sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+          "Revision": "9c5a805d9d74cac9634a41fa34576d9113d38549",
+          "IsLFS": true
+        }
+      },
+      "verification": {
+        "same_repository_id": true,
+        "same_files_sizes_sha256_revisions": true,
+        "anonymous_readme_sha256_verified": true,
+        "anonymous_payload_sample_verified": "model.safetensors",
+        "old_personal_route_http_status": 404
+      }
+    }
+  ]
+}

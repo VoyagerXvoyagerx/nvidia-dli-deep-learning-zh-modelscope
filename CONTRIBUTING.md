@@ -28,7 +28,7 @@
 |---|---|
 | `index.ipynb` | 课程总览与初始化代码 |
 | `course_content/tutorials/*.ipynb` | 课程正文和练习，日常编辑的主要源文件 |
-| `course_content/tutorials/modelscope_assets.py` | 从 NVIDIA_Training_and_Certification 组织的 ModelScope 仓库获取模型、数据集并加载本地资源 |
+| `course_content/tutorials/modelscope_assets.py` | 复用魔搭已有模型仓库、从 NVIDIA_Training_and_Certification 组织仓库获取课程数据集，并加载本地资源 |
 | `course_content/tutorials/images/`、`data/` | 图片、辅助数据及代码 |
 | `course_content/html/` | 从 notebook 生成的静态 HTML 及本地样式、MathJax |
 | `build_html.py` | HTML 构建脚本 |

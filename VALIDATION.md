@@ -76,3 +76,10 @@ Gallery 已转移至 NVIDIA_Training_and_Certification；UUID 不变。新版 No
 ## 2026-10-23 资源所有者迁移核验
 
 六个仓库的数值 ID 和 50 个文件的远端 SHA-256、大小、Git 版本在转移前后保持一致；公开访问、README 实际下载校验及大文件载荷抽样通过，六个原个人路径均为 404。下载源现为 NVIDIA_Training_and_Certification。该核验不代表重新运行了上述历史前向推理或完整训练。完整结果见 [COURSE_ASSETS.md](COURSE_ASSETS.md) 和 [course_assets_manifest.json](course_assets_manifest.json)。
+
+## 2026-10-23：现有模型复用核验
+
+- 两个 google-bert 仓库所需五个文件与原组织备份的远端 SHA-256 完全相同：model.safetensors、config.json、tokenizer.json、tokenizer_config.json、vocab.txt；未重复下载完整 BERT 权重或重跑 BERT 前向。
+- 从魔搭 timm/vgg16.tv_in1k 实际下载完整 553,432,986 字节的 model.safetensors，计算 SHA-256 为 57b026918159a6bf9faf8405c3a551903768e7138989d9c6224a14227203fad8，与文件清单一致。
+- 使用真实 ModelScope SDK 与实际 helper 的完整缓存路径，将六个分类层参数映射/reshape 后 strict=True 加载进 TorchVision VGG16；本地 CPU torch 2.6.0+cpu / torchvision 0.21.0+cpu 对同一 happy_dog.jpg 前向，输出 (1, 1000)、类别 179，与历史烟测一致。未执行训练或当前云端镜像验证。
+- 发布脚本、网页与路径的 11 项单元检查通过。CI 继续执行网页浏览器检查并发布已有 Gallery。
