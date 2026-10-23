@@ -56,7 +56,6 @@ code,pre{font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",m
 .highlight{position:relative;width:100%;max-width:100%;min-width:0;background:#f6f8fa!important;border:1px solid #e1e8ec;border-radius:6px;margin:16px 0;overflow:hidden}.highlight pre,.notebook pre.code-scroll{display:block;width:100%;max-width:100%;min-width:0;margin:0;padding:48px 14px 16px;overflow-x:auto;overflow-y:hidden;white-space:pre;word-break:normal;overflow-wrap:normal;tab-size:4;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y;scrollbar-width:auto;scrollbar-color:#8298a6 #e8eef2;background:transparent}
 .output_area pre.code-scroll{padding:14px;background:#fbfcfd;border-left:3px solid #cfd8dc}.code-scroll code,.code-scroll span{white-space:pre;word-break:normal;overflow-wrap:normal}.code-scroll::-webkit-scrollbar,.table-scroll::-webkit-scrollbar{height:10px}.code-scroll::-webkit-scrollbar-track,.table-scroll::-webkit-scrollbar-track{background:#e8eef2}.code-scroll::-webkit-scrollbar-thumb,.table-scroll::-webkit-scrollbar-thumb{background:#8298a6;border-radius:6px}
 .copy{position:absolute;right:6px;top:5px;border:1px solid #dce3e8;border-radius:4px;padding:4px 10px;min-width:44px;min-height:36px;background:#fff;font-size:12px;color:#455a64;cursor:pointer;z-index:1}
-.scroll-controls{display:grid;grid-template-columns:1fr;gap:0;padding:4px 12px 8px;background:#edf3f7;border-top:1px solid #dce5eb;font-size:12px;color:#536b79}.scroll-controls[hidden]{display:none}.scroll-controls label{display:flex;justify-content:space-between;line-height:1.7}.code-scrollbar{display:block;width:100%;min-width:0;height:44px;margin:0;accent-color:#1976d2;cursor:ew-resize;touch-action:pan-y}
 .MathJax{max-width:100%;overflow-x:auto;overflow-y:hidden}.MathJax[display="true"]{display:block}.MathJax svg{max-width:none}.pager{display:flex;justify-content:space-between;gap:20px;margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:14px}.pager a{min-height:44px;display:flex;align-items:center;overflow-wrap:anywhere;min-width:0}.footer{margin-top:30px;color:var(--muted);font-size:12px;overflow-wrap:anywhere}.empty-search{font-size:13px;color:var(--muted);display:none}
 .drawer-head,.drawer-actions,.nav-backdrop{display:none}.nav-backdrop[hidden]{display:none!important}
 @media(min-width:1800px){main{margin-left:calc(280px + (100vw - 1800px)/2)}}
@@ -110,16 +109,8 @@ JS = r"""
   if(table.parentElement.classList.contains('table-scroll'))return;
   const wrapper=document.createElement('div');wrapper.className='table-scroll';wrapper.tabIndex=0;wrapper.setAttribute('role','region');wrapper.setAttribute('aria-label','表格，可左右滚动');table.before(wrapper);wrapper.append(table);
  });
- const refreshers=[];
- document.querySelectorAll('.notebook pre').forEach((pre,index)=>{
+ document.querySelectorAll('.notebook pre').forEach(pre=>{
   pre.classList.add('code-scroll');pre.tabIndex=0;pre.setAttribute('role','region');pre.setAttribute('aria-label','代码或输出内容，可左右滚动');
-  const controls=document.createElement('div');controls.className='scroll-controls';controls.hidden=true;
-  const label=document.createElement('label');const range=document.createElement('input');range.type='range';range.min='0';range.step='1';range.value='0';range.className='code-scrollbar';range.id='code-scroll-'+index;range.setAttribute('aria-label','横向滚动代码');label.htmlFor=range.id;
-  const hint=document.createElement('span');hint.textContent='左右滑动或拖动滑条查看完整内容';const position=document.createElement('span');position.setAttribute('aria-hidden','true');label.append(hint,position);controls.append(label,range);pre.after(controls);
-  const sync=()=>{range.value=String(pre.scrollLeft);position.textContent=Math.round(pre.scrollLeft/Math.max(1,pre.scrollWidth-pre.clientWidth)*100)+'%'};
-  const refresh=()=>{const max=Math.max(0,pre.scrollWidth-pre.clientWidth);controls.hidden=max<2;range.max=String(max);sync()};
-  range.addEventListener('input',()=>{pre.scrollLeft=Number(range.value);sync()});pre.addEventListener('scroll',sync,{passive:true});refreshers.push(refresh);
-  if(window.ResizeObserver)new ResizeObserver(refresh).observe(pre);
   const block=pre.closest('.highlight');
   if(block){
    const copy=document.createElement('button');copy.type='button';copy.className='copy';copy.textContent='复制';copy.setAttribute('aria-label','复制代码');copy.addEventListener('click',async()=>{
@@ -127,9 +118,7 @@ JS = r"""
     copy.textContent='已复制';setTimeout(()=>copy.textContent='复制',1200);
    });block.append(copy);
   }
-  refresh();
  });
- const refresh=()=>refreshers.forEach(fn=>fn());window.addEventListener('resize',refresh);document.fonts?.ready.then(refresh);window.addEventListener('load',refresh);
 })();
 """
 

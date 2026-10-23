@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前言与课程导航 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css?v=372e6073bb4d">
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前言与课程导航 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css?v=260e9869840d">
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
 <body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/index.ipynb" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
 <aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="active" href="index.html" aria-current=page>前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" >04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
@@ -42,16 +42,8 @@
   if(table.parentElement.classList.contains('table-scroll'))return;
   const wrapper=document.createElement('div');wrapper.className='table-scroll';wrapper.tabIndex=0;wrapper.setAttribute('role','region');wrapper.setAttribute('aria-label','表格，可左右滚动');table.before(wrapper);wrapper.append(table);
  });
- const refreshers=[];
- document.querySelectorAll('.notebook pre').forEach((pre,index)=>{
+ document.querySelectorAll('.notebook pre').forEach(pre=>{
   pre.classList.add('code-scroll');pre.tabIndex=0;pre.setAttribute('role','region');pre.setAttribute('aria-label','代码或输出内容，可左右滚动');
-  const controls=document.createElement('div');controls.className='scroll-controls';controls.hidden=true;
-  const label=document.createElement('label');const range=document.createElement('input');range.type='range';range.min='0';range.step='1';range.value='0';range.className='code-scrollbar';range.id='code-scroll-'+index;range.setAttribute('aria-label','横向滚动代码');label.htmlFor=range.id;
-  const hint=document.createElement('span');hint.textContent='左右滑动或拖动滑条查看完整内容';const position=document.createElement('span');position.setAttribute('aria-hidden','true');label.append(hint,position);controls.append(label,range);pre.after(controls);
-  const sync=()=>{range.value=String(pre.scrollLeft);position.textContent=Math.round(pre.scrollLeft/Math.max(1,pre.scrollWidth-pre.clientWidth)*100)+'%'};
-  const refresh=()=>{const max=Math.max(0,pre.scrollWidth-pre.clientWidth);controls.hidden=max<2;range.max=String(max);sync()};
-  range.addEventListener('input',()=>{pre.scrollLeft=Number(range.value);sync()});pre.addEventListener('scroll',sync,{passive:true});refreshers.push(refresh);
-  if(window.ResizeObserver)new ResizeObserver(refresh).observe(pre);
   const block=pre.closest('.highlight');
   if(block){
    const copy=document.createElement('button');copy.type='button';copy.className='copy';copy.textContent='复制';copy.setAttribute('aria-label','复制代码');copy.addEventListener('click',async()=>{
@@ -59,8 +51,6 @@
     copy.textContent='已复制';setTimeout(()=>copy.textContent='复制',1200);
    });block.append(copy);
   }
-  refresh();
  });
- const refresh=()=>refreshers.forEach(fn=>fn());window.addEventListener('resize',refresh);document.fonts?.ready.then(refresh);window.addEventListener('load',refresh);
 })();
 </script></body></html>

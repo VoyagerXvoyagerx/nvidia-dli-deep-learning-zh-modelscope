@@ -78,25 +78,19 @@ def check_page(page, frame, width, mobile):
             box = link.bounding_box()
             assert link.is_visible() and box['x'] + box['width'] <= width - 48
 
+    assert frame.locator('.scroll-controls, .code-scrollbar').count() == 0
+    assert '左右滑动或拖动滑条查看完整内容' not in frame.locator('body').inner_text()
     checked = 0
     for pre in frame.locator('.notebook pre').all():
         if not pre.evaluate('(el) => el.scrollWidth > el.clientWidth + 2'):
             continue
-        controls = pre.locator('xpath=following-sibling::*[1]')
-        slider = controls.locator('.code-scrollbar')
-        assert controls.is_visible(), 'Overflowing code must expose its drag control'
-        slider.press('End')
-        assert pre.evaluate('(el) => el.scrollLeft > 0'), 'Slider must scroll the actual code'
-        slider.press('Home')
-        assert pre.evaluate('(el) => el.scrollLeft < 2')
-        # Exercise an actual pointer drag, not a synthetic value assignment.
-        box = slider.bounding_box()
-        page.mouse.move(box['x'] + 8, box['y'] + box['height']/2)
-        page.mouse.down()
-        page.mouse.move(box['x'] + box['width'] - 8, box['y'] + box['height']/2, steps=8)
-        page.mouse.up()
-        assert pre.evaluate('(el) => el.scrollLeft > 0'), 'Scrollbar drag failed'
-        slider.press('Home')
+        pre.scroll_into_view_if_needed()
+        pre.evaluate('(el) => { el.scrollLeft = 0; }')
+        pre.hover()
+        page.mouse.wheel(300, 0)
+        frame.wait_for_function('(el) => el.scrollLeft > 0', arg=pre.element_handle())
+        assert pre.evaluate('(el) => el.scrollLeft > 0'), 'Native horizontal scrolling failed'
+        pre.evaluate('(el) => { el.scrollLeft = 0; }')
         checked += 1
         if checked == 2:
             break
@@ -109,8 +103,7 @@ def check_touch(page, frame):
         if not pre.evaluate('(el) => el.scrollWidth > el.clientWidth + 40'):
             continue
         pre.scroll_into_view_if_needed()
-        slider = pre.locator('xpath=following-sibling::*[1]').locator('input')
-        slider.press('Home')
+        pre.evaluate('(el) => { el.scrollLeft = 0; }')
         pre.scroll_into_view_if_needed()
         box = pre.bounding_box()
         cdp = page.context.new_cdp_session(page)
