@@ -28,7 +28,7 @@
 |---|---|
 | `index.ipynb` | 课程总览与初始化代码 |
 | `course_content/tutorials/*.ipynb` | 课程正文和练习，日常编辑的主要源文件 |
-| `course_content/tutorials/modelscope_assets.py` | 复用魔搭已有模型仓库、从 NVIDIA_Training_and_Certification 组织仓库获取课程数据集，并加载本地资源 |
+| `course_content/tutorials/modelscope_assets.py` | 复用魔搭已有模型仓库、从 AI-ModelScope 组织仓库获取课程数据集，并加载本地资源 |
 | `course_content/tutorials/images/`、`data/` | 图片、辅助数据及代码 |
 | `course_content/html/` | 从 notebook 生成的静态 HTML 及本地样式、MathJax |
 | `build_html.py` | HTML 构建脚本 |
@@ -133,3 +133,7 @@ python scripts/check_mobile.py course_content/html --screenshots /tmp/mobile-qa
 截至 2026-10-23，生产 Gallery 容器尚不支持移动端预览，预发环境刚支持。实际嵌入验收应使用 [预发课程页面](https://pre.modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope)，检查移动端、嵌入与全屏。预发不可访问时记录具体错误，不能把本地 iframe 测试当作平台验收通过。内容发布仍使用生产 GitHub 同步配置；不要将生产 token 发往预发。
 
 2026-10-23：用户已在预发环境确认移动端预览正常。后续改动继续先运行本地与 CI 的回归检查；该反馈不代表生产环境已上线相同能力。
+
+## 2026-10-27 资源与下载链接
+
+Gallery 仍属于 NVIDIA_Training_and_Certification；数据集改用 AI-ModelScope。MNIST 复用现有 AI-ModelScope/MNIST，读取 raw/MNIST.tar.gz 中四个与原课相同的 gzip 文件；ASL 与柯基保留原有文件结构。模型继续复用 timm 和 google-bert。首页 PPTX 链接使用 GitHub `/raw/refs/heads/main/course_content/slides/partN.pptx` 下载地址，保留新标签页规则。

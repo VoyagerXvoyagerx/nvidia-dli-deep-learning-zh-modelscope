@@ -83,3 +83,10 @@ Gallery 已转移至 NVIDIA_Training_and_Certification；UUID 不变。新版 No
 - 从魔搭 timm/vgg16.tv_in1k 实际下载完整 553,432,986 字节的 model.safetensors，计算 SHA-256 为 57b026918159a6bf9faf8405c3a551903768e7138989d9c6224a14227203fad8，与文件清单一致。
 - 使用真实 ModelScope SDK 与实际 helper 的完整缓存路径，将六个分类层参数映射/reshape 后 strict=True 加载进 TorchVision VGG16；本地 CPU torch 2.6.0+cpu / torchvision 0.21.0+cpu 对同一 happy_dog.jpg 前向，输出 (1, 1000)、类别 179，与历史烟测一致。未执行训练或当前云端镜像验证。
 - 发布脚本、网页与路径的 11 项单元检查通过。CI 继续执行网页浏览器检查并发布已有 Gallery。
+
+## 2026-10-27：AI-ModelScope 数据源与 GitHub PPT 下载
+
+- MNIST 复用既有 AI-ModelScope/MNIST。实际下载其 raw/MNIST.tar.gz 并计算 SHA-256；内部四个 gzip 的实际 SHA-256 与旧组织镜像一致。通过真实 ModelScope SDK 调用修改后的 prepare_mnist，校验 IDX 头部为 60,000/10,000 张 28×28 图像及对应标签，首个训练标签为 5；完整缓存再运行不调用下载器。
+- ASL-HG、柯基通过所有者转移进入 AI-ModelScope，仓库数值 ID、16 文件路径/大小/远端 SHA-256/Git 版本一致，匿名 README 下载实际摘要匹配；旧组织路径为 404。
+- README 按用户附件替换，仅更新六个资源 repo_id；Notebook 保留最新 VGG16 safetensors 参数映射及 Gallery 持久化目录。
+- 11 项单元检查通过，包括首页六个 PPTX 的 GitHub raw URL、新标签页和原 Notebook 不变校验。构建不执行课程训练；未重跑模型前向或云端完整训练。

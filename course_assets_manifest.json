@@ -1,79 +1,71 @@
 {
-  "date": "2026-10-23",
-  "operation": "reuse_existing_modelscope_models",
+  "date": "2026-10-27",
+  "operation": "reuse_existing_mnist_and_transfer_course_datasets_to_AI-ModelScope",
   "historical_transfer": "history/asset-transfer-2026-10-23.json",
   "repositories": [
     {
       "repo_type": "dataset",
-      "old_repo_id": "VoyagerX/mnist",
-      "repo_id": "NVIDIA_Training_and_Certification/mnist",
-      "repository_numeric_id": 222462,
+      "old_repo_id": "NVIDIA_Training_and_Certification/mnist",
+      "repo_id": "AI-ModelScope/MNIST",
+      "repository_numeric_id": 25016,
       "visibility": "public",
-      "license": "mit",
-      "total_bytes": 11600109,
-      "file_count": 8,
+      "license": "Apache License 2.0 (repository metadata); original course source notes MIT",
+      "total_bytes": 11872361,
+      "file_count": 6,
       "files": {
         ".gitattributes": {
-          "Size": 3818,
-          "Sha256": "53b61e55812199dea8ffe90c52485e2ec5e5bdae1eed92cab20063003da14e29",
-          "Revision": "dee2c94eb1de96bb9590b682661e52189948d2af",
+          "Size": 3437,
+          "Sha256": "4a859126820cca3b5ee163f89b8bd547410d2a23ff52e850cc74498b788aa00d",
+          "Revision": "86f58470a5fde54151275cd0311ff0df64fd8e61",
           "IsLFS": false
         },
-        "LICENSE": {
-          "Size": 203,
-          "Sha256": "fc459f3b02342b8bece74804982cd5e936980488699d7aa3088e08871f373174",
-          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
+        "dsdl/dsdl_Cls_full.zip": {
+          "Size": 267813,
+          "Sha256": "375f99c9d1b2787e8a3e381013418828c2efe5306f6b8cc6fbdc585542a8f5ed",
+          "Revision": "e2bebe1f43c0f2cebdeda71916536f285ae28f90",
+          "IsLFS": true
+        },
+        "metafile.yaml": {
+          "Size": 315,
+          "Sha256": "510b00d0fc2cfa98bc0d918fad09145bd54ef5687691e228c204b8f91836f7f2",
+          "Revision": "e2bebe1f43c0f2cebdeda71916536f285ae28f90",
           "IsLFS": false
         },
-        "manifest.json": {
-          "Size": 693,
-          "Sha256": "24bdf9896b717ff771f673a2b7ed7747b6464c92d5e245df9ddcf266338770e6",
-          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
-          "IsLFS": false
+        "raw/MNIST.tar.gz": {
+          "Size": 11597129,
+          "Sha256": "0c238d89673aa552c96e688f8f2d0e2c1fd6001d5feca288ff66811030e6f790",
+          "Revision": "e2bebe1f43c0f2cebdeda71916536f285ae28f90",
+          "IsLFS": true
         },
         "README.md": {
-          "Size": 673,
-          "Sha256": "42874f768e8573aa2e2f4d27d0795329ecd5470c5c44056ff6aed036dd2f9252",
-          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
+          "Size": 823,
+          "Sha256": "7042e4e25940f5d6f24a2dbb2eed67499635d3c0ed7e2648054215f5444cee70",
+          "Revision": "e2bebe1f43c0f2cebdeda71916536f285ae28f90",
           "IsLFS": false
         },
-        "raw/t10k-images-idx3-ubyte.gz": {
-          "Size": 1648877,
-          "Sha256": "8d422c7b0a1c1c79245a5bcf07fe86e33eeafee792b84584aec276f5a2dbc4e6",
-          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
-          "IsLFS": true
-        },
-        "raw/t10k-labels-idx1-ubyte.gz": {
-          "Size": 4542,
-          "Sha256": "f7ae60f92e00ec6debd23a6088c31dbd2371eca3ffa0defaefb259924204aec6",
-          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
-          "IsLFS": true
-        },
-        "raw/train-images-idx3-ubyte.gz": {
-          "Size": 9912422,
-          "Sha256": "440fcabf73cc546fa21475e81ea370265605f56be210a4024d2ca8f203523609",
-          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
-          "IsLFS": true
-        },
-        "raw/train-labels-idx1-ubyte.gz": {
-          "Size": 28881,
-          "Sha256": "3552534a0a558bbed6aed32b30c495cca23d567ec52cac8be1a0730e8010255c",
-          "Revision": "2c8c8b978a71b54ca4301a0cbbf2557cfbd2a959",
-          "IsLFS": true
+        "dsdl/README.md": {
+          "Size": 2844,
+          "Sha256": "9edf07e90c841719e8c6867e6814da8231b8ecf6dde301923ff10bf0f967a863",
+          "Revision": "e2bebe1f43c0f2cebdeda71916536f285ae28f90",
+          "IsLFS": false
         }
       },
       "verification": {
-        "same_repository_id": true,
-        "same_files_sizes_sha256_revisions": true,
-        "anonymous_readme_sha256_verified": true,
-        "anonymous_payload_sample_verified": "raw/train-images-idx3-ubyte.gz",
-        "old_personal_route_http_status": 404
-      }
+        "full_archive_download_sha256": "0c238d89673aa552c96e688f8f2d0e2c1fd6001d5feca288ff66811030e6f790",
+        "internal_gzip_files_match_original": {
+          "MNIST/t10k-images-idx3-ubyte.gz": "8d422c7b0a1c1c79245a5bcf07fe86e33eeafee792b84584aec276f5a2dbc4e6",
+          "MNIST/t10k-labels-idx1-ubyte.gz": "f7ae60f92e00ec6debd23a6088c31dbd2371eca3ffa0defaefb259924204aec6",
+          "MNIST/train-images-idx3-ubyte.gz": "440fcabf73cc546fa21475e81ea370265605f56be210a4024d2ca8f203523609",
+          "MNIST/train-labels-idx1-ubyte.gz": "3552534a0a558bbed6aed32b30c495cca23d567ec52cac8be1a0730e8010255c"
+        },
+        "real_sdk_prepare_mnist": "60000 train, 10000 test; first label 5; cache hit without network"
+      },
+      "management": "reuse_existing_repository"
     },
     {
       "repo_type": "dataset",
-      "old_repo_id": "VoyagerX/asl-hg",
-      "repo_id": "NVIDIA_Training_and_Certification/asl-hg",
+      "old_repo_id": "NVIDIA_Training_and_Certification/asl-hg",
+      "repo_id": "AI-ModelScope/asl-hg",
       "repository_numeric_id": 222466,
       "visibility": "public",
       "license": "cc-by-4.0",
@@ -151,14 +143,13 @@
         "same_repository_id": true,
         "same_files_sizes_sha256_revisions": true,
         "anonymous_readme_sha256_verified": true,
-        "anonymous_payload_sample_verified": "data/train-00000-of-00001.parquet",
-        "old_personal_route_http_status": 404
+        "old_route_http_status": 404
       }
     },
     {
       "repo_type": "dataset",
-      "old_repo_id": "VoyagerX/penny-the-corgi",
-      "repo_id": "NVIDIA_Training_and_Certification/penny-the-corgi",
+      "old_repo_id": "NVIDIA_Training_and_Certification/penny-the-corgi",
+      "repo_id": "AI-ModelScope/penny-the-corgi",
       "repository_numeric_id": 222463,
       "visibility": "public",
       "license": "cc-by-4.0",
@@ -200,8 +191,7 @@
         "same_repository_id": true,
         "same_files_sizes_sha256_revisions": true,
         "anonymous_readme_sha256_verified": true,
-        "anonymous_payload_sample_verified": "penny-the-corgi.zip",
-        "old_personal_route_http_status": 404
+        "old_route_http_status": 404
       }
     },
     {
@@ -427,5 +417,6 @@
         "bert_required_five_files_sha256_equal_previous_mirror": true
       }
     }
-  ]
+  ],
+  "historical_dataset_transfer": "history/dataset-transfer-2026-10-27.json"
 }

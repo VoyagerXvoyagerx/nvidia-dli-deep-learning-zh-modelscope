@@ -1,0 +1,124 @@
+{
+  "operation": "ownership_transfer",
+  "date": "2026-10-27",
+  "repositories": [
+    {
+      "old_repo_id": "NVIDIA_Training_and_Certification/asl-hg",
+      "repo_id": "AI-ModelScope/asl-hg",
+      "repository_numeric_id": 222466,
+      "files": {
+        ".gitattributes": {
+          "Size": 3904,
+          "Sha256": "6eaaf21d88fcbe3e8d9c4d99b76ebf80c717ef1d8f42c4f2c0b39c18ddae0e8b",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": false
+        },
+        "data/.train-00000-of-00001.parquet.part.jS1RCP": {
+          "Size": 12320768,
+          "Sha256": "4a6ca3997c702ae60c96617b2685e435df989876386c3d644c5e569e9fdee3b8",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": true
+        },
+        "dataset_infos.json": {
+          "Size": 203,
+          "Sha256": "be79c185ff454a31678642d592eeb1f764c603a51483a52c3501a734f4d0819d",
+          "Revision": "c23557e8d85eb88b9a5b88486e5fed42db3c9097",
+          "IsLFS": false
+        },
+        "label_mapping.json": {
+          "Size": 717,
+          "Sha256": "3ca8820f5326f9f83d7d470f4904ff43e02a27baa2048bb8fc7f61b1163824da",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": false
+        },
+        "LICENSE": {
+          "Size": 18657,
+          "Sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": false
+        },
+        "manifest.json": {
+          "Size": 829,
+          "Sha256": "7ec08655137827a66b3f9b3df2d6030784a81447097778d2c96e9e737af7add6",
+          "Revision": "95c6c33de712bd5243a766a83abc01ab27e0947a",
+          "IsLFS": false
+        },
+        "README.md": {
+          "Size": 920,
+          "Sha256": "fd03ebd4b84a7e0f04fb8c287ed7d1b6cede60e46acd5f6cb1caca0568b2911e",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": false
+        },
+        "csv/sign_mnist_train.csv": {
+          "Size": 56625762,
+          "Sha256": "e0588136caf8237ccbd640dccd47e722a5bb84236924e87066ec844140bf06f2",
+          "Revision": "95c6c33de712bd5243a766a83abc01ab27e0947a",
+          "IsLFS": true
+        },
+        "csv/sign_mnist_valid.csv": {
+          "Size": 14152765,
+          "Sha256": "4aba3fb615019445ebca7ddd266f3b9c8b515b2b7f0084afe7482462a62a87c7",
+          "Revision": "95c6c33de712bd5243a766a83abc01ab27e0947a",
+          "IsLFS": true
+        },
+        "data/test-00000-of-00001.parquet": {
+          "Size": 74646896,
+          "Sha256": "05074c1512b3922e893578f8bcf81a22f5ae69b96ce983a2edc3cd4bf21bcb11",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": true
+        },
+        "data/train-00000-of-00001.parquet": {
+          "Size": 300583444,
+          "Sha256": "a7636b8d71f6351d86f63e47923b718b105393ce4c9bb8c6eeed5a11c214e7ee",
+          "Revision": "cd80efd8333963493b0208c4e921fcd8a2519b0a",
+          "IsLFS": true
+        }
+      },
+      "same_files_sizes_sha256_revisions": true,
+      "anonymous_readme_sha256_verified": true,
+      "old_route_http_status": 404,
+      "public": true
+    },
+    {
+      "old_repo_id": "NVIDIA_Training_and_Certification/penny-the-corgi",
+      "repo_id": "AI-ModelScope/penny-the-corgi",
+      "repository_numeric_id": 222463,
+      "files": {
+        ".gitattributes": {
+          "Size": 3818,
+          "Sha256": "53b61e55812199dea8ffe90c52485e2ec5e5bdae1eed92cab20063003da14e29",
+          "Revision": "17952978bac3a2c79b6fa8c376fc36cd0eaf692a",
+          "IsLFS": false
+        },
+        "LICENSE": {
+          "Size": 18657,
+          "Sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+          "Revision": "5012bb7fe660d3645c8bb59666375ecb508ad840",
+          "IsLFS": false
+        },
+        "manifest.json": {
+          "Size": 258,
+          "Sha256": "f62253051b979b578c5cee163a9afd551b816422e6209dce2f564a524dac4af7",
+          "Revision": "5012bb7fe660d3645c8bb59666375ecb508ad840",
+          "IsLFS": false
+        },
+        "penny-the-corgi.zip": {
+          "Size": 209581039,
+          "Sha256": "d3b78c1222975968c1b90b0057872531b0a6e2b5d62a2f435c53bf6eefc96332",
+          "Revision": "5012bb7fe660d3645c8bb59666375ecb508ad840",
+          "IsLFS": true
+        },
+        "README.md": {
+          "Size": 676,
+          "Sha256": "bf2a920ab5fcf810cad1688afff8cf3e0d04d13f71934bbf6370b70a696576ac",
+          "Revision": "5012bb7fe660d3645c8bb59666375ecb508ad840",
+          "IsLFS": false
+        }
+      },
+      "same_files_sizes_sha256_revisions": true,
+      "anonymous_readme_sha256_verified": true,
+      "old_route_http_status": 404,
+      "public": true
+    }
+  ]
+}

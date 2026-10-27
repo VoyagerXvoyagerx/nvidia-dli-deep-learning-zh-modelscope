@@ -10,12 +10,12 @@
 | 范围 | 原版 | 魔搭适配版 |
 |---|---|---|
 | 运行环境 | 原仓库部署及依赖安装流程 | 使用用户提供的 ModelScope Notebook 镜像预装库；所有 notebook 均无需 pip 安装或依赖降级 |
-| 数据下载 | MNIST 从 TorchVision 外部下载站；ASL 从 Hugging Face；柯基从 Kaggle | 三个数据集统一从 NVIDIA_Training_and_Certification 组织的公开 ModelScope 仓库下载，保留原始来源和许可说明 |
+| 数据下载 | MNIST 从 TorchVision 外部下载站；ASL 从 Hugging Face；柯基从 Kaggle | 三个数据集统一从 AI-ModelScope 组织的公开 ModelScope 仓库下载，保留原始来源和许可说明 |
 | 模型下载 | VGG16 由 TorchVision 下载权重，BERT 通过 Hugging Face 模型标识加载 | VGG16 从 ModelScope 获取原始权重后加载；BERT 从 ModelScope 下载到本地，使用 `local_files_only=True` |
 | 资源辅助代码 | 各课程分别触发外部下载 | 新增 `modelscope_assets.py`，负责按需下载、缓存、解压、完整性检查，以及 HF 离线设置；无外部备用下载路径 |
 | 工作目录 | 相对路径依赖 Notebook 的当前工作目录 | 所有 11 个 notebook 检查固定目录 `/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials/`，不存在时从公开灵感流下载整个 `course_content`，保存到 `/mnt/workspace/fundamentals-of-deep-learning-zh/`；随后切换到 `tutorials/` 并加入 Python 导入路径 |
 | 初始化与导入 | 先前适配版含统一安装、版本检查和全量辅助函数导入 | 删除安装单元格、PyTorch/TorchVision 版本断言、无关导入及重复导入；每个课程仅导入实际使用的辅助函数 |
-| 开头与平台说明 | NVIDIA 原版标题；02 中介绍 Hugging Face Hub | 所有 11 个 notebook 开头统一为用户指定的 NVIDIA DLI at ModelScope Notebook 介绍；02 改为介绍 ModelScope 和 NVIDIA_Training_and_Certification/asl-hg |
+| 开头与平台说明 | NVIDIA 原版标题；02 中介绍 Hugging Face Hub | 所有 11 个 notebook 开头统一为用户指定的 NVIDIA DLI at ModelScope Notebook 介绍；02 改为介绍 ModelScope 和 AI-ModelScope/asl-hg |
 | Notebook 许可证单元格 | 独立 SPDX 注释单元格 | 按用户要求删除；仓库 `LICENSE`、`LICENSES/`、第三方归属及资源许可保留 |
 | 执行兼容性 | 原版部分代码直接依赖 CUDA、默认编译模型 | 保留 CPU/GPU 设备选择；`maybe_compile` 默认使用普通执行，设置 `DLI_USE_TORCH_COMPILE=1` 可启用编译 |
 | 课程完整性 | 课程讲解、训练任务、练习和配套材料 | 保留其余正文、学习任务、FIXME/TODO 练习、图片、辅助代码和六份 PPT；未填写练习答案或缩短训练 |
@@ -42,9 +42,9 @@
 
 | 类型 | ModelScope 仓库 | 原始来源 |
 |---|---|---|
-| MNIST | [NVIDIA_Training_and_Certification/mnist](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/mnist) | TorchVision 使用的原始 MNIST IDX 文件 |
-| ASL | [NVIDIA_Training_and_Certification/asl-hg](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/asl-hg) | `juanjodurillo/asl-hg`；原始 ASL-HG 数据记录 DOI 10.17632/j4y5w2c8w9.1 |
-| 柯基 | [NVIDIA_Training_and_Certification/penny-the-corgi](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/penny-the-corgi) | Kaggle `danielledetering/penny-the-corgi`，版本 1 |
+| MNIST | [AI-ModelScope/MNIST](https://modelscope.cn/datasets/AI-ModelScope/MNIST) | TorchVision 使用的原始 MNIST IDX 文件 |
+| ASL | [AI-ModelScope/asl-hg](https://modelscope.cn/datasets/AI-ModelScope/asl-hg) | `juanjodurillo/asl-hg`；原始 ASL-HG 数据记录 DOI 10.17632/j4y5w2c8w9.1 |
+| 柯基 | [AI-ModelScope/penny-the-corgi](https://modelscope.cn/datasets/AI-ModelScope/penny-the-corgi) | Kaggle `danielledetering/penny-the-corgi`，版本 1 |
 | VGG16 | [timm/vgg16.tv_in1k](https://modelscope.cn/models/timm/vgg16.tv_in1k) | 魔搭已有 `timm/vgg16.tv_in1k` 的 safetensors 权重；映射六个分类层参数并 reshape，保持 TorchVision VGG16 接口 |
 | BERT 掩码模型 | [google-bert/bert-base-cased](https://modelscope.cn/models/google-bert/bert-base-cased) | Google BERT `bert-base-cased` |
 | BERT 问答模型 | [google-bert/bert-large-uncased-whole-word-masking-finetuned-squad](https://modelscope.cn/models/google-bert/bert-large-uncased-whole-word-masking-finetuned-squad) | Google BERT SQuAD 问答权重 |
@@ -90,3 +90,7 @@ Gallery 已转移至 NVIDIA_Training_and_Certification；UUID 不变。新版 No
 ## 2026-10-23：复用现有魔搭模型
 
 优先检查 HF 同 repo_id 的魔搭模型；两个 BERT 使用 `google-bert`，VGG16 使用 `timm/vgg16.tv_in1k`。数据集继续使用组织仓库。BERT 所需的每库五个文件 SHA-256 与原备份一致；VGG16 格式转换的前向核验见 VALIDATION.md。此前的组织迁移段落保留为历史记录，当前资源以 COURSE_ASSETS.md 为准。
+
+## 2026-10-27：数据集迁至 AI-ModelScope、README 与 PPT 下载
+
+三个数据集下载入口改到 AI-ModelScope；MNIST 复用已存在仓库的 raw/MNIST.tar.gz，四个内部 gzip 文件的实际 SHA-256 与原备份完全相同，helper 只读取预期成员并写入 TorchVision IDX 目录。ASL 与柯基保留原课程文件格式；模型继续复用 timm/google-bert，VGG16 参数映射不回退。README 按用户附件整体替换，仅更新六个资源仓库 ID。PPTX 网页链接改用 GitHub raw 下载路由。历史转移段落仅为历史记录，当前资源以 COURSE_ASSETS.md 为准。

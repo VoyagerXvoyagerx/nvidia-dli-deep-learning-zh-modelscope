@@ -1,12 +1,12 @@
 # NVIDIA DLI 当前资源清单
 
-课程数据集保留在 NVIDIA_Training_and_Certification；模型直接复用魔搭已存在的同名 HF 仓库，不再依赖组织模型副本。
+课程数据集来自 AI-ModelScope；模型直接复用魔搭已存在的同名 HF 仓库，不再依赖组织模型副本。
 
 | 类型 | 当前下载仓库 | 用途 | 许可 |
 |---|---|---|---|
-| 数据集 | [NVIDIA_Training_and_Certification/mnist](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/mnist) | 01：手写数字，原始 IDX | MIT |
-| 数据集 | [NVIDIA_Training_and_Certification/asl-hg](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/asl-hg) | 02–04：课程所需 CSV、24 类映射与原始数据 | CC-BY-4.0 |
-| 数据集 | [NVIDIA_Training_and_Certification/penny-the-corgi](https://modelscope.cn/datasets/NVIDIA_Training_and_Certification/penny-the-corgi) | 05b：202 张图像 | CC-BY-4.0 |
+| 数据集 | [AI-ModelScope/MNIST](https://modelscope.cn/datasets/AI-ModelScope/MNIST) | 01：手写数字，复用现有 raw/MNIST.tar.gz 中相同的 IDX gzip 文件 | MIT |
+| 数据集 | [AI-ModelScope/asl-hg](https://modelscope.cn/datasets/AI-ModelScope/asl-hg) | 02–04：课程所需 CSV、24 类映射与原始数据 | CC-BY-4.0 |
+| 数据集 | [AI-ModelScope/penny-the-corgi](https://modelscope.cn/datasets/AI-ModelScope/penny-the-corgi) | 05b：202 张图像 | CC-BY-4.0 |
 | 模型 | [timm/vgg16.tv_in1k](https://modelscope.cn/models/timm/vgg16.tv_in1k) | 05a、05b：TorchVision VGG16 ImageNet 权重 | BSD-3-Clause |
 | 模型 | [google-bert/bert-base-cased](https://modelscope.cn/models/google-bert/bert-base-cased) | 06：掩码语言模型 | Apache-2.0 |
 | 模型 | [google-bert/bert-large-uncased-whole-word-masking-finetuned-squad](https://modelscope.cn/models/google-bert/bert-large-uncased-whole-word-masking-finetuned-squad) | 06：问答模型 | Apache-2.0 |
@@ -23,3 +23,7 @@
 此前 3 个数据集、3 个模型共 50 文件、3,010,774,389 字节由 VoyagerX 转移至组织，数值 ID、远端摘要、大小和 Git 版本保留。原个人路径为 404；当时没有执行 DELETE。该历史快照保留在 [history/asset-transfer-2026-10-23.json](history/asset-transfer-2026-10-23.json)，其中旧模型路径不再是课程依赖。
 
 组织重复模型的清理由用户单独授权，在替代代码完成发布与回读核验后执行；三个组织数据集保留。
+
+## 2026-10-27 资源更新
+
+MNIST 复用魔搭现有 AI-ModelScope/MNIST；该仓库标注 Apache-2.0，原数据来源许可说明沿用课程 README。实际下载的 raw/MNIST.tar.gz 为 11,597,129 字节，SHA-256：0c238d89673aa552c96e688f8f2d0e2c1fd6001d5feca288ff66811030e6f790。包内四个 gzip 文件与原组织备份的实际摘要完全一致，因此无需创建重复 MNIST 镜像。ASL-HG 与柯基通过所有者转移进入 AI-ModelScope，逐文件校验记录见本次迁移清单。

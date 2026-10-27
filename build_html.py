@@ -14,7 +14,7 @@ import mimetypes
 import re
 from base64 import b64encode
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import quote, unquote, urlsplit
 
 import nbformat
 from bs4 import BeautifulSoup
@@ -157,8 +157,9 @@ def notebook_body(path: Path, destinations: dict[Path, str], output: Path):
         if target in destinations:
             link["href"] = destinations[target] + fragment
         elif target.is_relative_to(ROOT):
-            # Repository-only references (slides, notices, validation) still work.
-            link["href"] = (GALLERY + "/files/" if target.suffix.lower() in {".ppt", ".pptx"} else GITHUB + "/blob/main/") + target.relative_to(ROOT).as_posix() + fragment
+            # Slides use GitHub's raw download route; notices use its file viewer.
+            prefix = GITHUB + ("/raw/refs/heads/main/" if target.suffix.lower() in {".ppt", ".pptx"} else "/blob/main/")
+            link["href"] = prefix + quote(target.relative_to(ROOT).as_posix(), safe="/") + fragment
     toc = []
     for i, heading in enumerate(soup.find_all(["h1", "h2", "h3"])):
         if not heading.get("id"):
@@ -188,7 +189,7 @@ def build(output: Path):
                 for p in paths if p != path
             ) + '</ul>'
             body += '<h2>课程讲义（PPT）</h2><ul>' + ''.join(
-                f'<li><a href="{GALLERY}/files/{slide.relative_to(ROOT).as_posix()}" target="_blank" rel="noopener noreferrer">{html.escape(slide.name)}</a></li>'
+                f'<li><a href="{GITHUB}/raw/refs/heads/main/{quote(slide.relative_to(ROOT).as_posix(), safe="/")}" target="_blank" rel="noopener noreferrer">{html.escape(slide.name)}</a></li>'
                 for slide in sorted((ROOT / 'course_content/slides').glob('*.pptx'))
             ) + '</ul>'
         chapters = "".join(f'<li><a class="{"active" if p == path else ""}" href="{destinations[p.resolve()]}" {"aria-current=page" if p == path else ""}>{html.escape(TITLES.get(p.stem,p.stem))}</a></li>' for p in paths)

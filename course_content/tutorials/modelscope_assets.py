@@ -5,14 +5,15 @@ os.environ['TRANSFORMERS_OFFLINE'] = '1'
 from pathlib import Path
 import gzip
 import shutil
+import tarfile
 import zipfile
 from modelscope.hub.snapshot_download import dataset_snapshot_download, snapshot_download
 
 ASSET_DIR = Path(os.environ.get('DLI_ASSET_DIR', './tutorial_assets')).resolve()
 REPOS = {
-    'mnist': 'NVIDIA_Training_and_Certification/mnist',
-    'asl': 'NVIDIA_Training_and_Certification/asl-hg',
-    'corgi': 'NVIDIA_Training_and_Certification/penny-the-corgi',
+    'mnist': 'AI-ModelScope/MNIST',
+    'asl': 'AI-ModelScope/asl-hg',
+    'corgi': 'AI-ModelScope/penny-the-corgi',
     'vgg16': 'timm/vgg16.tv_in1k',
     'bert-base-cased': 'google-bert/bert-base-cased',
     'bert-large-uncased-whole-word-masking-finetuned-squad':
@@ -37,14 +38,19 @@ def prepare_mnist(data_dir='data'):
     raw = Path(data_dir) / 'MNIST' / 'raw'
     if all((raw / name).is_file() for name in names):
         return Path(data_dir)
-    source = _fetch('datasets', REPOS['mnist'], ['raw/*.gz'],
-                    ['raw/' + name + '.gz' for name in names])
+    source = _fetch('datasets', REPOS['mnist'], ['raw/MNIST.tar.gz'],
+                    ['raw/MNIST.tar.gz'])
     raw.mkdir(parents=True, exist_ok=True)
-    for name in names:
-        if not (raw / name).is_file():
-            with gzip.open(source / 'raw' / (name + '.gz'), 'rb') as stream:
-                with open(raw / name, 'wb') as output:
-                    shutil.copyfileobj(stream, output)
+    with tarfile.open(source / 'raw/MNIST.tar.gz', 'r:gz') as archive:
+        for name in names:
+            if not (raw / name).is_file():
+                # Read only the expected members; do not extract arbitrary paths.
+                with archive.extractfile('MNIST/' + name + '.gz') as compressed:
+                    with gzip.GzipFile(fileobj=compressed) as stream:
+                        temporary = raw / (name + '.tmp')
+                        with temporary.open('wb') as output:
+                            shutil.copyfileobj(stream, output)
+                temporary.replace(raw / name)
     return Path(data_dir)
 
 def prepare_asl(data_dir='data/asl_data'):

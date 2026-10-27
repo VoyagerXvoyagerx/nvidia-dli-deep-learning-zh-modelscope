@@ -32,3 +32,10 @@ class HtmlTests(unittest.TestCase):
                     self.assertIn('NVIDIA_Training_and_Certification', links[0]['href'])
                     self.assertTrue(soup.select_one('article').get_text(strip=True))
                     self.assertEqual(path.read_bytes(), originals[path])
+                    if path.stem == 'index':
+                        slides = soup.select('article a[href$=".pptx"]')
+                        self.assertEqual(len(slides), 6)
+                        for slide in slides:
+                            self.assertTrue(slide['href'].startswith(build_html.GITHUB + '/raw/refs/heads/main/course_content/slides/'))
+                            self.assertEqual(slide.get('target'), '_blank')
+                            self.assertIn('noopener', slide.get('rel', []))
