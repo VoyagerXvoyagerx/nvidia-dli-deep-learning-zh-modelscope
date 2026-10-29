@@ -8,7 +8,7 @@ NVIDIA 开源课程面向个人学习者、教育机构、企业及开发者社�
 
 原始课程：[深度学习基础](https://github.com/NVDLI/fundamentals-of-deep-learning-zh?ncid=bn-prom-622541-modelscope) 
 
-可选在自有 GPU 设备、NVIDIA DGX Spark、NVIDIA 合作伙伴相关设备、在线实验室和[ModelScope Notebook](https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope) 部署和运行，可根据不同学习场景选择合适方式，更便捷地进入课程学习与实验。
+可选在自有 GPU 设备、NVIDIA DGX Spark、NVIDIA 合作伙伴相关设备、在线实验室和 [ModelScope Notebook](https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope) 部署和运行，可根据不同学习场景选择合适方式，更便捷地进入课程学习与实验。
 
 ## 学习成果
 
