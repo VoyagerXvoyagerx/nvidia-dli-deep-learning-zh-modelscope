@@ -1,9 +1,12 @@
 import tempfile
+import re
 import unittest
 from pathlib import Path
 
+import nbformat
 from bs4 import BeautifulSoup
 import build_html
+from scripts.sync_index import entry_markdown
 
 
 class HtmlTests(unittest.TestCase):
@@ -28,11 +31,23 @@ class HtmlTests(unittest.TestCase):
                     self.assertEqual(links[0]['href'], build_html.GALLERY + '/files/' + path.relative_to(root).as_posix())
                     self.assertNotIn('本版本由 VoyagerX 适配', page)
                     self.assertNotIn('tutorial_dir', page)
-                    self.assertNotIn('%cd', page)
+                    if path.stem != 'index':
+                        self.assertNotIn('%cd', page)
                     self.assertIn('NVIDIA_Training_and_Certification', links[0]['href'])
                     self.assertTrue(soup.select_one('article').get_text(strip=True))
                     self.assertEqual(path.read_bytes(), originals[path])
                     if path.stem == 'index':
+                        readme = (root / 'README.md').read_text()
+                        self.assertEqual(nbformat.read(path, as_version=4).cells[0].source, entry_markdown(readme))
+                        tracking = re.findall(r'\]\((https?://[^)]+[?&]ncid=[^)]+)\)', readme)
+                        self.assertTrue(tracking)
+                        article_links = [a['href'] for a in soup.select('article a[href]')]
+                        for url in tracking:
+                            self.assertEqual(article_links.count(url), tracking.count(url))
+                        for link in soup.select('a[href]'):
+                            if not link['href'].startswith('#'):
+                                self.assertEqual(link.get('target'), '_blank')
+                                self.assertIn('noopener', link.get('rel', []))
                         slides = soup.select('article a[href$=".pptx"]')
                         self.assertEqual(len(slides), 6)
                         for slide in slides:

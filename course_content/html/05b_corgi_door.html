@@ -1,18 +1,19 @@
-<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>05b · 柯基识别与迁移学习 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css?v=260e9869840d">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
-<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/05b_corgi_door.ipynb" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
-<aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" >04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="active" href="05b_corgi_door.html" aria-current=page>05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
-<main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 05b · 柯基识别与迁移学习</div><h1 class="page-title">05b · 柯基识别与迁移学习</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=4d843a6a"><div class="inner_cell">
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>05b · 柯基识别与迁移学习 — NVIDIA DLI at ModelScope Notebook</title><link href="_static/style.css?v=260e9869840d" rel="stylesheet"/>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer="" src="_static/mathjax.js"></script></head>
+<body><header class="topbar"><button aria-expanded="false" aria-label="打开课程目录" class="menu">☰</button><a class="brand" href="index.html" rel="noopener noreferrer" target="_blank">NVIDIA DLI · 深度学习基础</a><nav aria-label="相关链接" class="toplinks"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/05b_corgi_door.ipynb" rel="noopener noreferrer" target="_blank">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">GitHub</a></nav></header>
+<aside aria-label="课程目录" class="sidebar"><input aria-label="搜索课程" class="search" placeholder="搜索课程…" type="search"/><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" rel="noopener noreferrer" target="_blank">前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" rel="noopener noreferrer" target="_blank">00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" rel="noopener noreferrer" target="_blank">01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" rel="noopener noreferrer" target="_blank">02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" rel="noopener noreferrer" target="_blank">03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" rel="noopener noreferrer" target="_blank">04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" rel="noopener noreferrer" target="_blank">04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" rel="noopener noreferrer" target="_blank">05a · VGG16 预训练模型</a></li><li><a aria-current="page" class="active" href="05b_corgi_door.html" rel="noopener noreferrer" target="_blank">05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" rel="noopener noreferrer" target="_blank">06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
+<main><div class="breadcrumb"><a href="index.html" rel="noopener noreferrer" target="_blank">深度学习基础</a> / 05b · 柯基识别与迁移学习</div><h1 class="page-title">05b · 柯基识别与迁移学习</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=4d843a6a"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="%E8%AE%B8%E5%8F%AF%E8%AF%81">许可证<a class="anchor-link" href="#%E8%AE%B8%E5%8F%AF%E8%AF%81">¶</a></h2><p>除非另有说明：</p>
 <ul>
 <li>代码单元格遵循
-<a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/LICENSES/Apache-2.0.txt">Apache 许可证 2.0</a>。</li>
+<a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/LICENSES/Apache-2.0.txt" rel="noopener noreferrer" target="_blank">Apache 许可证 2.0</a>。</li>
 <li>Markdown 及原始单元格遵循
-<a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/LICENSES/CC-BY-4.0.txt">知识共享署名 4.0 国际许可协议</a>。</li>
+<a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/LICENSES/CC-BY-4.0.txt" rel="noopener noreferrer" target="_blank">知识共享署名 4.0 国际许可协议</a>。</li>
 <li>第三方材料保留其原始许可证，详见
-<a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md"><code>THIRD_PARTY_NOTICES.md</code></a>。</li>
+<a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md" rel="noopener noreferrer" target="_blank"><code>THIRD_PARTY_NOTICES.md</code></a>。</li>
 </ul>
 <p>版权所有 (c) 2026 NVIDIA CORPORATION &amp; AFFILIATES。</p>
 </div>
@@ -26,7 +27,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=45b6ba33"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>到目前为止，我们已经在大型数据集上训练了精确的模型，也下载了无需训练即可使用的预训练模型。但如果我们找不到完全符合需求的预训练模型，也没有足够大的数据集从头训练模型，该怎么办？这时，我们可以使用一种非常有用的技术，称为<a href="https://blogs.nvidia.com/blog/2019/02/07/what-is-transfer-learning/">迁移学习</a>。</p>
+<p>到目前为止，我们已经在大型数据集上训练了精确的模型，也下载了无需训练即可使用的预训练模型。但如果我们找不到完全符合需求的预训练模型，也没有足够大的数据集从头训练模型，该怎么办？这时，我们可以使用一种非常有用的技术，称为<a href="https://blogs.nvidia.com/blog/2019/02/07/what-is-transfer-learning/" rel="noopener noreferrer" target="_blank">迁移学习</a>。</p>
 <p>在迁移学习中，我们取一个预训练模型，并在与原始训练任务有所重叠的新任务上对其进行再训练。一个很好的类比是：一位擅长绘画的艺术家想要学习炭笔画。可以想象，他在绘画中学到的技能在学习炭笔画时会非常有价值。</p>
 <p>以深度学习为例，假设我们有一个非常擅长识别各种汽车类型的预训练模型，现在想训练一个识别摩托车类型的模型。汽车模型中学到的很多知识很可能非常有用，例如识别车灯和车轮的能力。</p>
 <p>当我们没有大量多样化的数据集时，迁移学习尤为强大。在这种情况下，从头开始训练的模型很可能会快速记住训练数据，但无法很好地泛化到新数据。借助迁移学习，你可以提高在小数据集上训练出精确且鲁棒模型的可能性。</p>
@@ -47,7 +48,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=e8cc8cd9"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>本实验使用 Kaggle 数据集：<a href="https://www.kaggle.com/datasets/danielledetering/penny-the-corgi">Penny the Corgi</a>。请运行以下代码将其添加到数据文件夹。</p>
+<p>本实验使用 Kaggle 数据集：<a href="https://www.kaggle.com/datasets/danielledetering/penny-the-corgi" rel="noopener noreferrer" target="_blank">Penny the Corgi</a>。请运行以下代码将其添加到数据文件夹。</p>
 </div>
 </div>
 </div>
@@ -108,7 +109,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=e3a8be2a"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>在上一个练习中，我们使用预训练的 <a href="http://www.image-net.org/">ImageNet</a> 模型来放行所有狗，但拦截其他动物。在本练习中，我们将创建一个只允许特定狗进入的宠物门。具体来说，我们将为一只名叫 Penny 的柯基犬制作一个自动宠物门。<code>data/corgi_door</code> 文件夹中有更多 Penny 的图片。</p>
+<p>在上一个练习中，我们使用预训练的 <a href="http://www.image-net.org/" rel="noopener noreferrer" target="_blank">ImageNet</a> 模型来放行所有狗，但拦截其他动物。在本练习中，我们将创建一个只允许特定狗进入的宠物门。具体来说，我们将为一只名叫 Penny 的柯基犬制作一个自动宠物门。<code>data/corgi_door</code> 文件夹中有更多 Penny 的图片。</p>
 </div>
 </div>
 </div>
@@ -132,7 +133,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=582b295e"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://pytorch.org/vision/stable/models.html">ImageNet torchvision.models</a> 通常是计算机视觉迁移学习的良好选择，因为它们已经学会了对各种不同类型的图像进行分类。在此过程中，它们学会了检测许多不同类型的<a href="https://developers.google.com/machine-learning/glossary#">特征</a>，这些特征在图像识别中具有重要价值。由于 ImageNet 模型已学会检测包括狗在内的动物，因此它特别适合用于检测 Penny 的迁移学习任务。</p>
+<p><a href="https://pytorch.org/vision/stable/models.html" rel="noopener noreferrer" target="_blank">ImageNet torchvision.models</a> 通常是计算机视觉迁移学习的良好选择，因为它们已经学会了对各种不同类型的图像进行分类。在此过程中，它们学会了检测许多不同类型的<a href="https://developers.google.com/machine-learning/glossary#" rel="noopener noreferrer" target="_blank">特征</a>，这些特征在图像识别中具有重要价值。由于 ImageNet 模型已学会检测包括狗在内的动物，因此它特别适合用于检测 Penny 的迁移学习任务。</p>
 <p>让我们从下载预训练模型开始。</p>
 </div>
 </div>
@@ -153,7 +154,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=ff524fde"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>下载时需要注意一个重要差异。ImageNet 模型的最后一层是包含 1000 个单元的<a href="https://developers.google.com/machine-learning/glossary#dense-layer">全连接层</a>，代表数据集中 1000 个可能的类别。而在我们的情况下，我们希望它进行不同的分类：这是 Penny 还是不是？我们将添加新层来专门识别 Penny。</p>
+<p>下载时需要注意一个重要差异。ImageNet 模型的最后一层是包含 1000 个单元的<a href="https://developers.google.com/machine-learning/glossary#dense-layer" rel="noopener noreferrer" target="_blank">全连接层</a>，代表数据集中 1000 个可能的类别。而在我们的情况下，我们希望它进行不同的分类：这是 Penny 还是不是？我们将添加新层来专门识别 Penny。</p>
 </div>
 </div>
 </div>
@@ -169,8 +170,8 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=b8761a04"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5b.3.2-%E5%86%BB%E7%BB%93%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B">5b.3.2 冻结基础模型<a class="anchor-link" href="#5b.3.2-%E5%86%BB%E7%BB%93%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B">¶</a></h3><p>在将新层添加到<a href="https://developers.google.com/machine-learning/glossary#pre-trained-model">预训练模型</a>之前，我们需要先执行一个重要步骤：冻结模型的预训练层。这意味着在训练时，我们不会更新预训练模型的基础层，而只更新我们在末尾添加的用于新分类任务的新层。我们冻结初始层是为了保留在 ImageNet 数据集上训练所获得的知识。如果此时解冻这些层，很可能会破坏这些宝贵的信息。之后有选项可以解冻并训练这些层，该过程称为微调。</p>
-<p>冻结基础层只需将模型的 <a href="https://pytorch.org/docs/stable/generated/torch.Tensor.requires_grad.html">requires_grad_</a> 设置为 <code>False</code> 即可。</p>
+<h3 id="5b.3.2-%E5%86%BB%E7%BB%93%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B">5b.3.2 冻结基础模型<a class="anchor-link" href="#5b.3.2-%E5%86%BB%E7%BB%93%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B">¶</a></h3><p>在将新层添加到<a href="https://developers.google.com/machine-learning/glossary#pre-trained-model" rel="noopener noreferrer" target="_blank">预训练模型</a>之前，我们需要先执行一个重要步骤：冻结模型的预训练层。这意味着在训练时，我们不会更新预训练模型的基础层，而只更新我们在末尾添加的用于新分类任务的新层。我们冻结初始层是为了保留在 ImageNet 数据集上训练所获得的知识。如果此时解冻这些层，很可能会破坏这些宝贵的信息。之后有选项可以解冻并训练这些层，该过程称为微调。</p>
+<p>冻结基础层只需将模型的 <a href="https://pytorch.org/docs/stable/generated/torch.Tensor.requires_grad.html" rel="noopener noreferrer" target="_blank">requires_grad_</a> 设置为 <code>False</code> 即可。</p>
 </div>
 </div>
 </div>
@@ -193,7 +194,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=e5cbaf2d"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>现在我们可以将新的可训练层添加到预训练模型中。这些层将提取预训练层的特征，并将其转化为对新数据集的预测。我们将向模型添加两层。在之前的课程中，我们创建了自己的<a href="https://pytorch.org/tutorials/beginner/examples_nn/two_layer_net_module.html">自定义模块</a>。迁移学习模块的工作方式完全相同，可以作为<a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html">顺序模型</a>中的一层使用。</p>
+<p>现在我们可以将新的可训练层添加到预训练模型中。这些层将提取预训练层的特征，并将其转化为对新数据集的预测。我们将向模型添加两层。在之前的课程中，我们创建了自己的<a href="https://pytorch.org/tutorials/beginner/examples_nn/two_layer_net_module.html" rel="noopener noreferrer" target="_blank">自定义模块</a>。迁移学习模块的工作方式完全相同，可以作为<a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html" rel="noopener noreferrer" target="_blank">顺序模型</a>中的一层使用。</p>
 <p>然后，我们将添加一个 <code>Linear</code> 层，将 VGG16 的全部 <code>1000</code> 个输出连接到 <code>1</code> 个神经元。</p>
 </div>
 </div>
@@ -217,7 +218,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=1dea1f15"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>如果我们想验证 VGG 层是否已被冻结，可以遍历模型的<a href="https://pytorch.org/docs/stable/generated/torch.nn.parameter.Parameter.html">参数</a>。</p>
+<p>如果我们想验证 VGG 层是否已被冻结，可以遍历模型的<a href="https://pytorch.org/docs/stable/generated/torch.nn.parameter.Parameter.html" rel="noopener noreferrer" target="_blank">参数</a>。</p>
 </div>
 </div>
 </div>
@@ -276,8 +277,8 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=2128f37b"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>与之前的练习一样，我们需要为模型配置损失函数和评估指标。这里需要做一些不同的选择。在之前的情况下，我们的分类问题有很多类别，因此选择了分类交叉熵来计算损失。而在本例中，我们只有一个二分类问题（是 Penny 还是不是），因此将使用<a href="https://pytorch.org/docs/stable/generated/torch.nn.BCELoss.html">二元交叉熵</a>。关于两者差异的详细信息，请参见<a href="https://gombru.github.io/2018/05/23/cross_entropy_loss/">这里</a>。我们还将使用二元准确率代替传统准确率。</p>
-<p>通过设置 <code>from_logits=True</code>，我们告知<a href="https://gombru.github.io/2018/05/23/cross_entropy_loss/">损失函数</a>输出值尚未归一化（例如未经过 softmax 处理）。</p>
+<p>与之前的练习一样，我们需要为模型配置损失函数和评估指标。这里需要做一些不同的选择。在之前的情况下，我们的分类问题有很多类别，因此选择了分类交叉熵来计算损失。而在本例中，我们只有一个二分类问题（是 Penny 还是不是），因此将使用<a href="https://pytorch.org/docs/stable/generated/torch.nn.BCELoss.html" rel="noopener noreferrer" target="_blank">二元交叉熵</a>。关于两者差异的详细信息，请参见<a href="https://gombru.github.io/2018/05/23/cross_entropy_loss/" rel="noopener noreferrer" target="_blank">这里</a>。我们还将使用二元准确率代替传统准确率。</p>
+<p>通过设置 <code>from_logits=True</code>，我们告知<a href="https://gombru.github.io/2018/05/23/cross_entropy_loss/" rel="noopener noreferrer" target="_blank">损失函数</a>输出值尚未归一化（例如未经过 softmax 处理）。</p>
 </div>
 </div>
 </div>
@@ -301,7 +302,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=75b7d67d"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>与之前的课程一样，我们将创建一个自定义 <a href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html">Dataset</a> 来读取 Penny（及非 Penny）的图片。首先，我们从 VGG <code>weights</code> 中获取预处理变换列表。</p>
+<p>与之前的课程一样，我们将创建一个自定义 <a href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html" rel="noopener noreferrer" target="_blank">Dataset</a> 来读取 Penny（及非 Penny）的图片。首先，我们从 VGG <code>weights</code> 中获取预处理变换列表。</p>
 </div>
 </div>
 </div>
@@ -368,7 +369,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=38bb667b"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>有了自定义 Dataset 类之后，让我们创建 <a href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html#preparing-your-data-for-training-with-dataloaders">DataLoaders</a>。</p>
+<p>有了自定义 Dataset 类之后，让我们创建 <a href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html#preparing-your-data-for-training-with-dataloaders" rel="noopener noreferrer" target="_blank">DataLoaders</a>。</p>
 </div>
 </div>
 </div>
@@ -399,7 +400,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=d1749799"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>让我们应用一些数据增强，以便模型能更好地识别 Penny。这次我们有彩色图像，因此可以充分利用 <a href="https://pytorch.org/vision/stable/auto_examples/transforms/plot_transforms_illustrations.html#colorjitter">ColorJitter</a>。</p>
+<p>让我们应用一些数据增强，以便模型能更好地识别 Penny。这次我们有彩色图像，因此可以充分利用 <a href="https://pytorch.org/vision/stable/auto_examples/transforms/plot_transforms_illustrations.html#colorjitter" rel="noopener noreferrer" target="_blank">ColorJitter</a>。</p>
 </div>
 </div>
 </div>
@@ -428,8 +429,8 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=a2c30477"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>我们将使用与之前大致相同的训练循环，但有一些细微差异。首先，由于使用了<a href="https://pytorch.org/docs/stable/generated/torch.nn.BCELoss.html">二元交叉熵</a>作为损失函数，<code>get_batch_accuracy</code> 函数会有所不同。我们可以将输出通过 <a href="https://en.wikipedia.org/wiki/Sigmoid_function">sigmoid</a> 函数处理，但从数学角度来看，有更高效的方法。</p>
-<p>当模型 <code>output</code> 大于 <code>0</code> 时，经过 sigmoid 函数后结果接近 <code>1</code>；当模型 <code>output</code> 小于 <code>0</code> 时，经过 sigmoid 函数后结果接近 <code>0</code>。因此，我们只需检查模型输出是否大于（<a href="https://pytorch.org/docs/stable/generated/torch.gt.html">gt</a>）<code>0</code>，即可判断预测偏向哪个类别。</p>
+<p>我们将使用与之前大致相同的训练循环，但有一些细微差异。首先，由于使用了<a href="https://pytorch.org/docs/stable/generated/torch.nn.BCELoss.html" rel="noopener noreferrer" target="_blank">二元交叉熵</a>作为损失函数，<code>get_batch_accuracy</code> 函数会有所不同。我们可以将输出通过 <a href="https://en.wikipedia.org/wiki/Sigmoid_function" rel="noopener noreferrer" target="_blank">sigmoid</a> 函数处理，但从数学角度来看，有更高效的方法。</p>
+<p>当模型 <code>output</code> 大于 <code>0</code> 时，经过 sigmoid 函数后结果接近 <code>1</code>；当模型 <code>output</code> 小于 <code>0</code> 时，经过 sigmoid 函数后结果接近 <code>0</code>。因此，我们只需检查模型输出是否大于（<a href="https://pytorch.org/docs/stable/generated/torch.gt.html" rel="noopener noreferrer" target="_blank">gt</a>）<code>0</code>，即可判断预测偏向哪个类别。</p>
 </div>
 </div>
 </div>
@@ -565,8 +566,8 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=423c7a33"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>现在新层已经训练完成，我们可以应用最后一个技巧来改进模型，称为<a href="https://developers.google.com/machine-learning/glossary#f">微调</a>。为此，我们解冻整个模型，并以非常小的<a href="https://developers.google.com/machine-learning/glossary#learning-rate">学习率</a>再次训练。这将使基础预训练层以非常小的步幅进行调整，从而小幅提升模型性能。由于 VGG16 是一个相对较大的模型，较小的学习率也有助于防止过拟合。</p>
-<p>需要注意的是，这一步骤只能在冻结层的模型完全训练之后进行。我们之前添加到模型中的未训练线性层是随机初始化的，这意味着它需要大量更新才能正确分类图像。通过<a href="https://developers.google.com/machine-learning/glossary#backpropagation">反向传播</a>过程，最后几层的大幅初始更新可能也会导致预训练层的大幅更新，从而破坏那些重要的预训练特征。然而，现在最后几层已经训练收敛，对整个模型的任何更新都会小得多（尤其是在很小的学习率下），不会破坏早期层的特征。</p>
+<p>现在新层已经训练完成，我们可以应用最后一个技巧来改进模型，称为<a href="https://developers.google.com/machine-learning/glossary#f" rel="noopener noreferrer" target="_blank">微调</a>。为此，我们解冻整个模型，并以非常小的<a href="https://developers.google.com/machine-learning/glossary#learning-rate" rel="noopener noreferrer" target="_blank">学习率</a>再次训练。这将使基础预训练层以非常小的步幅进行调整，从而小幅提升模型性能。由于 VGG16 是一个相对较大的模型，较小的学习率也有助于防止过拟合。</p>
+<p>需要注意的是，这一步骤只能在冻结层的模型完全训练之后进行。我们之前添加到模型中的未训练线性层是随机初始化的，这意味着它需要大量更新才能正确分类图像。通过<a href="https://developers.google.com/machine-learning/glossary#backpropagation" rel="noopener noreferrer" target="_blank">反向传播</a>过程，最后几层的大幅初始更新可能也会导致预训练层的大幅更新，从而破坏那些重要的预训练特征。然而，现在最后几层已经训练收敛，对整个模型的任何更新都会小得多（尤其是在很小的学习率下），不会破坏早期层的特征。</p>
 <p>让我们尝试解冻预训练层，然后对模型进行微调：</p>
 </div>
 </div>
@@ -770,7 +771,7 @@
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=b949494b"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>做得很好！借助迁移学习，你已经用非常小的数据集构建了一个高精度模型。这是一项极其强大的技术，可以决定一个项目是成功落地还是举步维艰。希望这些技术能在你未来遇到类似情况时发挥作用！</p>
-<p>仍有提升空间。如果你想进一步提高准确率，可以尝试将 <a href="https://www.kaggle.com/datasets/jessicali9530/stanford-dogs-dataset">Stanford Dogs Dataset</a> 添加到 <code>Not_Penny</code> 数据中。</p>
+<p>仍有提升空间。如果你想进一步提高准确率，可以尝试将 <a href="https://www.kaggle.com/datasets/jessicali9530/stanford-dogs-dataset" rel="noopener noreferrer" target="_blank">Stanford Dogs Dataset</a> 添加到 <code>Not_Penny</code> 数据中。</p>
 </div>
 </div>
 </div>
@@ -804,7 +805,7 @@
 </div>
 </div>
 </div>
-</article><nav class="pager" aria-label="上一课与下一课"><a rel="prev" href="05a_doggy_door.html">← 05a · VGG16 预训练模型</a><a rel="next" href="06_nlp.html">06 · BERT 与自然语言处理 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2><a class="depth-2" href="#%E8%AE%B8%E5%8F%AF%E8%AF%81">许可证</a><a class="depth-2" href="#5b.-%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0">5b. 迁移学习</a><a class="depth-2" href="#5b.1-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">5b.1 准备工作</a><a class="depth-2" href="#5b.2-%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87">5b.2 学习目标</a><a class="depth-2" href="#5b.3-%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%A0%E7%89%A9%E9%97%A8">5b.3 个性化宠物门</a><a class="depth-3" href="#5b.3.1-%E4%B8%8B%E8%BD%BD%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B">5b.3.1 下载预训练模型</a><a class="depth-3" href="#5b.3.2-%E5%86%BB%E7%BB%93%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B">5b.3.2 冻结基础模型</a><a class="depth-3" href="#5b.3.3-%E6%B7%BB%E5%8A%A0%E6%96%B0%E5%B1%82">5b.3.3 添加新层</a><a class="depth-3" href="#5b.3.4-%E7%BC%96%E8%AF%91%E6%A8%A1%E5%9E%8B">5b.3.4 编译模型</a><a class="depth-2" href="#5b.4-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">5b.4 数据增强</a><a class="depth-3" href="#5b.4.1-%E6%95%B0%E6%8D%AE%E9%9B%86">5b.4.1 数据集</a><a class="depth-3" href="#5b.4.2-%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%99%A8">5b.4.2 数据加载器</a><a class="depth-3" href="#5b.4.3-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">5b.4.3 数据增强</a><a class="depth-2" href="#5b.5-%E8%AE%AD%E7%BB%83%E5%BE%AA%E7%8E%AF">5b.5 训练循环</a><a class="depth-2" href="#5b.6-%E7%BB%93%E6%9E%9C%E8%AE%A8%E8%AE%BA">5b.6 结果讨论</a><a class="depth-2" href="#5b.7-%E5%BE%AE%E8%B0%83%E6%A8%A1%E5%9E%8B">5b.7 微调模型</a><a class="depth-2" href="#5b.8-%E6%9F%A5%E7%9C%8B%E9%A2%84%E6%B5%8B%E7%BB%93%E6%9E%9C">5b.8 查看预测结果</a><a class="depth-2" href="#5b.9-%E7%BB%83%E4%B9%A0%EF%BC%9APenny-%E7%9A%84%E5%AE%A0%E7%89%A9%E9%97%A8">5b.9 练习：Penny 的宠物门</a><a class="depth-3" href="#5b.9.1-%E8%A7%A3%E7%AD%94">5b.9.1 解答</a><a class="depth-2" href="#5b.10-%E6%80%BB%E7%BB%93">5b.10 总结</a><a class="depth-3" href="#5b.10.1-%E6%B8%85%E7%90%86%E5%86%85%E5%AD%98">5b.10.1 清理内存</a><a class="depth-3" href="#5b.10.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">5b.10.2 下一步</a></aside><script>
+</article><nav aria-label="上一课与下一课" class="pager"><a href="05a_doggy_door.html" rel="prev noopener noreferrer" target="_blank">← 05a · VGG16 预训练模型</a><a href="06_nlp.html" rel="next noopener noreferrer" target="_blank">06 · BERT 与自然语言处理 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br/>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md" rel="noopener noreferrer" target="_blank">素材来源说明</a>。</footer></main><aside aria-label="本页目录" class="toc"><h2>本页目录</h2><a class="depth-2" href="#%E8%AE%B8%E5%8F%AF%E8%AF%81">许可证</a><a class="depth-2" href="#5b.-%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0">5b. 迁移学习</a><a class="depth-2" href="#5b.1-%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">5b.1 准备工作</a><a class="depth-2" href="#5b.2-%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87">5b.2 学习目标</a><a class="depth-2" href="#5b.3-%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%A0%E7%89%A9%E9%97%A8">5b.3 个性化宠物门</a><a class="depth-3" href="#5b.3.1-%E4%B8%8B%E8%BD%BD%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B">5b.3.1 下载预训练模型</a><a class="depth-3" href="#5b.3.2-%E5%86%BB%E7%BB%93%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B">5b.3.2 冻结基础模型</a><a class="depth-3" href="#5b.3.3-%E6%B7%BB%E5%8A%A0%E6%96%B0%E5%B1%82">5b.3.3 添加新层</a><a class="depth-3" href="#5b.3.4-%E7%BC%96%E8%AF%91%E6%A8%A1%E5%9E%8B">5b.3.4 编译模型</a><a class="depth-2" href="#5b.4-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">5b.4 数据增强</a><a class="depth-3" href="#5b.4.1-%E6%95%B0%E6%8D%AE%E9%9B%86">5b.4.1 数据集</a><a class="depth-3" href="#5b.4.2-%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%99%A8">5b.4.2 数据加载器</a><a class="depth-3" href="#5b.4.3-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">5b.4.3 数据增强</a><a class="depth-2" href="#5b.5-%E8%AE%AD%E7%BB%83%E5%BE%AA%E7%8E%AF">5b.5 训练循环</a><a class="depth-2" href="#5b.6-%E7%BB%93%E6%9E%9C%E8%AE%A8%E8%AE%BA">5b.6 结果讨论</a><a class="depth-2" href="#5b.7-%E5%BE%AE%E8%B0%83%E6%A8%A1%E5%9E%8B">5b.7 微调模型</a><a class="depth-2" href="#5b.8-%E6%9F%A5%E7%9C%8B%E9%A2%84%E6%B5%8B%E7%BB%93%E6%9E%9C">5b.8 查看预测结果</a><a class="depth-2" href="#5b.9-%E7%BB%83%E4%B9%A0%EF%BC%9APenny-%E7%9A%84%E5%AE%A0%E7%89%A9%E9%97%A8">5b.9 练习：Penny 的宠物门</a><a class="depth-3" href="#5b.9.1-%E8%A7%A3%E7%AD%94">5b.9.1 解答</a><a class="depth-2" href="#5b.10-%E6%80%BB%E7%BB%93">5b.10 总结</a><a class="depth-3" href="#5b.10.1-%E6%B8%85%E7%90%86%E5%86%85%E5%AD%98">5b.10.1 清理内存</a><a class="depth-3" href="#5b.10.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">5b.10.2 下一步</a></aside><script>
 (()=>{
  const sidebar=document.querySelector('.sidebar'),menu=document.querySelector('.menu');
  const mobile=matchMedia('(max-width:1024px)');

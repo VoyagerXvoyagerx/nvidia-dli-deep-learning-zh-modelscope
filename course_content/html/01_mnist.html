@@ -1,9 +1,10 @@
-<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>01 · 深度学习简介与 MNIST — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css?v=260e9869840d">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
-<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/01_mnist.ipynb" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
-<aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="active" href="01_mnist.html" aria-current=page>01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" >04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
-<main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 01 · 深度学习简介与 MNIST</div><h1 class="page-title">01 · 深度学习简介与 MNIST</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=8421696f"><div class="inner_cell">
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>01 · 深度学习简介与 MNIST — NVIDIA DLI at ModelScope Notebook</title><link href="_static/style.css?v=260e9869840d" rel="stylesheet"/>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer="" src="_static/mathjax.js"></script></head>
+<body><header class="topbar"><button aria-expanded="false" aria-label="打开课程目录" class="menu">☰</button><a class="brand" href="index.html" rel="noopener noreferrer" target="_blank">NVIDIA DLI · 深度学习基础</a><nav aria-label="相关链接" class="toplinks"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/01_mnist.ipynb" rel="noopener noreferrer" target="_blank">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">GitHub</a></nav></header>
+<aside aria-label="课程目录" class="sidebar"><input aria-label="搜索课程" class="search" placeholder="搜索课程…" type="search"/><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" rel="noopener noreferrer" target="_blank">前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" rel="noopener noreferrer" target="_blank">00 · JupyterLab 入门</a></li><li><a aria-current="page" class="active" href="01_mnist.html" rel="noopener noreferrer" target="_blank">01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" rel="noopener noreferrer" target="_blank">02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" rel="noopener noreferrer" target="_blank">03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" rel="noopener noreferrer" target="_blank">04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" rel="noopener noreferrer" target="_blank">04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" rel="noopener noreferrer" target="_blank">05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" rel="noopener noreferrer" target="_blank">05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" rel="noopener noreferrer" target="_blank">06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
+<main><div class="breadcrumb"><a href="index.html" rel="noopener noreferrer" target="_blank">深度学习基础</a> / 01 · 深度学习简介与 MNIST</div><h1 class="page-title">01 · 深度学习简介与 MNIST</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=8421696f"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="1.-%E4%BD%BF%E7%94%A8-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BF%9B%E8%A1%8C%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB">1. 使用 MNIST 数据集进行图像分类<a class="anchor-link" href="#1.-%E4%BD%BF%E7%94%A8-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BF%9B%E8%A1%8C%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB">¶</a></h1>
 </div>
@@ -26,8 +27,8 @@
 <p>在完成本节时，您将：</p>
 <ul>
 <li>了解深度学习如何解决传统编程方法无法解决的问题</li>
-<li>了解 <a href="http://yann.lecun.com/exdb/mnist/">MNIST 手写体数字数据集</a></li>
-<li>使用 <a href="https://pytorch.org/vision/stable/index.html">torchvision</a> 加载 MNIST 数据集并准备进行训练</li>
+<li>了解 <a href="http://yann.lecun.com/exdb/mnist/" rel="noopener noreferrer" target="_blank">MNIST 手写体数字数据集</a></li>
+<li>使用 <a href="https://pytorch.org/vision/stable/index.html" rel="noopener noreferrer" target="_blank">torchvision</a> 加载 MNIST 数据集并准备进行训练</li>
 <li>创建一个简单的神经网络来执行图像分类</li>
 <li>使用预先准备的 MNIST 数据集训练神经网络</li>
 <li>观察经过训练的神经网络的性能</li>
@@ -62,7 +63,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=7a6fae90"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>我们可以通过将 <a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device">device</a> 设置为 <code>cuda</code> 来指定 PyTorch 使用 GPU。<code>torch.cuda.is_available()</code> 函数会确认 PyTorch 能识别到 GPU。</p>
+<p>我们可以通过将 <a href="https://pytorch.org/docs/stable/tensor_attributes.html#torch.device" rel="noopener noreferrer" target="_blank">device</a> 设置为 <code>cuda</code> 来指定 PyTorch 使用 GPU。<code>torch.cuda.is_available()</code> 函数会确认 PyTorch 能识别到 GPU。</p>
 </div>
 </div>
 </div>
@@ -104,7 +105,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=4b9a7c88"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1.2-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86">1.2 MNIST 数据集<a class="anchor-link" href="#1.2-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86">¶</a></h2><p>在深度学习的历史当中，对 <a href="http://yann.lecun.com/exdb/mnist/">MNIST 数据集</a>里的 70000 张手写体数字的图像进行 0 到 9 的正确分类是一个重大的进展。现在看来，这个任务已经不算什么了，但用 MNIST 进行图像分类已经成为深度学习的一个“Hello World”练习。</p>
+<h2 id="1.2-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86">1.2 MNIST 数据集<a class="anchor-link" href="#1.2-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86">¶</a></h2><p>在深度学习的历史当中，对 <a href="http://yann.lecun.com/exdb/mnist/" rel="noopener noreferrer" target="_blank">MNIST 数据集</a>里的 70000 张手写体数字的图像进行 0 到 9 的正确分类是一个重大的进展。现在看来，这个任务已经不算什么了，但用 MNIST 进行图像分类已经成为深度学习的一个“Hello World”练习。</p>
 </div>
 </div>
 </div>
@@ -135,15 +136,15 @@
 <li><code>x_test</code>：单独留出来的图像，用来在训练模型后测试模型的性能</li>
 <li><code>y_test</code>：正确的 <code>x_test</code> 图像标签，用于在训练模型后评估模型的预测</li>
 </ol>
-<p>准备数据的过程被称为<a href="https://medium.com/@rchang/a-beginners-guide-to-data-engineering-part-i-4227c5c457d7">数据工程</a>。可以看 Jason Brownlee 的<a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials">这篇文章</a>了解更多关于训练集、验证集还有测试集的区别。</p>
+<p>准备数据的过程被称为<a href="https://medium.com/@rchang/a-beginners-guide-to-data-engineering-part-i-4227c5c457d7" rel="noopener noreferrer" target="_blank">数据工程</a>。可以看 Jason Brownlee 的<a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials" rel="noopener noreferrer" target="_blank">这篇文章</a>了解更多关于训练集、验证集还有测试集的区别。</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=2c69b49b"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="1.2.2-%E5%B0%86%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%88%B0%E5%86%85%E5%AD%98%E4%B8%AD%EF%BC%88%E7%94%A8-TorchVision%EF%BC%89">1.2.2 将数据加载到内存中（用 TorchVision）<a class="anchor-link" href="#1.2.2-%E5%B0%86%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%88%B0%E5%86%85%E5%AD%98%E4%B8%AD%EF%BC%88%E7%94%A8-TorchVision%EF%BC%89">¶</a></h3><p>目前有许多<a href="https://developer.nvidia.com/deep-learning-frameworks">深度学习框架</a>，每个框架都有各自的优点。在本培训中，我们将使用 <a href="https://pytorch.org/get-started/pytorch-2.0/">PyTorch 2</a>，主要是 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html">Sequential API</a>。Sequential API 内置了很多用来构建神经网络的功能。它的<a href="https://blog.pragmaticengineer.com/readable-code/">高可读性</a>和高效性使其适合在专业的任务中使用。当然 PyTorch 并非唯一的选择，您可以在启动一个深度学习项目前研究一下各种框架。</p>
-<p>我们还会用 <a href="https://pytorch.org/vision/stable/index.html">TorchVision</a> 库，它包括对<a href="https://pytorch.org/vision/main/datasets.html">许多数据集</a>提供的诸多辅助功能和方法，其中就包括 MNIST 数据集。</p>
-<p>我们将从加载 <a href="https://pytorch.org/vision/main/generated/torchvision.datasets.MNIST.html#torchvision.datasets.MNIST">MNIST</a> 的 <code>train</code> 和 <code>valid</code> 数据集开始。</p>
+<h3 id="1.2.2-%E5%B0%86%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%88%B0%E5%86%85%E5%AD%98%E4%B8%AD%EF%BC%88%E7%94%A8-TorchVision%EF%BC%89">1.2.2 将数据加载到内存中（用 TorchVision）<a class="anchor-link" href="#1.2.2-%E5%B0%86%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%88%B0%E5%86%85%E5%AD%98%E4%B8%AD%EF%BC%88%E7%94%A8-TorchVision%EF%BC%89">¶</a></h3><p>目前有许多<a href="https://developer.nvidia.com/deep-learning-frameworks" rel="noopener noreferrer" target="_blank">深度学习框架</a>，每个框架都有各自的优点。在本培训中，我们将使用 <a href="https://pytorch.org/get-started/pytorch-2.0/" rel="noopener noreferrer" target="_blank">PyTorch 2</a>，主要是 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html" rel="noopener noreferrer" target="_blank">Sequential API</a>。Sequential API 内置了很多用来构建神经网络的功能。它的<a href="https://blog.pragmaticengineer.com/readable-code/" rel="noopener noreferrer" target="_blank">高可读性</a>和高效性使其适合在专业的任务中使用。当然 PyTorch 并非唯一的选择，您可以在启动一个深度学习项目前研究一下各种框架。</p>
+<p>我们还会用 <a href="https://pytorch.org/vision/stable/index.html" rel="noopener noreferrer" target="_blank">TorchVision</a> 库，它包括对<a href="https://pytorch.org/vision/main/datasets.html" rel="noopener noreferrer" target="_blank">许多数据集</a>提供的诸多辅助功能和方法，其中就包括 MNIST 数据集。</p>
+<p>我们将从加载 <a href="https://pytorch.org/vision/main/generated/torchvision.datasets.MNIST.html#torchvision.datasets.MNIST" rel="noopener noreferrer" target="_blank">MNIST</a> 的 <code>train</code> 和 <code>valid</code> 数据集开始。</p>
 </div>
 </div>
 </div>
@@ -187,7 +188,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=0e018485"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><em>注意：</em><code>valid_set</code> 的 <code>Split</code> 值是 <code>Test</code>，但我们将在练习中将它作为验证集。要了解更多有关 <code>Train</code>，<code>Test</code>，<code>Valid</code> 数据集的信息，请看 Kili 的<a href="https://kili-technology.com/training-data/training-validation-and-test-sets-how-to-split-machine-learning-data">这篇文章</a></p>
+<p><em>注意：</em><code>valid_set</code> 的 <code>Split</code> 值是 <code>Test</code>，但我们将在练习中将它作为验证集。要了解更多有关 <code>Train</code>，<code>Test</code>，<code>Valid</code> 数据集的信息，请看 Kili 的<a href="https://kili-technology.com/training-data/training-validation-and-test-sets-how-to-split-machine-learning-data" rel="noopener noreferrer" target="_blank">这篇文章</a></p>
 </div>
 </div>
 </div>
@@ -269,7 +270,7 @@
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>如果向量是一维数组，而矩阵是二维数组，那么张量就是表示任意多维度的 n 维数组。大多数现代神经网络框架都是强大的张量处理工具。</p>
 <p>计算机屏幕上的像素就是一个三维张量的例子。不同的维度可以是宽度、高度和颜色通道（color channel）。视频游戏使用矩阵数学来计算像素值，这与神经网络计算张量的方式类似。这就是为什么 GPU 是有效的张量处理器。</p>
-<p>我们来把图像转换成张量，好让神经网络稍后处理。TorchVision 有一个能将 <a href="https://pillow.readthedocs.io/en/stable/reference/Image.html">PIL 图像</a> 转成张量的函数，使用 <a href="https://pytorch.org/vision/main/generated/torchvision.transforms.ToTensor.html">ToTensor</a> 类：</p>
+<p>我们来把图像转换成张量，好让神经网络稍后处理。TorchVision 有一个能将 <a href="https://pillow.readthedocs.io/en/stable/reference/Image.html" rel="noopener noreferrer" target="_blank">PIL 图像</a> 转成张量的函数，使用 <a href="https://pytorch.org/vision/main/generated/torchvision.transforms.ToTensor.html" rel="noopener noreferrer" target="_blank">ToTensor</a> 类：</p>
 </div>
 </div>
 </div>
@@ -286,7 +287,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=99cdb9c9"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor">PyTorch tensors</a> 有很多好用的属性和方法。我们可以验证数据类型：</p>
+<p><a href="https://pytorch.org/docs/stable/tensors.html#torch.Tensor" rel="noopener noreferrer" target="_blank">PyTorch tensors</a> 有很多好用的属性和方法。我们可以验证数据类型：</p>
 </div>
 </div>
 </div>
@@ -302,7 +303,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=5a282a82"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>我们可以验证最小值和最大值。PIL 图像的整数范围是 [0, 255]，但 <a href="https://pytorch.org/vision/main/generated/torchvision.transforms.ToTensor.html">ToTensor</a> 类回将其转换为 [0.0, 1.0] 的浮点数范围。</p>
+<p>我们可以验证最小值和最大值。PIL 图像的整数范围是 [0, 255]，但 <a href="https://pytorch.org/vision/main/generated/torchvision.transforms.ToTensor.html" rel="noopener noreferrer" target="_blank">ToTensor</a> 类回将其转换为 [0.0, 1.0] 的浮点数范围。</p>
 </div>
 </div>
 </div>
@@ -361,7 +362,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=1937eecb"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>默认情况下，张量由 <a href="https://www.arm.com/glossary/cpu">CPU</a> 处理。</p>
+<p>默认情况下，张量由 <a href="https://www.arm.com/glossary/cpu" rel="noopener noreferrer" target="_blank">CPU</a> 处理。</p>
 </div>
 </div>
 </div>
@@ -433,7 +434,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=b8dcb393"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>早些时候，我们创建了一个 <code>trans</code> 变量来将图像转换为张量。<a href="https://pytorch.org/vision/stable/transforms.html">Transforms</a> 是一组 torchvision 函数，可用于转换数据集。</p>
+<p>早些时候，我们创建了一个 <code>trans</code> 变量来将图像转换为张量。<a href="https://pytorch.org/vision/stable/transforms.html" rel="noopener noreferrer" target="_blank">Transforms</a> 是一组 torchvision 函数，可用于转换数据集。</p>
 </div>
 </div>
 </div>
@@ -445,7 +446,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=0ac7462c"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.Compose.html#torchvision.transforms.v2.Compose">Compose</a> 函数将一系列变换组合在一起。我们将在后面的 notebook 中学习更多关于变换的内容，这里先把 <code>trans</code> 的定义再展示一遍。</p>
+<p><a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.Compose.html#torchvision.transforms.v2.Compose" rel="noopener noreferrer" target="_blank">Compose</a> 函数将一系列变换组合在一起。我们将在后面的 notebook 中学习更多关于变换的内容，这里先把 <code>trans</code> 的定义再展示一遍。</p>
 </div>
 </div>
 </div>
@@ -484,7 +485,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=3f31d511"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>如果我们的数据集是一副卡，那么 <a href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html#preparing-your-data-for-training-with-dataloaders">DataLoader</a> 就定义了我们如何从这副牌中抽卡来训练 AI 模型。我们可以一次性将整个数据集展示给我们的模型。这不仅需要大量的计算资源，而且<a href="https://arxiv.org/pdf/1804.07612">研究表明</a>使用较小的数据批次（batch）对模型训练更有效。</p>
+<p>如果我们的数据集是一副卡，那么 <a href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html#preparing-your-data-for-training-with-dataloaders" rel="noopener noreferrer" target="_blank">DataLoader</a> 就定义了我们如何从这副牌中抽卡来训练 AI 模型。我们可以一次性将整个数据集展示给我们的模型。这不仅需要大量的计算资源，而且<a href="https://arxiv.org/pdf/1804.07612" rel="noopener noreferrer" target="_blank">研究表明</a>使用较小的数据批次（batch）对模型训练更有效。</p>
 <p>例如，如果我们的 <code>batch_size</code> 是 32，我们将洗牌并抽取 32 张卡片来训练我们的模型。由于模型在验证时不进行学习，因此不需要洗牌，但我们仍然会使用 <code>batch_size</code> 以防止内存错误。</p>
 <p>批大小是模型开发者决定的，最佳值取决于具体的问题。研究表明，对于许多机器学习问题 32 或 64 就足够了，这也是一些机器学习框架的默认值，因此我们在这就用 32。</p>
 </div>
@@ -513,12 +514,12 @@
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>准备好训练数据之后，现在该来创建模型了！神经网络由多个层组成，每一层在将数据传递到下一层之前对接收到的数据执行数学运算。首先，我们将创建一个由 4 个组件组成的 “Hello World” 级别的模型：</p>
 <ol>
-<li>一个 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Flatten.html">Flatten</a> 层，用于将 n 维数据转换为向量。</li>
+<li>一个 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Flatten.html" rel="noopener noreferrer" target="_blank">Flatten</a> 层，用于将 n 维数据转换为向量。</li>
 <li>输入层，即第一层神经元</li>
 <li>隐藏层，即输入和输出之间“隐藏”的另一层神经元</li>
 <li>输出层，即最后一组神经元，返回模型的最终预测结果</li>
 </ol>
-<p>关于这些层的更多信息，可以参考 Sarita 的<a href="https://medium.com/@sarita_68521/basic-understanding-of-neural-network-structure-eecc8f149a23">这篇博客文章</a>。</p>
+<p>关于这些层的更多信息，可以参考 Sarita 的<a href="https://medium.com/@sarita_68521/basic-understanding-of-neural-network-structure-eecc8f149a23" rel="noopener noreferrer" target="_blank">这篇博客文章</a>。</p>
 <p>让我们创建一个 <code>layers</code> 变量来保存我们的层列表。</p>
 </div>
 </div>
@@ -641,7 +642,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=80bee713"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>我们的第一层神经元将展平的图像连接到模型的其余部分。为此，我们将使用 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Linear.html">Linear</a> 层。这一层将是<em>密集连接</em>的，意味着其中的每个神经元及其权重都会影响下一层的每个神经元。</p>
+<p>我们的第一层神经元将展平的图像连接到模型的其余部分。为此，我们将使用 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Linear.html" rel="noopener noreferrer" target="_blank">Linear</a> 层。这一层将是<em>密集连接</em>的，意味着其中的每个神经元及其权重都会影响下一层的每个神经元。</p>
 <p>为了创建这些权重，PyTorch 需要知道输入的大小以及我们想要创建多少个神经元。
 由于我们已经将图像展平，输入的大小就是通道数、垂直像素数和水平像素数的乘积。</p>
 </div>
@@ -660,7 +661,7 @@
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=c457c27f"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>"数据科学"中"科学"主要就体现在选择正确的神经元数量上，因为这涉及捕捉数据集的统计复杂性。我们先使用 512 个神经元。稍后您可以尝试调整这个数值，看看它如何影响训练，慢慢理解这个数字的含义。</p>
-<p>我们稍后会学习更多关于激活函数的知识，但现在我们将使用 <a href="https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html">relu</a> 激活函数。简而言之，它将帮助我们的网络学习如何对数据做出比仅基于某些严格线性函数更复杂的猜测。</p>
+<p>我们稍后会学习更多关于激活函数的知识，但现在我们将使用 <a href="https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html" rel="noopener noreferrer" target="_blank">relu</a> 激活函数。简而言之，它将帮助我们的网络学习如何对数据做出比仅基于某些严格线性函数更复杂的猜测。</p>
 </div>
 </div>
 </div>
@@ -687,7 +688,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=f4a330c7"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>现在，我们将添加一个额外的密集连接层。我们将在下一节讨论为什么添加另一组神经元可以帮助提高学习效果。就像输入层需要知道传递给它的数据的形状一样，隐藏层的 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Linear.html">nn.Linear</a> 也需要知道传递给它的数据的形状。前一层的每个神经元将计算一个数值，因此进入隐藏层的输入数量与前一层的神经元数量相同。</p>
+<p>现在，我们将添加一个额外的密集连接层。我们将在下一节讨论为什么添加另一组神经元可以帮助提高学习效果。就像输入层需要知道传递给它的数据的形状一样，隐藏层的 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Linear.html" rel="noopener noreferrer" target="_blank">nn.Linear</a> 也需要知道传递给它的数据的形状。前一层的每个神经元将计算一个数值，因此进入隐藏层的输入数量与前一层的神经元数量相同。</p>
 </div>
 </div>
 </div>
@@ -749,7 +750,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=b6c5a030"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html">Sequential</a> 模型期望接收一个参数序列，而不是一个列表，因此我们可以使用 <a href="https://docs.python.org/3/reference/expressions.html#expression-lists">* operator</a> 将层列表解包成一个序列。打印模型来验证这些层是否正确加载了。</p>
+<p><a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html" rel="noopener noreferrer" target="_blank">Sequential</a> 模型期望接收一个参数序列，而不是一个列表，因此我们可以使用 <a href="https://docs.python.org/3/reference/expressions.html#expression-lists" rel="noopener noreferrer" target="_blank">* operator</a> 将层列表解包成一个序列。打印模型来验证这些层是否正确加载了。</p>
 </div>
 </div>
 </div>
@@ -782,7 +783,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=199cda61"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>可以通过检查模型参数所在的设备来确认模型处于哪个设备。更多信息请查看这个 <a href="https://stackoverflow.com/questions/58926054/how-to-get-the-device-type-of-a-pytorch-module-conveniently">stack overflow</a> 帖子。</p>
+<p>可以通过检查模型参数所在的设备来确认模型处于哪个设备。更多信息请查看这个 <a href="https://stackoverflow.com/questions/58926054/how-to-get-the-device-type-of-a-pytorch-module-conveniently" rel="noopener noreferrer" target="_blank">stack overflow</a> 帖子。</p>
 </div>
 </div>
 </div>
@@ -798,7 +799,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=cd6b4daa"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://pytorch.org/get-started/pytorch-2.0/">PyTorch 2.0</a> 引入了高性能编译特性。可以从<a href="https://pytorch.org/tutorials/intermediate/torch_compile_tutorial.html">这里</a>了解更多。</p>
+<p><a href="https://pytorch.org/get-started/pytorch-2.0/" rel="noopener noreferrer" target="_blank">PyTorch 2.0</a> 引入了高性能编译特性。可以从<a href="https://pytorch.org/tutorials/intermediate/torch_compile_tutorial.html" rel="noopener noreferrer" target="_blank">这里</a>了解更多。</p>
 </div>
 </div>
 </div>
@@ -833,7 +834,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=bb8feb6f"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>就像老师给学生打分一样，我们需要为模型提供一个函数来对其答案进行评分。这称为<code>损失函数</code>。我们将使用一种名为 <a href="https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html">CrossEntropy</a> 的损失函数，它用于评估模型是否从一组类别中预测了正确的类别。</p>
+<p>就像老师给学生打分一样，我们需要为模型提供一个函数来对其答案进行评分。这称为<code>损失函数</code>。我们将使用一种名为 <a href="https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html" rel="noopener noreferrer" target="_blank">CrossEntropy</a> 的损失函数，它用于评估模型是否从一组类别中预测了正确的类别。</p>
 </div>
 </div>
 </div>
@@ -1065,14 +1066,14 @@
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=2c7e075e"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>模型表现得相当不错！准确率迅速接近 100%，验证准确率也是如此。我们现在已经有一个可以准确检测和分类手写图像的模型了。</p>
-<p>下一步是使用这个模型来分类新的、尚未见过的手写图像。这称为<a href="https://blogs.nvidia.com/blog/2016/08/22/difference-deep-learning-training-inference-ai/">推理</a>。我们将在后续练习中探索推理过程。</p>
+<p>下一步是使用这个模型来分类新的、尚未见过的手写图像。这称为<a href="https://blogs.nvidia.com/blog/2016/08/22/difference-deep-learning-training-inference-ai/" rel="noopener noreferrer" target="_blank">推理</a>。我们将在后续练习中探索推理过程。</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=538bda9e"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>值得花点时间来欣赏一下我们所做的工作。历史上，为执行这类任务而构建的专家系统非常复杂，人们花费了整个职业生涯来构建它们（请查看<a href="http://yann.lecun.com/exdb/mnist/">官方 MNIST 页面</a>上的参考资料以及各个年份的里程碑）。</p>
-<p>MNIST 不仅因其对计算机视觉的历史影响而有用，它还是一个很好的<a href="http://www.cs.toronto.edu/~serailhydra/publications/tbd-iiswc18.pdf">基准（benchmark）</a>和调试工具。使用新的机器学习架构时遇到困难了么？用 MNIST 测试一下。如果它没法在这个数据集上学习，那么它很可能也不能在更复杂的图像和数据集上学习。</p>
+<p>值得花点时间来欣赏一下我们所做的工作。历史上，为执行这类任务而构建的专家系统非常复杂，人们花费了整个职业生涯来构建它们（请查看<a href="http://yann.lecun.com/exdb/mnist/" rel="noopener noreferrer" target="_blank">官方 MNIST 页面</a>上的参考资料以及各个年份的里程碑）。</p>
+<p>MNIST 不仅因其对计算机视觉的历史影响而有用，它还是一个很好的<a href="http://www.cs.toronto.edu/~serailhydra/publications/tbd-iiswc18.pdf" rel="noopener noreferrer" target="_blank">基准（benchmark）</a>和调试工具。使用新的机器学习架构时遇到困难了么？用 MNIST 测试一下。如果它没法在这个数据集上学习，那么它很可能也不能在更复杂的图像和数据集上学习。</p>
 </div>
 </div>
 </div>
@@ -1106,7 +1107,7 @@
 </div>
 </div>
 </div>
-</article><nav class="pager" aria-label="上一课与下一课"><a rel="prev" href="00_jupyterlab.html">← 00 · JupyterLab 入门</a><a rel="next" href="02_asl.html">02 · 神经网络训练与美国手语 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2><a class="depth-1" href="#1.-%E4%BD%BF%E7%94%A8-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BF%9B%E8%A1%8C%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB">1. 使用 MNIST 数据集进行图像分类</a><a class="depth-2" href="#1.1-%E7%9B%AE%E6%A0%87">1.1 目标</a><a class="depth-3" href="#1.1.1-%E9%97%AE%E9%A2%98%EF%BC%9A%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB">1.1.1 问题：图像分类</a><a class="depth-3" href="#1.1.2-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%9A%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">1.1.2 解决方法：深度学习</a><a class="depth-2" href="#1.2-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86">1.2 MNIST 数据集</a><a class="depth-3" href="#1.2.1-%E8%AE%AD%E7%BB%83%E5%92%8C%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E5%8F%8A%E5%85%B6%E6%A0%87%E7%AD%BE">1.2.1 训练和测试数据及其标签</a><a class="depth-3" href="#1.2.2-%E5%B0%86%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%88%B0%E5%86%85%E5%AD%98%E4%B8%AD%EF%BC%88%E7%94%A8-TorchVision%EF%BC%89">1.2.2 将数据加载到内存中（用 TorchVision）</a><a class="depth-3" href="#1.2.3-%E6%8E%A2%E7%B4%A2MNIST%E6%95%B0%E6%8D%AE">1.2.3 探索MNIST数据</a><a class="depth-2" href="#1.3-%E5%BC%A0%E9%87%8F%EF%BC%88Tensor%EF%BC%89">1.3 张量（Tensor）</a><a class="depth-2" href="#1.4-%E4%B8%BA%E8%AE%AD%E7%BB%83%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE">1.4 为训练准备数据</a><a class="depth-3" href="#1.4.1-%E5%8F%98%E5%8C%96%EF%BC%88Transforms%EF%BC%89">1.4.1 变化（Transforms）</a><a class="depth-3" href="#1.4.2-%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88DataLoaders%EF%BC%89">1.4.2 数据加载器（DataLoaders）</a><a class="depth-2" href="#1.5-%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B">1.5 创建模型</a><a class="depth-3" href="#1.5.1-%E5%B1%95%E5%B9%B3%E5%9B%BE%E7%89%87">1.5.1 展平图片</a><a class="depth-3" href="#1.5.2-%E8%BE%93%E5%85%A5%E5%B1%82">1.5.2 输入层</a><a class="depth-3" href="#1.5.3-%E9%9A%90%E8%97%8F%E5%B1%82">1.5.3 隐藏层</a><a class="depth-3" href="#1.5.4-%E8%BE%93%E5%87%BA%E5%B1%82">1.5.4 输出层</a><a class="depth-3" href="#1.5.5-%E7%BC%96%E8%AF%91%E6%A8%A1%E5%9E%8B">1.5.5 编译模型</a><a class="depth-2" href="#1.6-%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B">1.6 训练模型</a><a class="depth-3" href="#1.6.1-%E6%8D%9F%E5%A4%B1%E5%92%8C%E4%BC%98%E5%8C%96">1.6.1 损失和优化</a><a class="depth-3" href="#1.6.2-%E8%AE%A1%E7%AE%97%E5%87%86%E7%A1%AE%E7%8E%87">1.6.2 计算准确率</a><a class="depth-3" href="#1.6.3-%E8%AE%AD%E7%BB%83%E5%87%BD%E6%95%B0">1.6.3 训练函数</a><a class="depth-3" href="#1.6.4-%E9%AA%8C%E8%AF%81%E5%87%BD%E6%95%B0">1.6.4 验证函数</a><a class="depth-3" href="#1.6.5-%E8%AE%AD%E7%BB%83%E5%BE%AA%E7%8E%AF">1.6.5 训练循环</a><a class="depth-2" href="#1.7-%E6%80%BB%E7%BB%93">1.7 总结</a><a class="depth-3" href="#1.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">1.7.1 清理显存</a><a class="depth-3" href="#1.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">1.7.2 下一步</a></aside><script>
+</article><nav aria-label="上一课与下一课" class="pager"><a href="00_jupyterlab.html" rel="prev noopener noreferrer" target="_blank">← 00 · JupyterLab 入门</a><a href="02_asl.html" rel="next noopener noreferrer" target="_blank">02 · 神经网络训练与美国手语 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br/>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md" rel="noopener noreferrer" target="_blank">素材来源说明</a>。</footer></main><aside aria-label="本页目录" class="toc"><h2>本页目录</h2><a class="depth-1" href="#1.-%E4%BD%BF%E7%94%A8-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86%E8%BF%9B%E8%A1%8C%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB">1. 使用 MNIST 数据集进行图像分类</a><a class="depth-2" href="#1.1-%E7%9B%AE%E6%A0%87">1.1 目标</a><a class="depth-3" href="#1.1.1-%E9%97%AE%E9%A2%98%EF%BC%9A%E5%9B%BE%E5%83%8F%E5%88%86%E7%B1%BB">1.1.1 问题：图像分类</a><a class="depth-3" href="#1.1.2-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%9A%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">1.1.2 解决方法：深度学习</a><a class="depth-2" href="#1.2-MNIST-%E6%95%B0%E6%8D%AE%E9%9B%86">1.2 MNIST 数据集</a><a class="depth-3" href="#1.2.1-%E8%AE%AD%E7%BB%83%E5%92%8C%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E5%8F%8A%E5%85%B6%E6%A0%87%E7%AD%BE">1.2.1 训练和测试数据及其标签</a><a class="depth-3" href="#1.2.2-%E5%B0%86%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%88%B0%E5%86%85%E5%AD%98%E4%B8%AD%EF%BC%88%E7%94%A8-TorchVision%EF%BC%89">1.2.2 将数据加载到内存中（用 TorchVision）</a><a class="depth-3" href="#1.2.3-%E6%8E%A2%E7%B4%A2MNIST%E6%95%B0%E6%8D%AE">1.2.3 探索MNIST数据</a><a class="depth-2" href="#1.3-%E5%BC%A0%E9%87%8F%EF%BC%88Tensor%EF%BC%89">1.3 张量（Tensor）</a><a class="depth-2" href="#1.4-%E4%B8%BA%E8%AE%AD%E7%BB%83%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE">1.4 为训练准备数据</a><a class="depth-3" href="#1.4.1-%E5%8F%98%E5%8C%96%EF%BC%88Transforms%EF%BC%89">1.4.1 变化（Transforms）</a><a class="depth-3" href="#1.4.2-%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88DataLoaders%EF%BC%89">1.4.2 数据加载器（DataLoaders）</a><a class="depth-2" href="#1.5-%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B">1.5 创建模型</a><a class="depth-3" href="#1.5.1-%E5%B1%95%E5%B9%B3%E5%9B%BE%E7%89%87">1.5.1 展平图片</a><a class="depth-3" href="#1.5.2-%E8%BE%93%E5%85%A5%E5%B1%82">1.5.2 输入层</a><a class="depth-3" href="#1.5.3-%E9%9A%90%E8%97%8F%E5%B1%82">1.5.3 隐藏层</a><a class="depth-3" href="#1.5.4-%E8%BE%93%E5%87%BA%E5%B1%82">1.5.4 输出层</a><a class="depth-3" href="#1.5.5-%E7%BC%96%E8%AF%91%E6%A8%A1%E5%9E%8B">1.5.5 编译模型</a><a class="depth-2" href="#1.6-%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B">1.6 训练模型</a><a class="depth-3" href="#1.6.1-%E6%8D%9F%E5%A4%B1%E5%92%8C%E4%BC%98%E5%8C%96">1.6.1 损失和优化</a><a class="depth-3" href="#1.6.2-%E8%AE%A1%E7%AE%97%E5%87%86%E7%A1%AE%E7%8E%87">1.6.2 计算准确率</a><a class="depth-3" href="#1.6.3-%E8%AE%AD%E7%BB%83%E5%87%BD%E6%95%B0">1.6.3 训练函数</a><a class="depth-3" href="#1.6.4-%E9%AA%8C%E8%AF%81%E5%87%BD%E6%95%B0">1.6.4 验证函数</a><a class="depth-3" href="#1.6.5-%E8%AE%AD%E7%BB%83%E5%BE%AA%E7%8E%AF">1.6.5 训练循环</a><a class="depth-2" href="#1.7-%E6%80%BB%E7%BB%93">1.7 总结</a><a class="depth-3" href="#1.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">1.7.1 清理显存</a><a class="depth-3" href="#1.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">1.7.2 下一步</a></aside><script>
 (()=>{
  const sidebar=document.querySelector('.sidebar'),menu=document.querySelector('.menu');
  const mobile=matchMedia('(max-width:1024px)');

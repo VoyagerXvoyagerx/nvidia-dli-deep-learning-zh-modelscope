@@ -203,7 +203,12 @@ def build(output: Path):
 <body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="{source}" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="{GITHUB}" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
 <aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters">{chapters}</ul><p class="empty-search">没有匹配的课程</p></aside>
 <main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / {html.escape(title)}</div><h1 class="page-title">{html.escape(title)}</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook">{body}</article><nav class="pager" aria-label="上一课与下一课">{previous}{following}</nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="{GITHUB}/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2>{toc}</aside><script>{JS}</script></body></html>'''
-        (output / destinations[path.resolve()]).write_text(page, encoding="utf-8")
+        page_soup = BeautifulSoup(page, "html.parser")
+        for link in page_soup.find_all("a", href=True):
+            if not link["href"].startswith("#"):
+                link["target"] = "_blank"
+                link["rel"] = list(dict.fromkeys([*link.get("rel", []), "noopener", "noreferrer"]))
+        (output / destinations[path.resolve()]).write_text(str(page_soup), encoding="utf-8")
         print(f"Built {path.name} → {destinations[path.resolve()]}")
     print(f"预览入口：{output / 'index.html'}")
 

@@ -1,9 +1,167 @@
-<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前言与课程导航 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css?v=260e9869840d">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
-<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/index.ipynb" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
-<aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="active" href="index.html" aria-current=page>前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" >04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
-<main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 前言与课程导航</div><h1 class="page-title">前言与课程导航</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><p>选择课程开始学习，点击“查看和运行 Notebook”进入对应文件完成练习。</p><ul><li><a href="00_jupyterlab.html">00 · JupyterLab 入门</a></li><li><a href="01_mnist.html">01 · 深度学习简介与 MNIST</a></li><li><a href="02_asl.html">02 · 神经网络训练与美国手语</a></li><li><a href="03_asl_cnn.html">03 · 卷积神经网络</a></li><li><a href="04a_asl_augmentation.html">04a · 数据增强</a></li><li><a href="04b_asl_predictions.html">04b · 模型部署与预测</a></li><li><a href="05a_doggy_door.html">05a · VGG16 预训练模型</a></li><li><a href="05b_corgi_door.html">05b · 柯基识别与迁移学习</a></li><li><a href="06_nlp.html">06 · BERT 与自然语言处理</a></li></ul><h2>课程讲义（PPT）</h2><ul><li><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part1.pptx" target="_blank" rel="noopener noreferrer">part1.pptx</a></li><li><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part2.pptx" target="_blank" rel="noopener noreferrer">part2.pptx</a></li><li><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part3.pptx" target="_blank" rel="noopener noreferrer">part3.pptx</a></li><li><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part4.pptx" target="_blank" rel="noopener noreferrer">part4.pptx</a></li><li><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part5.pptx" target="_blank" rel="noopener noreferrer">part5.pptx</a></li><li><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part6.pptx" target="_blank" rel="noopener noreferrer">part6.pptx</a></li></ul></article><nav class="pager" aria-label="上一课与下一课"><span></span><a rel="next" href="00_jupyterlab.html">00 · JupyterLab 入门 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2></aside><script>
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>前言与课程导航 — NVIDIA DLI at ModelScope Notebook</title><link href="_static/style.css?v=260e9869840d" rel="stylesheet"/>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer="" src="_static/mathjax.js"></script></head>
+<body><header class="topbar"><button aria-expanded="false" aria-label="打开课程目录" class="menu">☰</button><a class="brand" href="index.html" rel="noopener noreferrer" target="_blank">NVIDIA DLI · 深度学习基础</a><nav aria-label="相关链接" class="toplinks"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/index.ipynb" rel="noopener noreferrer" target="_blank">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">GitHub</a></nav></header>
+<aside aria-label="课程目录" class="sidebar"><input aria-label="搜索课程" class="search" placeholder="搜索课程…" type="search"/><h2>课程目录</h2><ul class="chapters"><li><a aria-current="page" class="active" href="index.html" rel="noopener noreferrer" target="_blank">前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" rel="noopener noreferrer" target="_blank">00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" rel="noopener noreferrer" target="_blank">01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" rel="noopener noreferrer" target="_blank">02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" rel="noopener noreferrer" target="_blank">03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" rel="noopener noreferrer" target="_blank">04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" rel="noopener noreferrer" target="_blank">04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" rel="noopener noreferrer" target="_blank">05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" rel="noopener noreferrer" target="_blank">05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" rel="noopener noreferrer" target="_blank">06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
+<main><div class="breadcrumb"><a href="index.html" rel="noopener noreferrer" target="_blank">深度学习基础</a> / 前言与课程导航</div><h1 class="page-title">前言与课程导航</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=940f189b"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="NVIDIA-DLI-x-ModelScope-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80">NVIDIA DLI x ModelScope 深度学习基础<a class="anchor-link" href="#NVIDIA-DLI-x-ModelScope-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80">¶</a></h1><blockquote>
+<p>在 NVIDIA 深度学习培训中心（DLI）免费获取完整课程资源，灵活开启 AI 学习与实践，满足多元化培训需求。</p>
+</blockquote>
+<p>NVIDIA 开源课程面向个人学习者、教育机构、企业及开发者社区，提供可直接获取和使用的 AI 课程内容与实验材料。通过多种课程获取与实践方式，帮助学习者更便捷地开展 AI 学习与动手实践，并进一步衔接 NVIDIA 进阶培训与认证。</p>
+<p>在网页上阅读：<a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">NVIDIA DLI x ModelScope 深度学习基础</a></p>
+<p>原始课程：<a href="https://github.com/NVDLI/fundamentals-of-deep-learning-zh?ncid=bn-prom-622541-modelscope" rel="noopener noreferrer" target="_blank">深度学习基础</a></p>
+<p>可选在自有 GPU 设备、NVIDIA DGX Spark、NVIDIA 合作伙伴相关设备、在线实验室和 <a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">ModelScope Notebook</a> 部署和运行，可根据不同学习场景选择合适方式，更便捷地进入课程学习与实验。</p>
+<h2 id="%E5%AD%A6%E4%B9%A0%E6%88%90%E6%9E%9C">学习成果<a class="anchor-link" href="#%E5%AD%A6%E4%B9%A0%E6%88%90%E6%9E%9C">¶</a></h2><p>完成本课程的实验后，学员将能够：</p>
+<ul>
+<li>使用 PyTorch 在真实图像数据集上构建并训练神经网络</li>
+<li>将卷积神经网络（CNN）应用于图像分类任务</li>
+<li>利用数据增强与迁移学习提升有限数据集上的模型精度</li>
+<li>理解偏差-方差权衡，并掌握应对过拟合的技术手段</li>
+<li>部署已训练的模型，对新的未见数据进行预测</li>
+</ul>
+<h2 id="%E8%AF%BE%E7%A8%8B%E6%A8%A1%E5%9D%97">课程模块<a class="anchor-link" href="#%E8%AF%BE%E7%A8%8B%E6%A8%A1%E5%9D%97">¶</a></h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>模块</th>
+<th>幻灯片</th>
+<th>Notebook</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>深度学习简介</td>
+<td><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part1.pptx" rel="noopener noreferrer" target="_blank">slides_01.pptx</a></td>
+<td><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/01_mnist.ipynb" rel="noopener noreferrer" target="_blank">01_mnist.ipynb</a></td>
+</tr>
+<tr>
+<td>02</td>
+<td>神经网络的训练方式</td>
+<td><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part2.pptx" rel="noopener noreferrer" target="_blank">slides_02.pptx</a></td>
+<td><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/02_asl.ipynb" rel="noopener noreferrer" target="_blank">02_asl.ipynb</a></td>
+</tr>
+<tr>
+<td>03</td>
+<td>卷积神经网络</td>
+<td><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part3.pptx" rel="noopener noreferrer" target="_blank">slides_03.pptx</a></td>
+<td><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/03_asl_cnn.ipynb" rel="noopener noreferrer" target="_blank">03_asl_cnn.ipynb</a></td>
+</tr>
+<tr>
+<td>04</td>
+<td>数据增强与模型部署</td>
+<td><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part4.pptx" rel="noopener noreferrer" target="_blank">slides_04.pptx</a></td>
+<td><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04a_asl_augmentation.ipynb" rel="noopener noreferrer" target="_blank">04a_asl_augmentation.ipynb</a> <br/> <a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04b_asl_predictions.ipynb" rel="noopener noreferrer" target="_blank">04b_asl_predictions.ipynb</a></td>
+</tr>
+<tr>
+<td>05</td>
+<td>预训练模型</td>
+<td><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part5.pptx" rel="noopener noreferrer" target="_blank">slides_05.pptx</a></td>
+<td><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/05a_doggy_door.ipynb" rel="noopener noreferrer" target="_blank">05a_doggy_door.ipynb</a> <br/> <a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/05b_corgi_door.ipynb" rel="noopener noreferrer" target="_blank">05b_corgi_door.ipynb</a></td>
+</tr>
+<tr>
+<td>06</td>
+<td>高级架构</td>
+<td><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/raw/refs/heads/main/course_content/slides/part6.pptx" rel="noopener noreferrer" target="_blank">slides_06.pptx</a></td>
+<td><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/06_nlp.ipynb" rel="noopener noreferrer" target="_blank">06_nlp.ipynb</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="%E5%9C%A8-ModelScope-Notebook-%E4%B8%AD%E8%BF%90%E8%A1%8C">在 ModelScope Notebook 中运行<a class="anchor-link" href="#%E5%9C%A8-ModelScope-Notebook-%E4%B8%AD%E8%BF%90%E8%A1%8C">¶</a></h2><ol>
+<li><p><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/00_jupyterlab.ipynb" rel="noopener noreferrer" target="_blank">00_jupyterlab</a> · JupyterLab 实验环境入门</p>
+</li>
+<li><p><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/01_mnist.ipynb" rel="noopener noreferrer" target="_blank">01_mnist</a> · MNIST 手写数字分类 · （深度学习的 Hello World）</p>
+</li>
+<li><p><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/02_asl.ipynb" rel="noopener noreferrer" target="_blank">02_asl</a> · 美国手语 ASL 图像分类 · （同一流程应用到新数据集）</p>
+</li>
+<li><p><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/03_asl_cnn.ipynb" rel="noopener noreferrer" target="_blank">03_asl_cnn</a> · 卷积神经网络 CNN · （解决过拟合）</p>
+</li>
+<li><p><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04a_asl_augmentation.ipynb" rel="noopener noreferrer" target="_blank">04a_asl_augmentation</a> · 数据增强 · （提升泛化能力）</p>
+</li>
+<li><p><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04b_asl_predictions.ipynb" rel="noopener noreferrer" target="_blank">04b_asl_predictions</a> · 加载已训练模型 · 对新图像做推理</p>
+</li>
+<li><p><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/05a_doggy_door.ipynb" rel="noopener noreferrer" target="_blank">05a_doggy_door</a> · 使用预训练模型 · （狗门分类）</p>
+</li>
+<li><p><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/05b_corgi_door.ipynb" rel="noopener noreferrer" target="_blank">05b_corgi_door</a> · 迁移学习微调 · （柯基门分类）</p>
+</li>
+<li><p><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/06_nlp.ipynb" rel="noopener noreferrer" target="_blank">06_nlp</a> · 自然语言处理</p>
+</li>
+<li><p>打开 <a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">魔搭灵感流</a> 点击“运行”，选择新版 Notebook 。把项目复制到 <code>/mnt/workspace</code> 持久化存储，保留全部文件和目录结构。</p>
+</li>
+<li><p>打开 <code>course_content/tutorials/</code> 中的课程 notebook，按 00、01、02、03、04a、04b、05a、05b、06 的顺序学习。</p>
+</li>
+<li><p>初始化只需一行 <code>%cd "/mnt/workspace/Gallery: NVIDIA_Training_and_Certification_NVIDIA-DLI-Deep-Learning-ZH-ModelScope/course_content/tutorials"</code>，随后导入本课需要的 helper；不再自动下载项目或修改 sys.path。实际复制目录若被重命名，应同步调整该行路径。</p>
+</li>
+<li><p>使用默认镜像预装库既可以开始运行。</p>
+</li>
+<li><p>模型和数据首次从 modelscope.cn 下载，后续使用 <code>tutorial_assets/</code> 缓存。</p>
+</li>
+</ol>
+<p>原课程中的 <code>FIXME</code> / <code>TODO</code> 练习仍保留，须由学习者填写。04b 需要先完成 04a，生成 <code>model.pth</code>。<code>torch.compile</code> 默认关闭；如确需启用，设置 <code>DLI_USE_TORCH_COMPILE=1</code>。</p>
+<h2 id="%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90">使用到的学习资源<a class="anchor-link" href="#%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90">¶</a></h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>ModelScope 仓库</th>
+<th>原来源</th>
+<th>许可</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据集</td>
+<td><a href="https://modelscope.cn/datasets/AI-ModelScope/MNIST" rel="noopener noreferrer" target="_blank">AI-ModelScope/MNIST</a></td>
+<td>TorchVision OSSCI MNIST 原始 IDX</td>
+<td>MIT</td>
+</tr>
+<tr>
+<td>数据集</td>
+<td><a href="https://modelscope.cn/datasets/AI-ModelScope/asl-hg" rel="noopener noreferrer" target="_blank">AI-ModelScope/asl-hg</a></td>
+<td>juanjodurillo/asl-hg；原始记录 DOI 10.17632/j4y5w2c8w9.1</td>
+<td>CC-BY-4.0</td>
+</tr>
+<tr>
+<td>数据集</td>
+<td><a href="https://modelscope.cn/datasets/AI-ModelScope/penny-the-corgi" rel="noopener noreferrer" target="_blank">AI-ModelScope/penny-the-corgi</a></td>
+<td>Kaggle danielledetering/penny-the-corgi</td>
+<td>CC-BY-4.0</td>
+</tr>
+<tr>
+<td>模型</td>
+<td><a href="https://modelscope.cn/models/timm/vgg16.tv_in1k" rel="noopener noreferrer" target="_blank">timm/vgg16.tv_in1k</a></td>
+<td>TorchVision 原始 vgg16-397923af.pth；timm/vgg16.tv_in1k 模型卡</td>
+<td>BSD-3-Clause</td>
+</tr>
+<tr>
+<td>模型</td>
+<td><a href="https://modelscope.cn/models/google-bert/bert-base-cased" rel="noopener noreferrer" target="_blank">google-bert/bert-base-cased</a></td>
+<td>Google BERT</td>
+<td>Apache-2.0</td>
+</tr>
+<tr>
+<td>模型</td>
+<td><a href="https://modelscope.cn/models/google-bert/bert-large-uncased-whole-word-masking-finetuned-squad" rel="noopener noreferrer" target="_blank">google-bert/bert-large-uncased-whole-word-masking-finetuned-squad</a></td>
+<td>Google BERT SQuAD</td>
+<td>Apache-2.0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="%E8%AE%B8%E5%8F%AF%E4%B8%8E%E5%8F%98%E6%9B%B4">许可与变更<a class="anchor-link" href="#%E8%AE%B8%E5%8F%AF%E4%B8%8E%E5%8F%98%E6%9B%B4">¶</a></h2><p>课程资源基于 Apache License 2.0 和 CC BY 4.0 开放许可协议发布，可免费获取，并可在相应许可证允许范围内下载、修改与再分发。具体适用范围及要求以各课程 GitHub 仓库中的许可证说明为准。</p>
+<p>第三方媒体许可见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md" rel="noopener noreferrer" target="_blank">THIRD_PARTY_NOTICES.md</a>。保留 <code>LICENSE</code>、<code>LICENSES/</code> 和第三方归属说明。本版新增 ModelScope 资源 helper、简化目录初始化和最小验证 notebook；使用 ModelScope 下载模型和数据集。详见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/ADAPTATION_REPORT.md" rel="noopener noreferrer" target="_blank">适配改动报告</a>。</p>
+<h2 id="%E5%BC%80%E6%BA%90%E8%AF%BE%E7%A8%8B">开源课程<a class="anchor-link" href="#%E5%BC%80%E6%BA%90%E8%AF%BE%E7%A8%8B">¶</a></h2><p><a href="https://github.com/NVDLI/fundamentals-of-deep-learning-zh?ncid=bn-prom-622541-modelscope" rel="noopener noreferrer" target="_blank">深度学习基础</a>
+<a href="https://www.nvidia.cn/training/open-source/?ncid=bn-prom-460536-modelscope" rel="noopener noreferrer" target="_blank">NVIDIA 开源课程目录</a></p>
+<h2 id="%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90">更多资源<a class="anchor-link" href="#%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90">¶</a></h2><ul>
+<li><a href="https://www.nvidia.cn/training/?ncid=bn-prom-596593-modelscope" rel="noopener noreferrer" target="_blank">NVIDIA 培训和认证中文官网 &gt;</a></li>
+<li><a href="https://www.nvidia.cn/training/certification/?ncid=bn-prom-860160-modelscope" rel="noopener noreferrer" target="_blank">NVIDIA 认证 &gt;</a></li>
+<li><a href="https://www.nvidia.cn/training/self-paced-courses/?ncid=bn-prom-508293-modelscope" rel="noopener noreferrer" target="_blank">在线自主培训 &gt;</a></li>
+<li><a href="https://www.nvidia.cn/training/instructor-led-workshops/?ncid=bn-prom-315129-modelscope" rel="noopener noreferrer" target="_blank">讲师指导的培训班 &gt;</a></li>
+</ul>
+</div>
+</div>
+</div>
+</article><nav aria-label="上一课与下一课" class="pager"><span></span><a href="00_jupyterlab.html" rel="next noopener noreferrer" target="_blank">00 · JupyterLab 入门 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br/>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md" rel="noopener noreferrer" target="_blank">素材来源说明</a>。</footer></main><aside aria-label="本页目录" class="toc"><h2>本页目录</h2><a class="depth-1" href="#NVIDIA-DLI-x-ModelScope-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80">NVIDIA DLI x ModelScope 深度学习基础</a><a class="depth-2" href="#%E5%AD%A6%E4%B9%A0%E6%88%90%E6%9E%9C">学习成果</a><a class="depth-2" href="#%E8%AF%BE%E7%A8%8B%E6%A8%A1%E5%9D%97">课程模块</a><a class="depth-2" href="#%E5%9C%A8-ModelScope-Notebook-%E4%B8%AD%E8%BF%90%E8%A1%8C">在 ModelScope Notebook 中运行</a><a class="depth-2" href="#%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90">使用到的学习资源</a><a class="depth-2" href="#%E8%AE%B8%E5%8F%AF%E4%B8%8E%E5%8F%98%E6%9B%B4">许可与变更</a><a class="depth-2" href="#%E5%BC%80%E6%BA%90%E8%AF%BE%E7%A8%8B">开源课程</a><a class="depth-2" href="#%E6%9B%B4%E5%A4%9A%E8%B5%84%E6%BA%90">更多资源</a></aside><script>
 (()=>{
  const sidebar=document.querySelector('.sidebar'),menu=document.querySelector('.menu');
  const mobile=matchMedia('(max-width:1024px)');

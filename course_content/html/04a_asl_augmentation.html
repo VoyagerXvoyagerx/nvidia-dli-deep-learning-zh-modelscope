@@ -1,12 +1,13 @@
-<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>04a · 数据增强 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css?v=260e9869840d">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
-<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04a_asl_augmentation.ipynb" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
-<aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="active" href="04a_asl_augmentation.html" aria-current=page>04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" >04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
-<main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 04a · 数据增强</div><h1 class="page-title">04a · 数据增强</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=3be18093"><div class="inner_cell">
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>04a · 数据增强 — NVIDIA DLI at ModelScope Notebook</title><link href="_static/style.css?v=260e9869840d" rel="stylesheet"/>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer="" src="_static/mathjax.js"></script></head>
+<body><header class="topbar"><button aria-expanded="false" aria-label="打开课程目录" class="menu">☰</button><a class="brand" href="index.html" rel="noopener noreferrer" target="_blank">NVIDIA DLI · 深度学习基础</a><nav aria-label="相关链接" class="toplinks"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04a_asl_augmentation.ipynb" rel="noopener noreferrer" target="_blank">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">GitHub</a></nav></header>
+<aside aria-label="课程目录" class="sidebar"><input aria-label="搜索课程" class="search" placeholder="搜索课程…" type="search"/><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" rel="noopener noreferrer" target="_blank">前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" rel="noopener noreferrer" target="_blank">00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" rel="noopener noreferrer" target="_blank">01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" rel="noopener noreferrer" target="_blank">02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" rel="noopener noreferrer" target="_blank">03 · 卷积神经网络</a></li><li><a aria-current="page" class="active" href="04a_asl_augmentation.html" rel="noopener noreferrer" target="_blank">04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" rel="noopener noreferrer" target="_blank">04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" rel="noopener noreferrer" target="_blank">05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" rel="noopener noreferrer" target="_blank">05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" rel="noopener noreferrer" target="_blank">06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
+<main><div class="breadcrumb"><a href="index.html" rel="noopener noreferrer" target="_blank">深度学习基础</a> / 04a · 数据增强</div><h1 class="page-title">04a · 数据增强</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=3be18093"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="4a.-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">4a. 数据增强<a class="anchor-link" href="#4a.-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">¶</a></h1><p>目前为止，我们已经选择了一个出色的模型架构，此架构的设计目的在于识别图像中的重要特征，因而它极大提高了模型的性能。我们的验证准确率仍落后于训练准确率，这意味着我们有点过拟合。换个角度来看，我们的模型在对验证数据集进行测试时，会因之前从未见过的内容而产生混淆。</p>
-<p>为了增强模型在处理新数据时的鲁棒性，我们将以编程方式增加数据集的大小和差异。这称为<a href="https://link.springer.com/article/10.1186/s40537-019-0197-0"><em>数据增强</em></a>，是对很多深度学习应用都非常有用的技术。</p>
+<p>为了增强模型在处理新数据时的鲁棒性，我们将以编程方式增加数据集的大小和差异。这称为<a href="https://link.springer.com/article/10.1186/s40537-019-0197-0" rel="noopener noreferrer" target="_blank"><em>数据增强</em></a>，是对很多深度学习应用都非常有用的技术。</p>
 <p>数据的增加让模型在训练时能看到更多图像。数据差异的增加可帮助模型忽略不重要的特征，而只选择在分类时真正重要的特征。如此一来，在面对新数据时，模型有望在进行预测时更好地泛化。</p>
 </div>
 </div>
@@ -117,8 +118,8 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=e78d4c50"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>我们还需要再次创建我们的模型。正如我们在上一课中学到的，卷积神经网络使用重复的层序列。让我们利用这种模式来创建我们自己的<a href="https://pytorch.org/tutorials/beginner/examples_nn/two_layer_net_module.html">自定义模块</a>。然后就可以在我们的 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html">Sequential</a> 模型中像使用层一样使用这个模块。</p>
-<p>为此，我们将扩展 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html">Module</a> 类。定义两个方法：</p>
+<p>我们还需要再次创建我们的模型。正如我们在上一课中学到的，卷积神经网络使用重复的层序列。让我们利用这种模式来创建我们自己的<a href="https://pytorch.org/tutorials/beginner/examples_nn/two_layer_net_module.html" rel="noopener noreferrer" target="_blank">自定义模块</a>。然后就可以在我们的 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html" rel="noopener noreferrer" target="_blank">Sequential</a> 模型中像使用层一样使用这个模块。</p>
+<p>为此，我们将扩展 <a href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html" rel="noopener noreferrer" target="_blank">Module</a> 类。定义两个方法：</p>
 <ul>
 <li><code>__init__</code>：定义我们希望模块拥有的任何属性，包括神经网络层。实际上是在模型中使用另一个模型。</li>
 <li><code>forward</code>：定义我们希望模块如何处理来自它所连接的前一层的任何输入数据。由于我们用的是 <code>Sequential</code> 模型，可以像进行预测一样将输入数据传入其中。</li>
@@ -214,7 +215,7 @@
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=ca8dae23"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>在定义训练循环之前，是时候进行数据增强了。</p>
-<p>我们之前见过 <a href="https://pytorch.org/vision/stable/index.html">TorchVision</a> 的 <a href="https://pytorch.org/vision/0.9/transforms.html">Transforms</a>，但在本课中，我们将进一步探索它的数据增强工具。首先，让我们获取一个用于测试的样本图像：</p>
+<p>我们之前见过 <a href="https://pytorch.org/vision/stable/index.html" rel="noopener noreferrer" target="_blank">TorchVision</a> 的 <a href="https://pytorch.org/vision/0.9/transforms.html" rel="noopener noreferrer" target="_blank">Transforms</a>，但在本课中，我们将进一步探索它的数据增强工具。首先，让我们获取一个用于测试的样本图像：</p>
 </div>
 </div>
 </div>
@@ -246,13 +247,13 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=40d13b8b"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4a.4.1-RandomResizeCrop">4a.4.1 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.RandomResizedCrop">RandomResizeCrop</a><a class="anchor-link" href="#4a.4.1-RandomResizeCrop">¶</a></h3>
+<h3 id="4a.4.1-RandomResizeCrop">4a.4.1 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.RandomResizedCrop" rel="noopener noreferrer" target="_blank">RandomResizeCrop</a><a class="anchor-link" href="#4a.4.1-RandomResizeCrop">¶</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=0f8ae90e"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>这个变换将根据 <code>scale</code> 随机调整输入图像的大小，然后将其<a href="https://en.wikipedia.org/wiki/Cropping_(image)">裁剪（crop）</a>到我们指定的大小。在本例中，我们将其裁剪到原始图像尺寸。为此，TorchVision 需要知道它所缩放图像的<a href="https://en.wikipedia.org/wiki/Aspect_ratio_(image)">长宽比</a>。由于这里的高度与宽度相同，因此宽高比为 1:1。</p>
+<p>这个变换将根据 <code>scale</code> 随机调整输入图像的大小，然后将其<a href="https://en.wikipedia.org/wiki/Cropping_(image)" rel="noopener noreferrer" target="_blank">裁剪（crop）</a>到我们指定的大小。在本例中，我们将其裁剪到原始图像尺寸。为此，TorchVision 需要知道它所缩放图像的<a href="https://en.wikipedia.org/wiki/Aspect_ratio_(image)" rel="noopener noreferrer" target="_blank">长宽比</a>。由于这里的高度与宽度相同，因此宽高比为 1:1。</p>
 </div>
 </div>
 </div>
@@ -298,7 +299,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=44165e9b"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4a.4.2-RandomHorizontalFlip">4a.4.2 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.RandomHorizontalFlip">RandomHorizontalFlip</a><a class="anchor-link" href="#4a.4.2-RandomHorizontalFlip">¶</a></h3>
+<h3 id="4a.4.2-RandomHorizontalFlip">4a.4.2 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.RandomHorizontalFlip" rel="noopener noreferrer" target="_blank">RandomHorizontalFlip</a><a class="anchor-link" href="#4a.4.2-RandomHorizontalFlip">¶</a></h3>
 </div>
 </div>
 </div>
@@ -348,7 +349,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=a3108ae7"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4a.4.3-RandomRotation">4a.4.3 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.RandomRotation">RandomRotation</a><a class="anchor-link" href="#4a.4.3-RandomRotation">¶</a></h3>
+<h3 id="4a.4.3-RandomRotation">4a.4.3 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.RandomRotation" rel="noopener noreferrer" target="_blank">RandomRotation</a><a class="anchor-link" href="#4a.4.3-RandomRotation">¶</a></h3>
 </div>
 </div>
 </div>
@@ -390,7 +391,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=5caf19d3"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4a.4.3-ColorJitter">4a.4.3 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.ColorJitter">ColorJitter</a><a class="anchor-link" href="#4a.4.3-ColorJitter">¶</a></h3>
+<h3 id="4a.4.3-ColorJitter">4a.4.3 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.ColorJitter" rel="noopener noreferrer" target="_blank">ColorJitter</a><a class="anchor-link" href="#4a.4.3-ColorJitter">¶</a></h3>
 </div>
 </div>
 </div>
@@ -398,10 +399,10 @@
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>ColorJitter</code> 变换有 4 个参数：</p>
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Brightness">brightness</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Contrast_(vision)">contrast</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Colorfulness#Saturation">saturation</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Hue">hue</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Brightness" rel="noopener noreferrer" target="_blank">brightness</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Contrast_(vision)" rel="noopener noreferrer" target="_blank">contrast</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Colorfulness#Saturation" rel="noopener noreferrer" target="_blank">saturation</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Hue" rel="noopener noreferrer" target="_blank">hue</a></li>
 </ul>
 <p>后两个适用于彩色图像，所以我们现在只需要前两个。</p>
 </div>
@@ -442,7 +443,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=f43f79d2"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4a.3.4-Compose">4a.3.4 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.Compose">Compose</a><a class="anchor-link" href="#4a.3.4-Compose">¶</a></h3>
+<h3 id="4a.3.4-Compose">4a.3.4 <a href="https://pytorch.org/vision/0.9/transforms.html#torchvision.transforms.Compose" rel="noopener noreferrer" target="_blank">Compose</a><a class="anchor-link" href="#4a.3.4-Compose">¶</a></h3>
 </div>
 </div>
 </div>
@@ -493,7 +494,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=1118601e"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>训练过程大部分保持不变，但有一行发生了变化。在将图像传递给模型之前，我们将应用 <code>random_transforms</code>。为了方便起见，将 <code>get_batch_accuracy</code> 移到了 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/utils.py">utils</a> 文件中。</p>
+<p>训练过程大部分保持不变，但有一行发生了变化。在将图像传递给模型之前，我们将应用 <code>random_transforms</code>。为了方便起见，将 <code>get_batch_accuracy</code> 移到了 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/utils.py" rel="noopener noreferrer" target="_blank">utils</a> 文件中。</p>
 </div>
 </div>
 </div>
@@ -579,8 +580,8 @@
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=7c76d90c"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="4a.6-%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B">4a.6 保存模型<a class="anchor-link" href="#4a.6-%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B">¶</a></h2><p>现在我们已对模型进行了有效训练，下面我们就来实际应用它吧！让我们使用该模型对新图像进行分类，此过程称为推理。而在程序中使用训练过的模型则称为部署。第一步最好先将模型保存到磁盘上。然后，您可将模型传给应用该模型的各种环境中并加载。</p>
-<p>PyTorch 有<a href="https://pytorch.org/tutorials/beginner/saving_loading_models.html">多种方式</a>可以做到这一点，这里要用的是 <code>torch.save</code>。我们还需要保存自定义的模块代码 <code>MyConvBlock</code>，已经在 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/utils.py">utils.py</a> 中保存了。在下一个 notebook 中，我们将加载模型并用它来读取新的手语图片。</p>
-<p>PyTorch 无法保存编译后的模型（<a href="https://discuss.pytorch.org/t/how-to-save-load-a-model-with-torch-compile/179739">参见这个帖子</a>），所以我们将采用其它方式。</p>
+<p>PyTorch 有<a href="https://pytorch.org/tutorials/beginner/saving_loading_models.html" rel="noopener noreferrer" target="_blank">多种方式</a>可以做到这一点，这里要用的是 <code>torch.save</code>。我们还需要保存自定义的模块代码 <code>MyConvBlock</code>，已经在 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/utils.py" rel="noopener noreferrer" target="_blank">utils.py</a> 中保存了。在下一个 notebook 中，我们将加载模型并用它来读取新的手语图片。</p>
+<p>PyTorch 无法保存编译后的模型（<a href="https://discuss.pytorch.org/t/how-to-save-load-a-model-with-torch-compile/179739" rel="noopener noreferrer" target="_blank">参见这个帖子</a>），所以我们将采用其它方式。</p>
 </div>
 </div>
 </div>
@@ -636,7 +637,7 @@
 </div>
 </div>
 </div>
-</article><nav class="pager" aria-label="上一课与下一课"><a rel="prev" href="03_asl_cnn.html">← 03 · 卷积神经网络</a><a rel="next" href="04b_asl_predictions.html">04b · 模型部署与预测 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2><a class="depth-1" href="#4a.-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">4a. 数据增强</a><a class="depth-2" href="#4a.1-%E7%9B%AE%E6%A0%87">4a.1 目标</a><a class="depth-2" href="#4a.2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">4a.2 数据准备</a><a class="depth-2" href="#4a.3-%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B">4a.3 创建模型</a><a class="depth-2" href="#4a.4-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">4a.4 数据增强</a><a class="depth-3" href="#4a.4.1-RandomResizeCrop">4a.4.1 RandomResizeCrop</a><a class="depth-3" href="#4a.4.2-RandomHorizontalFlip">4a.4.2 RandomHorizontalFlip</a><a class="depth-3" href="#4a.4.3-RandomRotation">4a.4.3 RandomRotation</a><a class="depth-3" href="#4a.4.3-ColorJitter">4a.4.3 ColorJitter</a><a class="depth-3" href="#4a.3.4-Compose">4a.3.4 Compose</a><a class="depth-3" href="#4a.4-%E7%94%A8%E5%A2%9E%E5%BC%BA%E7%9A%84%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83">4a.4 用增强的数据进行训练</a><a class="depth-2" href="#4a.5-%E8%AE%A8%E8%AE%BA%E8%8E%B7%E5%BE%97%E7%9A%84%E7%BB%93%E6%9E%9C">4a.5 讨论获得的结果</a><a class="depth-2" href="#4a.6-%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B">4a.6 保存模型</a><a class="depth-2" href="#4a.7-%E6%80%BB%E7%BB%93">4a.7 总结</a><a class="depth-3" href="#4a.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">4a.7.1 清理显存</a><a class="depth-3" href="#4a.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">4a.7.2 下一步</a></aside><script>
+</article><nav aria-label="上一课与下一课" class="pager"><a href="03_asl_cnn.html" rel="prev noopener noreferrer" target="_blank">← 03 · 卷积神经网络</a><a href="04b_asl_predictions.html" rel="next noopener noreferrer" target="_blank">04b · 模型部署与预测 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br/>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md" rel="noopener noreferrer" target="_blank">素材来源说明</a>。</footer></main><aside aria-label="本页目录" class="toc"><h2>本页目录</h2><a class="depth-1" href="#4a.-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">4a. 数据增强</a><a class="depth-2" href="#4a.1-%E7%9B%AE%E6%A0%87">4a.1 目标</a><a class="depth-2" href="#4a.2-%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87">4a.2 数据准备</a><a class="depth-2" href="#4a.3-%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B">4a.3 创建模型</a><a class="depth-2" href="#4a.4-%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">4a.4 数据增强</a><a class="depth-3" href="#4a.4.1-RandomResizeCrop">4a.4.1 RandomResizeCrop</a><a class="depth-3" href="#4a.4.2-RandomHorizontalFlip">4a.4.2 RandomHorizontalFlip</a><a class="depth-3" href="#4a.4.3-RandomRotation">4a.4.3 RandomRotation</a><a class="depth-3" href="#4a.4.3-ColorJitter">4a.4.3 ColorJitter</a><a class="depth-3" href="#4a.3.4-Compose">4a.3.4 Compose</a><a class="depth-3" href="#4a.4-%E7%94%A8%E5%A2%9E%E5%BC%BA%E7%9A%84%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%AE%AD%E7%BB%83">4a.4 用增强的数据进行训练</a><a class="depth-2" href="#4a.5-%E8%AE%A8%E8%AE%BA%E8%8E%B7%E5%BE%97%E7%9A%84%E7%BB%93%E6%9E%9C">4a.5 讨论获得的结果</a><a class="depth-2" href="#4a.6-%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B">4a.6 保存模型</a><a class="depth-2" href="#4a.7-%E6%80%BB%E7%BB%93">4a.7 总结</a><a class="depth-3" href="#4a.7.1-%E6%B8%85%E7%90%86%E6%98%BE%E5%AD%98">4a.7.1 清理显存</a><a class="depth-3" href="#4a.7.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">4a.7.2 下一步</a></aside><script>
 (()=>{
  const sidebar=document.querySelector('.sidebar'),menu=document.querySelector('.menu');
  const mobile=matchMedia('(max-width:1024px)');

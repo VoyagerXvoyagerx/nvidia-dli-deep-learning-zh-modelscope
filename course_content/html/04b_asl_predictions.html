@@ -1,9 +1,10 @@
-<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>04b · 模型部署与预测 — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css?v=260e9869840d">
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer src="_static/mathjax.js"></script></head>
-<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04b_asl_predictions.ipynb" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
-<aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" >前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" >00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" >01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" >02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" >03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" >04a · 数据增强</a></li><li><a class="active" href="04b_asl_predictions.html" aria-current=page>04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" >05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" >05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" >06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
-<main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / 04b · 模型部署与预测</div><h1 class="page-title">04b · 模型部署与预测</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=61e9f4ec"><div class="inner_cell">
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>04b · 模型部署与预测 — NVIDIA DLI at ModelScope Notebook</title><link href="_static/style.css?v=260e9869840d" rel="stylesheet"/>
+<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer="" src="_static/mathjax.js"></script></head>
+<body><header class="topbar"><button aria-expanded="false" aria-label="打开课程目录" class="menu">☰</button><a class="brand" href="index.html" rel="noopener noreferrer" target="_blank">NVIDIA DLI · 深度学习基础</a><nav aria-label="相关链接" class="toplinks"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/04b_asl_predictions.ipynb" rel="noopener noreferrer" target="_blank">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">GitHub</a></nav></header>
+<aside aria-label="课程目录" class="sidebar"><input aria-label="搜索课程" class="search" placeholder="搜索课程…" type="search"/><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" rel="noopener noreferrer" target="_blank">前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" rel="noopener noreferrer" target="_blank">00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" rel="noopener noreferrer" target="_blank">01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" rel="noopener noreferrer" target="_blank">02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" rel="noopener noreferrer" target="_blank">03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" rel="noopener noreferrer" target="_blank">04a · 数据增强</a></li><li><a aria-current="page" class="active" href="04b_asl_predictions.html" rel="noopener noreferrer" target="_blank">04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" rel="noopener noreferrer" target="_blank">05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" rel="noopener noreferrer" target="_blank">05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" rel="noopener noreferrer" target="_blank">06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
+<main><div class="breadcrumb"><a href="index.html" rel="noopener noreferrer" target="_blank">深度学习基础</a> / 04b · 模型部署与预测</div><h1 class="page-title">04b · 模型部署与预测</h1><div class="subtitle">NVIDIA DLI at ModelScope Notebook · VoyagerX 适配</div><article class="notebook"><div class="cell border-box-sizing text_cell rendered" id="cell-id=61e9f4ec"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="4b.-%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B">4b. 部署模型<a class="anchor-link" href="#4b.-%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B">¶</a></h1><p>现在我们已对模型进行了有效的训练，接下来就该实际应用它了。本练习中，我们将给模型展示新图像，让它判断新图像里的手语所对应的字母表中的正确字母。</p>
 <h2 id="4b.1-%E7%9B%AE%E6%A0%87">4b.1 目标<a class="anchor-link" href="#4b.1-%E7%9B%AE%E6%A0%87">¶</a></h2><p>完成这一章节后，您将能够：</p>
@@ -44,7 +45,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=2e67038f"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>因为我们的模型用了一个 <a href="https://pytorch.org/tutorials/beginner/examples_nn/two_layer_net_module.html">自定义的模型</a>，所以需要加载这个类的代码。我们已经在 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/uitls.py">utils.py</a> 中保存了一份代码。</p>
+<p>因为我们的模型用了一个 <a href="https://pytorch.org/tutorials/beginner/examples_nn/two_layer_net_module.html" rel="noopener noreferrer" target="_blank">自定义的模型</a>，所以需要加载这个类的代码。我们已经在 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/course_content/tutorials/uitls.py" rel="noopener noreferrer" target="_blank">utils.py</a> 中保存了一份代码。</p>
 </div>
 </div>
 </div>
@@ -60,7 +61,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=6c92dff2"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>现在我们已经定义了 <code>MyConvBlock</code>，可以用 <a href="https://pytorch.org/docs/stable/generated/torch.load.html">torch.load</a> 从路径加载模型。可以用 <code>map_location</code> 指定设备。当我们打印模型时，它看起来与上一个 notebook 中的一样吗？</p>
+<p>现在我们已经定义了 <code>MyConvBlock</code>，可以用 <a href="https://pytorch.org/docs/stable/generated/torch.load.html" rel="noopener noreferrer" target="_blank">torch.load</a> 从路径加载模型。可以用 <code>map_location</code> 指定设备。当我们打印模型时，它看起来与上一个 notebook 中的一样吗？</p>
 </div>
 </div>
 </div>
@@ -134,7 +135,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=03546d88"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4b.3.2-%E7%BC%A9%E6%94%BE%E5%9B%BE%E5%83%8F">4b.3.2 缩放图像<a class="anchor-link" href="#4b.3.2-%E7%BC%A9%E6%94%BE%E5%9B%BE%E5%83%8F">¶</a></h3><p>数据集中的图像为 28x28 像素，且为灰度图。我们需要确保将相同大小和颜色的图像传入模型的 <code>predict</code> 方法中。目前有好几种方法使用 Python 对图像进行编辑，但 TorchVision 已有一个内置的 <a href="https://pytorch.org/vision/stable/generated/torchvision.io.read_image.html">read_image</a> 函数。我们可以通过 <a href="https://pytorch.org/vision/stable/generated/torchvision.io.ImageReadMode.html#torchvision.io.ImageReadMode">ImageReadMode</a> 让它知道读取的图片是什么类型。</p>
+<h3 id="4b.3.2-%E7%BC%A9%E6%94%BE%E5%9B%BE%E5%83%8F">4b.3.2 缩放图像<a class="anchor-link" href="#4b.3.2-%E7%BC%A9%E6%94%BE%E5%9B%BE%E5%83%8F">¶</a></h3><p>数据集中的图像为 28x28 像素，且为灰度图。我们需要确保将相同大小和颜色的图像传入模型的 <code>predict</code> 方法中。目前有好几种方法使用 Python 对图像进行编辑，但 TorchVision 已有一个内置的 <a href="https://pytorch.org/vision/stable/generated/torchvision.io.read_image.html" rel="noopener noreferrer" target="_blank">read_image</a> 函数。我们可以通过 <a href="https://pytorch.org/vision/stable/generated/torchvision.io.ImageReadMode.html#torchvision.io.ImageReadMode" rel="noopener noreferrer" target="_blank">ImageReadMode</a> 让它知道读取的图片是什么类型。</p>
 </div>
 </div>
 </div>
@@ -170,12 +171,12 @@
 <p>这张图像比我们训练时使用的要大得多。我们可以再次使用 TorchVision 的 Transforms 来将数据转换为我们模型期望的形式。</p>
 <p>我们将:</p>
 <ul>
-<li>用 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.ToDtype.html">ToDtype</a> 将图像转换为浮点型<ul>
+<li>用 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.ToDtype.html" rel="noopener noreferrer" target="_blank">ToDtype</a> 将图像转换为浮点型<ul>
 <li>我们将 <code>scale</code> 设置为 <code>True</code> 以将 [0, 255] 转换为 [0, 1]</li>
 </ul>
 </li>
-<li>使用 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.Resize.html#torchvision.transforms.v2.Resize">Resize</a> 将图像调整为 28 x 28 像素</li>
-<li>使用 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.Grayscale.html#torchvision.transforms.v2.Grayscale">Grayscale</a> 将图像转换为灰度<ul>
+<li>使用 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.Resize.html#torchvision.transforms.v2.Resize" rel="noopener noreferrer" target="_blank">Resize</a> 将图像调整为 28 x 28 像素</li>
+<li>使用 <a href="https://pytorch.org/vision/stable/generated/torchvision.transforms.v2.Grayscale.html#torchvision.transforms.v2.Grayscale" rel="noopener noreferrer" target="_blank">Grayscale</a> 将图像转换为灰度<ul>
 <li>这一步实际上不会做任何事情，因为我们的模型已经是灰度的，但在这里添加它是为了展示获取灰度图像的另一种方法。</li>
 </ul>
 </li>
@@ -264,7 +265,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=1f54cb19"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>好的，现在准备好进行预测了！我们的模型仍然期望接收一批图像。<a href="https://pytorch.org/docs/stable/generated/torch.squeeze.htmlhttps://pytorch.org/docs/stable/generated/torch.squeeze.html">squeeze</a> 能移除 1 个维度，<a href="https://pytorch.org/docs/stable/generated/torch.unsqueeze.htmlhttps://pytorch.org/docs/stable/generated/torch.unsqueeze.html">unsqueeze</a> 则在我们指定的索引处添加 1 个维度。第一个维度通常是批次维度，所以我们可以使用 <code>.unsqueeze(0)</code>。</p>
+<p>好的，现在准备好进行预测了！我们的模型仍然期望接收一批图像。<a href="https://pytorch.org/docs/stable/generated/torch.squeeze.htmlhttps://pytorch.org/docs/stable/generated/torch.squeeze.html" rel="noopener noreferrer" target="_blank">squeeze</a> 能移除 1 个维度，<a href="https://pytorch.org/docs/stable/generated/torch.unsqueeze.htmlhttps://pytorch.org/docs/stable/generated/torch.unsqueeze.html" rel="noopener noreferrer" target="_blank">unsqueeze</a> 则在我们指定的索引处添加 1 个维度。第一个维度通常是批次维度，所以我们可以使用 <code>.unsqueeze(0)</code>。</p>
 </div>
 </div>
 </div>
@@ -321,7 +322,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=41035ef8"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>预测结果的格式是长度为 24 的一维数组。尽管看起来略有差异，但此格式与 y_train 和 y_valid 中的“二值化”的多分类数组相同。数组中的每个元素均为 0 至 1 之间的概率，代表了每个类别的置信度。为了使这个结果更具可读性，我们可以先找出该数组中具有最高概率的那个元素。使用 <code>numpy</code> 库和 <a href="https://numpy.org/doc/stable/reference/generated/numpy.argmax.html">argmax</a> 函数就能轻松完成此操作。</p>
+<p>预测结果的格式是长度为 24 的一维数组。尽管看起来略有差异，但此格式与 y_train 和 y_valid 中的“二值化”的多分类数组相同。数组中的每个元素均为 0 至 1 之间的概率，代表了每个类别的置信度。为了使这个结果更具可读性，我们可以先找出该数组中具有最高概率的那个元素。使用 <code>numpy</code> 库和 <a href="https://numpy.org/doc/stable/reference/generated/numpy.argmax.html" rel="noopener noreferrer" target="_blank">argmax</a> 函数就能轻松完成此操作。</p>
 </div>
 </div>
 </div>
@@ -495,7 +496,7 @@
 </div>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=5a4b1aa8"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>我们希望你喜欢这些练习。在下一章节中，您将学习在没有强大的数据集时，如何利用深度学习。如果你想阅读和了解当下热门的推理技术，可以看看<a href="http://web.eecs.umich.edu/~mosharaf/Readings/FB-ML-Edge.pdf">这篇很棒的论文</a>。</p>
+<p>我们希望你喜欢这些练习。在下一章节中，您将学习在没有强大的数据集时，如何利用深度学习。如果你想阅读和了解当下热门的推理技术，可以看看<a href="http://web.eecs.umich.edu/~mosharaf/Readings/FB-ML-Edge.pdf" rel="noopener noreferrer" target="_blank">这篇很棒的论文</a>。</p>
 </div>
 </div>
 </div>
@@ -505,7 +506,7 @@
 </div>
 </div>
 </div>
-</article><nav class="pager" aria-label="上一课与下一课"><a rel="prev" href="04a_asl_augmentation.html">← 04a · 数据增强</a><a rel="next" href="05a_doggy_door.html">05a · VGG16 预训练模型 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2><a class="depth-1" href="#4b.-%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B">4b. 部署模型</a><a class="depth-2" href="#4b.1-%E7%9B%AE%E6%A0%87">4b.1 目标</a><a class="depth-2" href="#4b.2-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B">4b.2 加载模型</a><a class="depth-2" href="#4b.3-%E4%B8%BA%E6%A8%A1%E5%9E%8B%E5%87%86%E5%A4%87%E5%9B%BE%E5%83%8F">4b.3 为模型准备图像</a><a class="depth-3" href="#4b.3.1-%E6%98%BE%E7%A4%BA%E5%9B%BE%E5%83%8F">4b.3.1 显示图像</a><a class="depth-3" href="#4b.3.2-%E7%BC%A9%E6%94%BE%E5%9B%BE%E5%83%8F">4b.3.2 缩放图像</a><a class="depth-3" href="#4b.4-%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B">4b.4 进行预测</a><a class="depth-3" href="#4b.4.1-%E7%90%86%E8%A7%A3%E9%A2%84%E6%B5%8B%E7%BB%93%E6%9E%9C">4b.4.1 理解预测结果</a><a class="depth-2" href="#4b.5-%E6%80%BB%E7%BB%93">4b.5 总结</a><a class="depth-3" href="#4b.5.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">4b.5.2 下一步</a></aside><script>
+</article><nav aria-label="上一课与下一课" class="pager"><a href="04a_asl_augmentation.html" rel="prev noopener noreferrer" target="_blank">← 04a · 数据增强</a><a href="05a_doggy_door.html" rel="next noopener noreferrer" target="_blank">05a · VGG16 预训练模型 →</a></nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br/>第三方归属见 <a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md" rel="noopener noreferrer" target="_blank">素材来源说明</a>。</footer></main><aside aria-label="本页目录" class="toc"><h2>本页目录</h2><a class="depth-1" href="#4b.-%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B">4b. 部署模型</a><a class="depth-2" href="#4b.1-%E7%9B%AE%E6%A0%87">4b.1 目标</a><a class="depth-2" href="#4b.2-%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B">4b.2 加载模型</a><a class="depth-2" href="#4b.3-%E4%B8%BA%E6%A8%A1%E5%9E%8B%E5%87%86%E5%A4%87%E5%9B%BE%E5%83%8F">4b.3 为模型准备图像</a><a class="depth-3" href="#4b.3.1-%E6%98%BE%E7%A4%BA%E5%9B%BE%E5%83%8F">4b.3.1 显示图像</a><a class="depth-3" href="#4b.3.2-%E7%BC%A9%E6%94%BE%E5%9B%BE%E5%83%8F">4b.3.2 缩放图像</a><a class="depth-3" href="#4b.4-%E8%BF%9B%E8%A1%8C%E9%A2%84%E6%B5%8B">4b.4 进行预测</a><a class="depth-3" href="#4b.4.1-%E7%90%86%E8%A7%A3%E9%A2%84%E6%B5%8B%E7%BB%93%E6%9E%9C">4b.4.1 理解预测结果</a><a class="depth-2" href="#4b.5-%E6%80%BB%E7%BB%93">4b.5 总结</a><a class="depth-3" href="#4b.5.2-%E4%B8%8B%E4%B8%80%E6%AD%A5">4b.5.2 下一步</a></aside><script>
 (()=>{
  const sidebar=document.querySelector('.sidebar'),menu=document.querySelector('.menu');
  const mobile=matchMedia('(max-width:1024px)');
