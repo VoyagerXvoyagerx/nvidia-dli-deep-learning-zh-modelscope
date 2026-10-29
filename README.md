@@ -91,7 +91,7 @@ flowchart TB
 
 原课程中的 `FIXME` / `TODO` 练习仍保留，须由学习者填写。04b 需要先完成 04a，生成 `model.pth`。`torch.compile` 默认关闭；如确需启用，设置 `DLI_USE_TORCH_COMPILE=1`。
 
-## 使用到的学习资源
+## 使用到的开源模型和数据集
 
 | 类型 | ModelScope 仓库 | 原来源 | 许可 |
 |---|---|---|---|
@@ -110,8 +110,8 @@ flowchart TB
 
 ## 开源课程
 
-[深度学习基础](https://github.com/NVDLI/fundamentals-of-deep-learning-zh?ncid=bn-prom-622541-modelscope)
-[NVIDIA 开源课程目录](https://www.nvidia.cn/training/open-source/?ncid=bn-prom-460536-modelscope)
+- [深度学习基础 >](https://github.com/NVDLI/fundamentals-of-deep-learning-zh?ncid=bn-prom-622541-modelscope)
+- [NVIDIA 开源课程目录 >](https://www.nvidia.cn/training/open-source/?ncid=bn-prom-460536-modelscope)
 
 ## 更多资源
 

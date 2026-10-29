@@ -14,16 +14,18 @@ GALLERY = "https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidi
 
 
 def entry_markdown(readme: str) -> str:
-    # Notebook/HTML do not require a Mermaid runtime: show the same learning order as a list.
+    # Notebook/HTML do not require a Mermaid runtime: show the same learning order as a table.
     def learning_path(match):
         nodes = re.findall(r'^\s*\w+\["<b>([^<]+)</b><br/>(.*?)"\]', match.group(1), re.M)
         if not nodes:
             return match.group(0)
-        return "\n".join(
-            f"{i}. [{name}](course_content/tutorials/{name}.ipynb) · "
-            + html.unescape(re.sub(r"<[^>]+>", " · ", label))
-            for i, (name, label) in enumerate(nodes, 1)
-        ) + "\n"
+        rows = ["| Notebook | 学习内容 |", "|---|---|"]
+        rows.extend(
+            f"| [{name}](course_content/tutorials/{name}.ipynb) | "
+            + html.unescape(re.sub(r"<[^>]+>", " · ", label)).replace("|", "&#124;") + " |"
+            for name, label in nodes
+        )
+        return "\n".join(rows) + "\n"
 
     markdown = re.sub(r"```mermaid\n(.*?)\n```", learning_path, readme, flags=re.S)
 

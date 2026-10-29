@@ -123,7 +123,7 @@ git push origin main
 
 ### 入口页与 README 同步
 
-`README.md` 是课程介绍、运行说明、资源清单和推广链接的内容来源。修改后运行 `python scripts/sync_index.py`，再运行 `python build_html.py`。前者更新根目录 `index.ipynb` 的介绍单元格，保留初始化单元格；后者构建 `course_content/html/index.html`。README 的学习流程图在入口页转为相同顺序的可点击列表，不依赖在线 Mermaid 资源。
+`README.md` 是课程介绍、运行说明、资源清单和推广链接的内容来源。修改后运行 `python scripts/sync_index.py`，再运行 `python build_html.py`。前者更新根目录 `index.ipynb` 的介绍单元格，保留初始化单元格；后者构建 `course_content/html/index.html`。README 的学习流程图在入口页转为相同顺序的可点击表格，不依赖在线 Mermaid 资源。
 
 外部链接（包括完整 `ncid` 埋点参数）原样保留；Notebook 链接指向 Gallery 对应文件，PPTX 链接指向 GitHub raw 下载地址。非页内链接默认新标签页打开。Action 在测试和构建之前自动执行同步，因此以后只修改 README 并提交也能更新 Gallery 入口。Action 不回写生成文件到 GitHub；若需在 GitHub 中保留最新生成文件，请本地执行以上两条命令并一并提交。测试核对 README、入口 Notebook 和 HTML 中的埋点链接及出现次数。
 
