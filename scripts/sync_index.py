@@ -29,6 +29,16 @@ def entry_markdown(readme: str) -> str:
 
     markdown = re.sub(r"```mermaid\n(.*?)\n```", learning_path, readme, flags=re.S)
 
+    # Keep the previously agreed Gallery link labels without editing the finalized README.
+    def course_links(match):
+        return re.sub(
+            r"(?m)^- \[([^\]]+)\](\([^\n]+\))",
+            lambda link: f"- [{link[1].removesuffix(' >')} >]{link[2]}",
+            match[0],
+        )
+
+    markdown = re.sub(r"(?ms)^## 开源课程\n.*?(?=^## |\Z)", course_links, markdown)
+
     def asset_link(match):
         label, relative = match.groups()
         relative = relative.removeprefix("./")

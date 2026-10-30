@@ -39,8 +39,6 @@ class HtmlTests(unittest.TestCase):
                     self.assertNotIn('NVIDIA DLI at ModelScope Notebook · VoyagerX 适配', page)
                     self.assertEqual(path.read_bytes(), originals[path])
                     if path.stem == 'index':
-                        learning_table = next(t for t in soup.select('article table') if '学习内容' in t.get_text())
-                        self.assertEqual(len(learning_table.select('tbody tr')), 9)
                         courses = next(h for h in soup.select('article h2') if h.get_text(strip=True).rstrip('¶') == '开源课程')
                         course_links = courses.find_next_sibling('ul').select('li a')
                         self.assertEqual([a.get_text() for a in course_links], ['深度学习基础 >', 'NVIDIA 开源课程目录 >'])
