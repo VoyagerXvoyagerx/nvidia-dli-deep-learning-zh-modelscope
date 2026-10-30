@@ -13,7 +13,7 @@ class SetupTests(unittest.TestCase):
                 nb = json.loads(p.read_text())
                 init = ''.join(nb['cells'][1]['source'])
                 self.assertEqual(init.count('%cd '), 1)
-                self.assertIn('NVIDIA_Training_and_Certification_NVIDIA-DLI-Deep-Learning-ZH-ModelScope/course_content/tutorials', init)
+                self.assertIn('NVIDIA_Training_and_Certification_NVIDIA DLI x ModelScope 深度学习基础/course_content/tutorials', init)
                 self.assertIn('hide-web', nb['cells'][1]['metadata']['tags'])
                 for old in ['requests', 'sys.path', 'rglob', 'os.chdir', 'python -c', 'tutorial_dir']:
                     self.assertNotIn(old, init)

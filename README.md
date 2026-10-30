@@ -48,7 +48,7 @@
 
 1. 在本网站上方点击"运行"或"查看和运行 Notebook"，按新版 Notebook 弹窗把项目复制到 `/mnt/workspace` 持久化存储，保留全部文件和目录结构。
 2. 打开 `course_content/tutorials/` 中的课程 notebook，按 00、01、02、03、04a、04b、05a、05b、06 的顺序学习。
-3. 初始化只需一行 `%cd "/mnt/workspace/Gallery: NVIDIA_Training_and_Certification_NVIDIA-DLI-Deep-Learning-ZH-ModelScope/course_content/tutorials"`，随后导入本课需要的 helper；不再自动下载项目或修改 sys.path。实际复制目录若被重命名，应同步调整该行路径。
+3. 初始化只需一行 `%cd "/mnt/workspace/Gallery: NVIDIA_Training_and_Certification_NVIDIA DLI x ModelScope 深度学习基础/course_content/tutorials"`，随后导入本课需要的 helper；不再自动下载项目或修改 sys.path。实际复制目录若被重命名，应同步调整该行路径。
 4. 使用镜像预装库：PyTorch 2.13.0、TorchVision 0.28.0、Transformers 5.16.1、ModelScope 1.40.1 等。无需 pip 安装、降级或版本断言。
 5. 模型和数据首次从 modelscope.cn 下载，后续使用 `tutorial_assets/` 缓存。Hugging Face/Kaggle/PyTorch 外部下载被替换，无外网备用下载路径。
 

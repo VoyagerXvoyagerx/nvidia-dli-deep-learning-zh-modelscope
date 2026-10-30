@@ -37,7 +37,7 @@
 
 编辑 notebook 时保留原课程练习、资源相对路径和许可证归属。新增模型、数据下载应通过 ModelScope 仓库完成，避免恢复 Hugging Face、Kaggle 或 PyTorch 外部下载；课程镜像已有依赖，不要添加重复安装或降级命令。
 
-新版 ModelScope Notebook 会提示将 Gallery 临时项目复制到持久化存储；先按弹窗完成复制并保留目录。Notebook 初始化只需 `%cd "/mnt/workspace/Gallery: NVIDIA_Training_and_Certification_NVIDIA-DLI-Deep-Learning-ZH-ModelScope/course_content/tutorials"`，然后导入本课 helper。该子目录包含 modelscope_assets.py、utils.py 和 data/，因此不需要 requests 下载课程、递归找文件或 sys.path.insert。若 IDE 复制目标名称不同，按实际路径修改这一行。发布新版本不会自动覆盖已复制的练习，更新时保留用户改动和 model.pth。
+新版 ModelScope Notebook 会提示将 Gallery 临时项目复制到持久化存储；先按弹窗完成复制并保留目录。Notebook 初始化只需 `%cd "/mnt/workspace/Gallery: NVIDIA_Training_and_Certification_NVIDIA DLI x ModelScope 深度学习基础/course_content/tutorials"`，然后导入本课 helper。该子目录包含 modelscope_assets.py、utils.py 和 data/，因此不需要 requests 下载课程、递归找文件或 sys.path.insert。若 IDE 复制目标名称不同，按实际路径修改这一行。发布新版本不会自动覆盖已复制的练习，更新时保留用户改动和 model.pth。
 
 ## 本地构建 HTML
 
