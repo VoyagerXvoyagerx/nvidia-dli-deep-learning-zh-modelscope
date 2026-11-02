@@ -227,6 +227,10 @@ def build(output: Path):
 <main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / {html.escape(title)}</div><h1 class="page-title">{html.escape(title)}</h1><article class="notebook">{body}</article><nav class="pager" aria-label="上一课与下一课">{previous}{following}</nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="{GITHUB}/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2>{toc}</aside><script>{JS}</script></body></html>'''
         page_soup = BeautifulSoup(page, "html.parser")
         for link in page_soup.find_all("a", href=True):
+            # 课程侧栏在当前预览页切换；外部链接保留新标签页。
+            if link.find_parent("ul", class_="chapters"):
+                link["target"] = "_self"
+                continue
             if not link["href"].startswith("#"):
                 link["target"] = "_blank"
                 link["rel"] = list(dict.fromkeys([*link.get("rel", []), "noopener", "noreferrer"]))

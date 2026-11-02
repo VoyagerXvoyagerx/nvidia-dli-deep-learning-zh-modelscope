@@ -28,6 +28,11 @@ class HtmlTests(unittest.TestCase):
                     for link in links:
                         self.assertEqual(link.get('target'), '_blank')
                         self.assertIn('noopener', link.get('rel', []))
+                    chapters = soup.select('.chapters a')
+                    self.assertEqual(len(chapters), len(notebooks))
+                    for chapter in chapters:
+                        self.assertEqual(chapter.get('target'), '_self')
+                        self.assertTrue((output / chapter['href']).is_file())
                     self.assertEqual(links[0]['href'], build_html.GALLERY + '/files/' + path.relative_to(root).as_posix())
                     self.assertNotIn('本版本由 VoyagerX 适配', page)
                     self.assertNotIn('tutorial_dir', page)
@@ -50,7 +55,7 @@ class HtmlTests(unittest.TestCase):
                         for url in tracking:
                             self.assertEqual(article_links.count(url), tracking.count(url))
                         for link in soup.select('a[href]'):
-                            if not link['href'].startswith('#'):
+                            if not link['href'].startswith('#') and not link.find_parent('ul', class_='chapters'):
                                 self.assertEqual(link.get('target'), '_blank')
                                 self.assertIn('noopener', link.get('rel', []))
                         slides = soup.select('article a[href$=".pptx"]')

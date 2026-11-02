@@ -141,6 +141,9 @@ def publish(client, root, paths, *, entry_file=None):
     original = client.gallery()
     if original.get("Owner") != GALLERY_OWNER or original.get("Role") not in {"admin", "write"}:
         raise SyncError("Token must have admin or write access to the configured organization Gallery")
+    private = original.get("Private")
+    if private not in (False, True, 0, 1):
+        raise SyncError("Gallery visibility is unknown; refusing to change it")
     entry = entry_file if entry_file is not None else original.get("EntryFile", "")
     category = "website" if entry_file is not None else original.get("Category")
     suffixes = {"notebook": ".ipynb", "website": ".html", "pdf": ".pdf", "file": None}
@@ -163,11 +166,11 @@ def publish(client, root, paths, *, entry_file=None):
         "Category": category, "EntryFile": entry,
         "Files": json.dumps(paths, ensure_ascii=False),
         "Label": json.dumps(original.get("Label", []), ensure_ascii=False),
-        "Private": 0, "Action": "open",
+        "Private": int(private), "Action": "close" if private else "open",
     })
     client.api("PUT", "/api/v1/gallery/publish", json={"Gid": client.gid})
     result = client.gallery()
-    if set(result["Files"]) != set(paths) or result.get("Private") not in (False, 0) or result.get("EntryFile") != entry or result.get("Category") != category:
+    if set(result["Files"]) != set(paths) or result.get("Private") != private or result.get("EntryFile") != entry or result.get("Category") != category:
         raise SyncError("Published Gallery metadata does not match the expected course")
     return result
 

@@ -49,8 +49,8 @@ class PublisherTests(unittest.TestCase):
             self.assertNotIn("Authorization", put.call_args.kwargs["headers"])
             self.assertNotIn("cookies", put.call_args.kwargs)
 
-    def run_publish(self, change=False, bad_size=False, website=False, override=False):
-        original = {"Name": "course", "Owner": sync.GALLERY_OWNER, "Role": "write", "Category": "notebook", "EntryFile": "index.ipynb", "Files": ["old.txt"], "Label": ["course"], "Private": False, "GmtUpdated": "original"}
+    def run_publish(self, change=False, bad_size=False, website=False, override=False, private=False):
+        original = {"Name": "course", "Owner": sync.GALLERY_OWNER, "Role": "write", "Category": "notebook", "EntryFile": "index.ipynb", "Files": ["old.txt"], "Label": ["course"], "Private": private, "GmtUpdated": "original"}
         name = "index.html" if website else "index.ipynb"
         if website:
             original.update(Category="website", EntryFile=name)
@@ -79,7 +79,8 @@ class PublisherTests(unittest.TestCase):
                 self.assertEqual(json.loads(payload["Files"]), [name])
                 self.assertEqual(payload["EntryFile"], name)
                 self.assertEqual(payload["Category"], original["Category"])
-                self.assertEqual(payload["Private"], 0)
+                self.assertEqual(payload["Private"], int(private))
+                self.assertEqual(payload["Action"], "close" if private else "open")
                 self.assertEqual(payload["Name"], "course")
                 self.assertEqual(json.loads(payload["Label"]), ["course"])
 
@@ -94,6 +95,9 @@ class PublisherTests(unittest.TestCase):
 
     def test_preserves_existing_html_entry(self):
         self.run_publish(website=True)
+
+    def test_keeps_private_gallery_private(self):
+        self.run_publish(website=True, private=True)
 
     def test_updates_entry_from_repository_configuration(self):
         self.run_publish(website=True, override=True)
