@@ -85,19 +85,29 @@ def check_page(page, frame, width, mobile):
     controls = frame.locator('.highlight').evaluate_all('''blocks => blocks.map(block => {
       const run=block.querySelector('.run-code'),copy=block.querySelector('.copy');
       if(!run||!copy)return {missing:true};
+      const pre=block.querySelector('pre'),p=pre.getBoundingClientRect(),style=getComputedStyle(pre);
       const r=run.getBoundingClientRect(),c=copy.getBoundingClientRect(),b=block.getBoundingClientRect();
-      return {labels:[run.textContent,copy.textContent],href:run.href,target:run.target,rel:run.rel,
+      return {labels:[run.getAttribute('aria-label'),copy.getAttribute('aria-label')],text:run.textContent+copy.textContent,
+        icons:[run.querySelectorAll('svg').length,copy.querySelectorAll('svg').length],href:run.href,target:run.target,rel:run.rel,
         left:r.left,right:r.right,copyLeft:c.left,copyRight:c.right,blockLeft:b.left,blockRight:b.right,
-        runHeight:r.height,copyHeight:c.height,count:block.querySelectorAll('.run-code').length};
+        runHeight:r.height,copyHeight:c.height,count:block.querySelectorAll('.run-code').length,
+        codeRight:p.right,paddingTop:parseFloat(style.paddingTop),
+        codeCenter:p.top+parseFloat(style.paddingTop)+parseFloat(style.lineHeight)/2,
+        runCenter:r.top+r.height/2,copyCenter:c.top+c.height/2};
     })''')
     for control in controls:
         assert not control.get('missing'), 'Every copyable code block needs a run link'
-        assert control['labels'] == ['运行', '复制'] and control['count'] == 1
+        assert control['labels'] == ['在魔搭Notebook中运行', '复制'] and control['count'] == 1
+        assert control['text'] == '' and control['icons'] == [1, 1], 'Actions must use icons only'
         assert control['href'] == RUN_URL and control['target'] == '_blank'
         assert {'noopener', 'noreferrer'}.issubset(control['rel'].split())
         assert control['blockLeft'] <= control['left'] < control['right'] <= control['copyLeft']
         assert control['copyRight'] <= control['blockRight'] + 1
-        assert min(control['runHeight'], control['copyHeight']) >= (44 if mobile else 36)
+        assert min(control['runHeight'], control['copyHeight']) >= (44 if mobile else 32)
+        assert control['paddingTop'] <= 16, 'Do not reserve a separate action row above code'
+        assert abs(control['runCenter']-control['codeCenter']) <= 1
+        assert abs(control['copyCenter']-control['codeCenter']) <= 1
+        assert control['codeRight'] <= control['left'] + 1, 'Icons must not cover code'
     checked = 0
     for pre in frame.locator('.notebook pre').all():
         if not pre.evaluate('(el) => el.scrollWidth > el.clientWidth + 2'):
@@ -119,6 +129,23 @@ def check_page(page, frame, width, mobile):
 def check_run_tab(page, frame):
     if not frame.locator('.run-code').count():
         return False
+    run=frame.locator('.run-code').first
+    copy=frame.locator('.code-actions .copy').first
+    tooltip=frame.locator('.code-tooltip')
+    run.hover()
+    tooltip.wait_for(state='visible')
+    assert tooltip.inner_text() == '在魔搭Notebook中运行'
+    copy.hover()
+    assert tooltip.inner_text() == '复制'
+    # Capture the clipboard payload without depending on OS clipboard permissions.
+    frame.evaluate("Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{window.__copiedCode=text}}})")
+    expected=frame.locator('.highlight pre').first.inner_text()
+    copy.click()
+    frame.wait_for_function('window.__copiedCode !== undefined')
+    assert frame.evaluate('window.__copiedCode') == expected
+    assert tooltip.inner_text() == '已复制'
+    run.hover()
+    assert tooltip.inner_text() == '在魔搭Notebook中运行'
     previous_url = page.url
     with page.expect_popup() as opened:
         frame.locator('.run-code').first.click()

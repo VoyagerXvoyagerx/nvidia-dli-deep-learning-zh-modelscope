@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>前言与课程导航 — NVIDIA DLI at ModelScope Notebook</title><link href="_static/style.css?v=35ac2a4557db" rel="stylesheet"/>
+<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>前言与课程导航 — NVIDIA DLI at ModelScope Notebook</title><link href="_static/style.css?v=2cb578a85b7c" rel="stylesheet"/>
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer="" src="_static/mathjax.js"></script></head>
 <body><header class="topbar"><button aria-expanded="false" aria-label="打开课程目录" class="menu">☰</button><a class="brand" href="index.html" rel="noopener noreferrer" target="_blank">NVIDIA DLI · 深度学习基础</a><nav aria-label="相关链接" class="toplinks"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/index.ipynb" rel="noopener noreferrer" target="_blank">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">GitHub</a></nav></header>
 <aside aria-label="课程目录" class="sidebar"><input aria-label="搜索课程" class="search" placeholder="搜索课程…" type="search"/><h2>课程目录</h2><ul class="chapters"><li><a aria-current="page" class="active" href="index.html" rel="noopener noreferrer" target="_blank">前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" rel="noopener noreferrer" target="_blank">00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" rel="noopener noreferrer" target="_blank">01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" rel="noopener noreferrer" target="_blank">02 · 神经网络训练与美国手语</a></li><li><a class="" href="03_asl_cnn.html" rel="noopener noreferrer" target="_blank">03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" rel="noopener noreferrer" target="_blank">04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" rel="noopener noreferrer" target="_blank">04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" rel="noopener noreferrer" target="_blank">05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" rel="noopener noreferrer" target="_blank">05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" rel="noopener noreferrer" target="_blank">06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
@@ -160,15 +160,35 @@
   if(table.parentElement.classList.contains('table-scroll'))return;
   const wrapper=document.createElement('div');wrapper.className='table-scroll';wrapper.tabIndex=0;wrapper.setAttribute('role','region');wrapper.setAttribute('aria-label','表格，可左右滚动');table.before(wrapper);wrapper.append(table);
  });
+ const icon=(paths)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${paths}</svg>`;
+ const playIcon=icon('<path d="m8 5 11 7-11 7Z"/>');
+ const copyIcon=icon('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4"/>');
+ const copiedIcon=icon('<path d="m5 12 4 4L19 6"/>');
+ const tooltip=document.createElement('div');tooltip.className='code-tooltip';tooltip.id='code-action-tooltip';tooltip.setAttribute('role','tooltip');tooltip.hidden=true;document.body.append(tooltip);
+ let tooltipOwner;
+ function hideTooltip(){tooltip.hidden=true;tooltipOwner?.removeAttribute('aria-describedby');tooltipOwner=null}
+ function showTooltip(owner,text=owner.dataset.tooltip){
+  if(tooltipOwner!==owner)hideTooltip();tooltipOwner=owner;tooltip.textContent=text;tooltip.hidden=false;owner.setAttribute('aria-describedby',tooltip.id);
+  const r=owner.getBoundingClientRect(),w=tooltip.offsetWidth,h=tooltip.offsetHeight;
+  tooltip.style.left=Math.max(8,Math.min(innerWidth-w-8,r.left+(r.width-w)/2))+'px';
+  tooltip.style.top=(r.top-h-8>=8?r.top-h-8:r.bottom+8)+'px';
+ }
+ function addTooltip(owner,label){
+  owner.dataset.tooltip=label;owner.setAttribute('aria-label',label);
+  owner.addEventListener('mouseenter',()=>showTooltip(owner));owner.addEventListener('focus',()=>showTooltip(owner));
+  owner.addEventListener('mouseleave',hideTooltip);owner.addEventListener('blur',hideTooltip);
+ }
+ document.addEventListener('scroll',hideTooltip,true);window.addEventListener('resize',hideTooltip);window.addEventListener('blur',hideTooltip);document.addEventListener('keydown',e=>{if(e.key==='Escape')hideTooltip()});
  document.querySelectorAll('.notebook pre').forEach(pre=>{
   pre.classList.add('code-scroll');pre.tabIndex=0;pre.setAttribute('role','region');pre.setAttribute('aria-label','代码或输出内容，可左右滚动');
   const block=pre.closest('.highlight');
   if(block){
-   const copy=document.createElement('button');copy.type='button';copy.className='copy';copy.textContent='复制';copy.setAttribute('aria-label','复制代码');copy.addEventListener('click',async()=>{
+   const preStyle=getComputedStyle(pre);block.style.setProperty('--code-line-center',(parseFloat(preStyle.paddingTop)+parseFloat(preStyle.lineHeight)/2)+'px');
+   const copy=document.createElement('button');copy.type='button';copy.className='copy';copy.innerHTML=copyIcon;addTooltip(copy,'复制');copy.addEventListener('click',async()=>{
     try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}
-    copy.textContent='已复制';setTimeout(()=>copy.textContent='复制',1200);
+    copy.innerHTML=copiedIcon;copy.classList.add('copied');showTooltip(copy,'已复制');setTimeout(()=>{copy.innerHTML=copyIcon;copy.classList.remove('copied');if(tooltipOwner===copy){if(copy.matches(':hover')||document.activeElement===copy)showTooltip(copy);else hideTooltip()}},1200);
    });
-   const run=document.createElement('a');run.className='run-code';run.textContent='运行';run.href='https://modelscope.cn/code/workspace?type=running&gid=cb1503c2-1458-4f67-b9c3-bd505091cb47';run.target='_blank';run.rel='noopener noreferrer';run.setAttribute('aria-label','打开 ModelScope Notebook 运行环境');
+   const run=document.createElement('a');run.className='run-code';run.innerHTML=playIcon;run.href='https://modelscope.cn/code/workspace?type=running&gid=cb1503c2-1458-4f67-b9c3-bd505091cb47';run.target='_blank';run.rel='noopener noreferrer';addTooltip(run,'在魔搭Notebook中运行');
    const toolbar=document.createElement('div');toolbar.className='code-actions';toolbar.append(run,copy);block.append(toolbar);
   }
  });
