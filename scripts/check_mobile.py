@@ -18,6 +18,8 @@ from urllib.parse import parse_qs, quote, urlsplit
 
 from playwright.sync_api import sync_playwright
 
+RUN_URL = 'https://modelscope.cn/code/workspace?type=running&gid=cb1503c2-1458-4f67-b9c3-bd505091cb47'
+
 
 class Handler(SimpleHTTPRequestHandler):
     def log_message(self, *_):
@@ -80,6 +82,22 @@ def check_page(page, frame, width, mobile):
 
     assert frame.locator('.scroll-controls, .code-scrollbar').count() == 0
     assert '左右滑动或拖动滑条查看完整内容' not in frame.locator('body').inner_text()
+    controls = frame.locator('.highlight').evaluate_all('''blocks => blocks.map(block => {
+      const run=block.querySelector('.run-code'),copy=block.querySelector('.copy');
+      if(!run||!copy)return {missing:true};
+      const r=run.getBoundingClientRect(),c=copy.getBoundingClientRect(),b=block.getBoundingClientRect();
+      return {labels:[run.textContent,copy.textContent],href:run.href,target:run.target,rel:run.rel,
+        left:r.left,right:r.right,copyLeft:c.left,copyRight:c.right,blockLeft:b.left,blockRight:b.right,
+        runHeight:r.height,copyHeight:c.height,count:block.querySelectorAll('.run-code').length};
+    })''')
+    for control in controls:
+        assert not control.get('missing'), 'Every copyable code block needs a run link'
+        assert control['labels'] == ['运行', '复制'] and control['count'] == 1
+        assert control['href'] == RUN_URL and control['target'] == '_blank'
+        assert {'noopener', 'noreferrer'}.issubset(control['rel'].split())
+        assert control['blockLeft'] <= control['left'] < control['right'] <= control['copyLeft']
+        assert control['copyRight'] <= control['blockRight'] + 1
+        assert min(control['runHeight'], control['copyHeight']) >= (44 if mobile else 36)
     checked = 0
     for pre in frame.locator('.notebook pre').all():
         if not pre.evaluate('(el) => el.scrollWidth > el.clientWidth + 2'):
@@ -96,6 +114,21 @@ def check_page(page, frame, width, mobile):
             break
     assert frame.evaluate('window.scrollX') == 0, 'Code scrolling must not scroll the page sideways'
     return checked
+
+
+def check_run_tab(page, frame):
+    if not frame.locator('.run-code').count():
+        return False
+    previous_url = page.url
+    with page.expect_popup() as opened:
+        frame.locator('.run-code').first.click()
+    popup = opened.value
+    popup.wait_for_load_state('domcontentloaded')
+    assert popup.url == RUN_URL
+    assert popup.evaluate('window.opener === null')
+    assert page.url == previous_url, 'Run must preserve the current course page'
+    popup.close()
+    return True
 
 
 def check_touch(page, frame):
@@ -132,7 +165,7 @@ def main():
     server = ThreadingHTTPServer(('127.0.0.1', 0), partial(Handler, directory=str(root)))
     threading.Thread(target=server.serve_forever, daemon=True).start()
     base = f'http://127.0.0.1:{server.server_port}'
-    results, touches, scroll_checks = [], 0, 0
+    results, touches, scroll_checks, run_tabs = [], 0, 0, 0
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch()
@@ -141,6 +174,9 @@ def main():
                 context = browser.new_context(viewport={'width': width, 'height': 850},
                                               is_mobile=width <= 1024, has_touch=width <= 1024,
                                               device_scale_factor=1, reduced_motion='reduce')
+                # Test navigation without contacting or starting a real cloud workspace.
+                context.route(RUN_URL, lambda route: route.fulfill(
+                    status=200, content_type='text/html', body='<title>Notebook launch test</title>'))
                 page = context.new_page()
                 for embedded in [False, True]:
                     for path in files:
@@ -154,6 +190,8 @@ def main():
                         scroll_checks += check_page(page, frame, width, width <= 1024)
                         if width == 390 and touches < (2 if embedded else 1):
                             touches += check_touch(page, frame)
+                        if width == 390 and run_tabs < (2 if embedded else 1):
+                            run_tabs += check_run_tab(page, frame)
                         results.append({'page': name, 'width': width, 'iframe': embedded})
                         if args.screenshots and width == 390 and embedded:
                             screenshot_base = args.screenshots / path.relative_to(root).with_suffix('')
@@ -169,7 +207,8 @@ def main():
         server.server_close()
     # A text-only course may have no overflowing code; state that explicitly.
     print(json.dumps({'page_viewport_embedding_checks': len(results),
-                      'code_scroll_checks': scroll_checks, 'touch_swipes': touches}, ensure_ascii=False))
+                      'code_scroll_checks': scroll_checks, 'touch_swipes': touches,
+                      'run_new_tab_checks': run_tabs}, ensure_ascii=False))
 
 
 if __name__ == '__main__':
