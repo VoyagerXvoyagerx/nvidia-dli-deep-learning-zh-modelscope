@@ -6,6 +6,7 @@
 
 **在 ModelScope 上怎么学？**
 
+- **课程在线浏览**：在[魔搭灵感流](https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope)中，以网页形式阅读课程正文、查看代码与练习，点击“运行”即可进入 ModelScope Notebook 动手实践；
 - **算力免费**：ModelScope 提供免费 GPU 环境，无需自备显卡、无需本地部署；
 - **环境零配置**：PyTorch、TorchVision、Transformers、ModelScope 等核心库镜像预装，一行 `pip` 都不用敲；
 - **资源国内直连**：3 个数据集 + 3 个预训练模型全部搬运至 modelscope.cn，告别外网超时；
