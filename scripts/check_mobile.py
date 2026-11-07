@@ -83,6 +83,7 @@ def check_page(page, frame, width, mobile):
     assert frame.locator('.scroll-controls, .code-scrollbar').count() == 0
     assert '左右滑动或拖动滑条查看完整内容' not in frame.locator('body').inner_text()
     controls = frame.locator('.highlight').evaluate_all('''blocks => blocks.map(block => {
+      if(block.closest('details:not([open])')||!block.getClientRects().length)return {hidden:true};
       const run=block.querySelector('.run-code'),copy=block.querySelector('.copy');
       if(!run||!copy)return {missing:true};
       const pre=block.querySelector('pre'),p=pre.getBoundingClientRect(),style=getComputedStyle(pre);
@@ -96,6 +97,7 @@ def check_page(page, frame, width, mobile):
         runCenter:r.top+r.height/2,copyCenter:c.top+c.height/2};
     })''')
     for control in controls:
+        if control.get("hidden"):continue
         assert not control.get('missing'), 'Every copyable code block needs a run link'
         assert control['labels'] == ['在魔搭Notebook中运行', '复制'] and control['count'] == 1
         assert control['text'] == '' and control['icons'] == [1, 1], 'Actions must use icons only'
@@ -110,6 +112,8 @@ def check_page(page, frame, width, mobile):
         assert control['codeRight'] <= control['left'] + 1, 'Icons must not cover code'
     checked = 0
     for pre in frame.locator('.notebook pre').all():
+        if not pre.is_visible():
+            continue
         if not pre.evaluate('(el) => el.scrollWidth > el.clientWidth + 2'):
             continue
         pre.scroll_into_view_if_needed()
@@ -160,6 +164,8 @@ def check_run_tab(page, frame):
 
 def check_touch(page, frame):
     for pre in frame.locator('.notebook pre').all():
+        if not pre.is_visible():
+            continue
         if not pre.evaluate('(el) => el.scrollWidth > el.clientWidth + 40'):
             continue
         pre.scroll_into_view_if_needed()

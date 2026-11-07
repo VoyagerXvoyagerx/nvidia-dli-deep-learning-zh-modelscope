@@ -80,7 +80,11 @@
 
 第三方媒体许可见 [THIRD_PARTY_NOTICES.md](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/THIRD_PARTY_NOTICES.md)。保留 `LICENSE`、`LICENSES/` 和第三方归属说明。本版新增 ModelScope 资源 helper、简化目录初始化和最小验证 notebook；替换模型/数据下载和本地读取逻辑。开头统一简化、02 的平台介绍改为 ModelScope，删除 notebook 的 SPDX 单元格，保留仓库许可证与第三方归属；其余课程正文和练习保留。详见 [适配改动报告](https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope/blob/main/ADAPTATION_REPORT.md)。
 
----
+## 联系与反馈
+
+获取新课发布通知或分享建议，并加入学习小组，请访问：
+
+👉 [订阅课程通知](https://nvidia.jinshuju.com/f/Opor3A)
 
 ## 开源课程
 

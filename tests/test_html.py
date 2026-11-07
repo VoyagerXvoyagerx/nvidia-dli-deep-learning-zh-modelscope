@@ -36,17 +36,32 @@ class HtmlTests(unittest.TestCase):
                     self.assertEqual(links[0]['href'], build_html.GALLERY + '/files/' + path.relative_to(root).as_posix())
                     self.assertNotIn('本版本由 VoyagerX 适配', page)
                     self.assertNotIn('tutorial_dir', page)
-                    if path.stem != 'index':
-                        self.assertNotIn('%cd', page)
+                    for pre in soup.select('.highlight pre'):
+                        self.assertFalse(pre.get_text().lstrip().startswith('%cd '))
                     self.assertIn('NVIDIA_Training_and_Certification', links[0]['href'])
                     self.assertTrue(soup.select_one('article').get_text(strip=True))
                     self.assertIsNone(soup.select_one('.subtitle'))
                     self.assertNotIn('NVIDIA DLI at ModelScope Notebook · VoyagerX 适配', page)
                     self.assertEqual(path.read_bytes(), originals[path])
+                    details = soup.select('details.solution')
+                    self.assertEqual(len(details), len(build_html.SOLUTION_GROUPS.get(path.stem, [])))
+                    for detail in details:
+                        self.assertFalse(detail.has_attr('open'))
+                        self.assertIn('点击展开解答', detail.summary.get_text())
+                        self.assertTrue(detail.select('.solution-content .code_cell'))
+                    for cell in soup.select('.code_cell'):
+                        if '# SOLUTION' in cell.get_text():
+                            self.assertIsNotNone(cell.find_parent('details', class_='solution'))
+                        if 'FIXME' in cell.get_text() or '# TODO' in cell.get_text():
+                            self.assertIsNone(cell.find_parent('details', class_='solution'))
                     if path.stem == 'index':
                         courses = next(h for h in soup.select('article h2') if h.get_text(strip=True).rstrip('¶') == '开源课程')
                         course_links = courses.find_next_sibling('ul').select('li a')
                         self.assertEqual([a.get_text() for a in course_links], ['深度学习基础 >', 'NVIDIA 开源课程目录 >'])
+                        feedback = soup.find('a', href='https://nvidia.jinshuju.com/f/Opor3A')
+                        self.assertIsNotNone(feedback)
+                        self.assertEqual(feedback.get('target'), '_blank')
+                        self.assertIn('NVIDIA DLI x ModelScope 深度学习基础/course_content/tutorials', soup.get_text())
                         readme = (root / 'README.md').read_text()
                         self.assertEqual(nbformat.read(path, as_version=4).cells[0].source, entry_markdown(readme))
                         tracking = re.findall(r'\]\((https?://[^)]+[?&]ncid=[^)]+)\)', readme)

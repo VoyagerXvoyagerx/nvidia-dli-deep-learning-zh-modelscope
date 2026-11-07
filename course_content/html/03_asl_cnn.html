@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>03 · 卷积神经网络 — NVIDIA DLI at ModelScope Notebook</title><link href="_static/style.css?v=2cb578a85b7c" rel="stylesheet"/>
+<html lang="zh-CN"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>03 · 卷积神经网络 — NVIDIA DLI at ModelScope Notebook</title><link href="_static/style.css?v=df18e0d7cd28" rel="stylesheet"/>
 <script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']] },options:{enableMenu:false},svg:{fontCache:'global'}};</script><script defer="" src="_static/mathjax.js"></script></head>
 <body><header class="topbar"><button aria-expanded="false" aria-label="打开课程目录" class="menu">☰</button><a class="brand" href="index.html" rel="noopener noreferrer" target="_blank">NVIDIA DLI · 深度学习基础</a><nav aria-label="相关链接" class="toplinks"><a href="https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope/files/course_content/tutorials/03_asl_cnn.ipynb" rel="noopener noreferrer" target="_blank">查看和运行 Notebook</a><a href="https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope" rel="noopener noreferrer" target="_blank">GitHub</a></nav></header>
 <aside aria-label="课程目录" class="sidebar"><input aria-label="搜索课程" class="search" placeholder="搜索课程…" type="search"/><h2>课程目录</h2><ul class="chapters"><li><a class="" href="index.html" target="_self">前言与课程导航</a></li><li><a class="" href="00_jupyterlab.html" target="_self">00 · JupyterLab 入门</a></li><li><a class="" href="01_mnist.html" target="_self">01 · 深度学习简介与 MNIST</a></li><li><a class="" href="02_asl.html" target="_self">02 · 神经网络训练与美国手语</a></li><li><a aria-current="page" class="active" href="03_asl_cnn.html" target="_self">03 · 卷积神经网络</a></li><li><a class="" href="04a_asl_augmentation.html" target="_self">04a · 数据增强</a></li><li><a class="" href="04b_asl_predictions.html" target="_self">04b · 模型部署与预测</a></li><li><a class="" href="05a_doggy_door.html" target="_self">05a · VGG16 预训练模型</a></li><li><a class="" href="05b_corgi_door.html" target="_self">05b · 柯基识别与迁移学习</a></li><li><a class="" href="06_nlp.html" target="_self">06 · BERT 与自然语言处理</a></li></ul><p class="empty-search">没有匹配的课程</p></aside>
@@ -192,7 +192,7 @@
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing code_cell rendered" id="cell-id=be08df74">
+<details class="solution" data-solution-cells="be08df74"><summary><span aria-hidden="true" class="solution-dots">…</span><span class="solution-show">点击展开解答</span><span class="solution-hide">点击收起解答</span></summary><div class="solution-content"><div class="cell border-box-sizing code_cell rendered" id="cell-id=be08df74">
 <div class="input">
 <div class="inner_cell">
 <div class="input_area">
@@ -217,7 +217,7 @@
 </div>
 </div>
 </div>
-</div>
+</div></div></details>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=f53e686d"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="3.2.3-%E5%88%9B%E5%BB%BA-DataLoader">3.2.3 创建 DataLoader<a class="anchor-link" href="#3.2.3-%E5%88%9B%E5%BB%BA-DataLoader">¶</a></h3>
@@ -272,7 +272,7 @@
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing code_cell rendered" id="cell-id=8fa693ac">
+<details class="solution" data-solution-cells="8fa693ac"><summary><span aria-hidden="true" class="solution-dots">…</span><span class="solution-show">点击展开解答</span><span class="solution-hide">点击收起解答</span></summary><div class="solution-content"><div class="cell border-box-sizing code_cell rendered" id="cell-id=8fa693ac">
 <div class="input">
 <div class="inner_cell">
 <div class="input_area">
@@ -282,7 +282,7 @@
 </div>
 </div>
 </div>
-</div>
+</div></div></details>
 <div class="cell border-box-sizing text_cell rendered" id="cell-id=980d8ded"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>下面从 DataLoader 中取出一个批次来确认数据格式。</p>
@@ -590,7 +590,7 @@
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing code_cell rendered" id="cell-id=5ef43048">
+<details class="solution" data-solution-cells="5ef43048,baa0ddff"><summary><span aria-hidden="true" class="solution-dots">…</span><span class="solution-show">点击展开解答</span><span class="solution-hide">点击收起解答</span></summary><div class="solution-content"><div class="cell border-box-sizing code_cell rendered" id="cell-id=5ef43048">
 <div class="input">
 <div class="inner_cell">
 <div class="input_area">
@@ -611,8 +611,7 @@
 </div>
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered" id="cell-id=baa0ddff">
+</div><div class="cell border-box-sizing code_cell rendered" id="cell-id=baa0ddff">
 <div class="input">
 <div class="inner_cell">
 <div class="input_area">
@@ -636,7 +635,7 @@
 </div>
 </div>
 </div>
-</div>
+</div></div></details>
 <div class="cell border-box-sizing code_cell rendered" id="cell-id=cbd6679a">
 <div class="input">
 <div class="inner_cell">

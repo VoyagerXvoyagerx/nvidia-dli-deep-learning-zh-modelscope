@@ -37,6 +37,39 @@ TITLES = {
     "06_nlp": "06 · BERT 与自然语言处理",
 }
 
+
+# Manually reviewed solution cells for this course; unrelated discussion stays visible.
+# IDs are stable Notebook cell IDs, not inferred matches for FIXME or source_hidden.
+SOLUTION_GROUPS = {
+    "02_asl": [("792987bf",), ("0fd9a9d9",), ("dda16941",)],
+    "03_asl_cnn": [("be08df74",), ("8fa693ac",), ("5ef43048", "baa0ddff")],
+    "04b_asl_predictions": [("1108bf8b",)],
+    "05a_doggy_door": [("b52d3bed",)],
+    "05b_corgi_door": [("30f11578",)],
+}
+
+
+def fold_solutions(soup: BeautifulSoup, notebook_stem: str) -> None:
+    """Wrap only individually reviewed answer cells; never edit Notebook sources."""
+    for ids in SOLUTION_GROUPS.get(notebook_stem, []):
+        cells = [soup.find(id="cell-id=" + cell_id) for cell_id in ids]
+        if any(cell is None for cell in cells):
+            raise ValueError(f"{notebook_stem}: solution cells changed; review mapping {ids}")
+        if any("# SOLUTION" not in cell.get_text() for cell in cells):
+            raise ValueError(f"{notebook_stem}: mapped cell is no longer a solution: {ids}")
+        if any(a.find_next_sibling() is not b for a,b in zip(cells,cells[1:])):
+            raise ValueError(f"{notebook_stem}: solution cells are no longer adjacent: {ids}")
+        details = soup.new_tag("details", attrs={"class": "solution", "data-solution-cells": ",".join(ids)})
+        summary = soup.new_tag("summary")
+        dots = soup.new_tag("span", attrs={"class": "solution-dots", "aria-hidden": "true"});dots.string = "…"
+        show = soup.new_tag("span", attrs={"class": "solution-show"});show.string = "点击展开解答"
+        hide = soup.new_tag("span", attrs={"class": "solution-hide"});hide.string = "点击收起解答"
+        summary.extend([dots,show,hide]);details.append(summary)
+        content = soup.new_tag("div", attrs={"class": "solution-content"});details.append(content)
+        cells[0].insert_before(details)
+        for cell in cells:content.append(cell.extract())
+
+
 CSS = r"""
 :root{--blue:#1976d2;--ink:#37474f;--muted:#697b86;--line:#e5ebef;--header-height:64px}
 *{box-sizing:border-box}html{width:100%;scroll-behavior:smooth;scroll-padding-top:82px}body{width:100%;min-width:0;margin:0;color:var(--ink);background:#fff;font:16px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei",sans-serif}
@@ -57,6 +90,7 @@ code,pre{font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",m
 .output_area pre.code-scroll{padding:14px;background:#fbfcfd;border-left:3px solid #cfd8dc}.code-scroll code,.code-scroll span{white-space:pre;word-break:normal;overflow-wrap:normal}.code-scroll::-webkit-scrollbar,.table-scroll::-webkit-scrollbar{height:10px}.code-scroll::-webkit-scrollbar-track,.table-scroll::-webkit-scrollbar-track{background:#e8eef2}.code-scroll::-webkit-scrollbar-thumb,.table-scroll::-webkit-scrollbar-thumb{background:#8298a6;border-radius:6px}
 .code-actions{position:absolute;right:4px;top:calc(var(--code-line-center,22.125px) - var(--action-size)/2);display:flex;align-items:center;gap:4px;z-index:1}.code-actions .copy,.code-actions .run-code{display:inline-flex;align-items:center;justify-content:center;flex:0 0 var(--action-size);width:var(--action-size);height:var(--action-size);border:0;border-radius:4px;padding:0;background:transparent;color:#607d8b;cursor:pointer;text-decoration:none}.code-actions svg{width:18px;height:18px;pointer-events:none}.code-actions .copy:hover,.code-actions .run-code:hover,.code-actions .copy:focus-visible,.code-actions .run-code:focus-visible{background:#e3f2fd;color:var(--blue)}.code-actions .copy:focus-visible,.code-actions .run-code:focus-visible{outline-offset:-3px}.code-actions .copy.copied{color:#2e7d32}.code-tooltip{position:fixed;z-index:100;max-width:calc(100vw - 16px);padding:7px 10px;border-radius:4px;background:#263238;color:#fff;font-size:13px;line-height:1.5;box-shadow:0 2px 8px #0003;pointer-events:none;white-space:nowrap}.code-tooltip[hidden]{display:none}
 .MathJax{max-width:100%;overflow-x:auto;overflow-y:hidden}.MathJax[display="true"]{display:block}.MathJax svg{max-width:none}.pager{display:flex;justify-content:space-between;gap:20px;margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:14px}.pager a{min-height:44px;display:flex;align-items:center;overflow-wrap:anywhere;min-width:0}.footer{margin-top:30px;color:var(--muted);font-size:12px;overflow-wrap:anywhere}.empty-search{font-size:13px;color:var(--muted);display:none}
+.solution{border:1px solid var(--line);border-radius:6px;margin:18px 0;background:#fafcfd;min-width:0;max-width:100%}.solution summary{display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 14px;cursor:pointer;color:var(--blue);font-size:14px;list-style:none;user-select:none}.solution summary::-webkit-details-marker{display:none}.solution summary:focus-visible{outline:3px solid #ffb300;outline-offset:2px}.solution-dots{font-size:22px;line-height:1}.solution[open] .solution-show,.solution:not([open]) .solution-hide{display:none}.solution-content{padding:0 12px 4px;min-width:0}.solution-content>.cell{margin:10px 0}.solution-content .highlight{margin:10px 0}
 .drawer-head,.drawer-actions,.nav-backdrop{display:none}.nav-backdrop[hidden]{display:none!important}
 @media(min-width:1800px){main{margin-left:calc(280px + (100vw - 1800px)/2)}}
 @media(max-width:1200px){.toc{display:none}main{margin-right:0;padding:30px}}
@@ -153,6 +187,8 @@ def notebook_body(path: Path, destinations: dict[Path, str], output: Path):
         or
         (cell.cell_type == "markdown" and "原课程：NVIDIA DLI《深度学习基础》" in cell.source and "本版本由 VoyagerX 适配" in cell.source)
         or (cell.cell_type == "code" and 'tutorial_dir = Path("/mnt/workspace/fundamentals-of-deep-learning-zh/tutorials")' in cell.source)
+        # IDE saves can drop tags; identify this course's initialization cell precisely.
+        or (cell.cell_type == "code" and re.match(r"""^\s*%cd\s+["']/mnt/workspace/Gallery:.*?/course_content/tutorials["'](?:\n|$)""", cell.source))
     )]
     exporter = HTMLExporter(template_name="basic")
     exporter.exclude_input_prompt = True
@@ -182,6 +218,7 @@ def notebook_body(path: Path, destinations: dict[Path, str], output: Path):
             # Slides use GitHub's raw download route; notices use its file viewer.
             prefix = GITHUB + ("/raw/refs/heads/main/" if target.suffix.lower() in {".ppt", ".pptx"} else "/blob/main/")
             link["href"] = prefix + quote(target.relative_to(ROOT).as_posix(), safe="/") + fragment
+    fold_solutions(soup, path.stem)
     toc = []
     for i, heading in enumerate(soup.find_all(["h1", "h2", "h3"])):
         if not heading.get("id"):
