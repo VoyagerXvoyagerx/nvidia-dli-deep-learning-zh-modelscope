@@ -24,6 +24,7 @@ from pygments.formatters import HtmlFormatter
 ROOT = Path(__file__).resolve().parent
 GITHUB = "https://github.com/VoyagerXvoyagerx/nvidia-dli-deep-learning-zh-modelscope"
 GALLERY = "https://modelscope.cn/gallery/NVIDIA_Training_and_Certification/nvidia-dli-deep-learning-zh-modelscope"
+HEADER_RUN_URL = "https://modelscope.cn/code/workspace?type=running&gid=cb1503c2-1458-4f67-b9c3-bd505091cb47&from=header"
 TITLES = {
     "index": "前言与课程导航",
     "00_jupyterlab": "00 · JupyterLab 入门",
@@ -255,11 +256,10 @@ def build(output: Path):
         toc = "".join(f'<a class="depth-{depth}" href="#{html.escape(anchor,quote=True)}">{html.escape(text)}</a>' for depth, anchor, text in headings)
         previous = f'<a rel="prev" href="{paths[i-1].stem}.html">← {html.escape(TITLES.get(paths[i-1].stem,paths[i-1].stem))}</a>' if i else '<span></span>'
         following = f'<a rel="next" href="{paths[i+1].stem}.html">{html.escape(TITLES.get(paths[i+1].stem,paths[i+1].stem))} →</a>' if i+1 < len(paths) else '<span></span>'
-        source = GALLERY + "/files/" + path.relative_to(ROOT).as_posix()
         page = f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} — NVIDIA DLI at ModelScope Notebook</title><link rel="stylesheet" href="_static/style.css?v={style_version}">
 <script>window.MathJax={{tex:{{inlineMath:[['$','$'],['\\\\(','\\\\)']],displayMath:[['$$','$$'],['\\\\[','\\\\]']] }},options:{{enableMenu:false}},svg:{{fontCache:'global'}}}};</script><script defer src="_static/mathjax.js"></script></head>
-<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="{source}" target="_blank" rel="noopener noreferrer">查看和运行 Notebook</a><a href="{GITHUB}" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
+<body><header class="topbar"><button class="menu" aria-label="打开课程目录" aria-expanded="false">☰</button><a class="brand" href="index.html">NVIDIA DLI · 深度学习基础</a><nav class="toplinks" aria-label="相关链接"><a href="{html.escape(HEADER_RUN_URL, quote=True)}" target="_blank" rel="noopener noreferrer">运行 Notebook</a><a href="{GITHUB}" target="_blank" rel="noopener noreferrer">GitHub</a></nav></header>
 <aside class="sidebar" aria-label="课程目录"><input class="search" type="search" placeholder="搜索课程…" aria-label="搜索课程"><h2>课程目录</h2><ul class="chapters">{chapters}</ul><p class="empty-search">没有匹配的课程</p></aside>
 <main><div class="breadcrumb"><a href="index.html">深度学习基础</a> / {html.escape(title)}</div><h1 class="page-title">{html.escape(title)}</h1><article class="notebook">{body}</article><nav class="pager" aria-label="上一课与下一课">{previous}{following}</nav><footer class="footer">原课程 © 2026 NVIDIA CORPORATION &amp; AFFILIATES · 代码 Apache-2.0 / 正文 CC-BY-4.0 · 适配与预览构建：VoyagerX<br>第三方归属见 <a href="{GITHUB}/blob/main/THIRD_PARTY_NOTICES.md">素材来源说明</a>。</footer></main><aside class="toc" aria-label="本页目录"><h2>本页目录</h2>{toc}</aside><script>{JS}</script></body></html>'''
         page_soup = BeautifulSoup(page, "html.parser")

@@ -1,5 +1,6 @@
 import tempfile
 import re
+from urllib.parse import parse_qs, urlsplit
 import unittest
 from pathlib import Path
 
@@ -24,7 +25,7 @@ class HtmlTests(unittest.TestCase):
                     page = (output / (path.stem + '.html')).read_text()
                     soup = BeautifulSoup(page, 'html.parser')
                     links = soup.select('.toplinks a')
-                    self.assertEqual([a.text for a in links], ['查看和运行 Notebook', 'GitHub'])
+                    self.assertEqual([a.text for a in links], ['运行 Notebook', 'GitHub'])
                     for link in links:
                         self.assertEqual(link.get('target'), '_blank')
                         self.assertIn('noopener', link.get('rel', []))
@@ -33,12 +34,13 @@ class HtmlTests(unittest.TestCase):
                     for chapter in chapters:
                         self.assertEqual(chapter.get('target'), '_self')
                         self.assertTrue((output / chapter['href']).is_file())
-                    self.assertEqual(links[0]['href'], build_html.GALLERY + '/files/' + path.relative_to(root).as_posix())
+                    self.assertEqual(links[0]['href'], build_html.HEADER_RUN_URL)
+                    self.assertEqual(parse_qs(urlsplit(links[0]['href']).query), {
+                        'type': ['running'], 'gid': ['cb1503c2-1458-4f67-b9c3-bd505091cb47'], 'from': ['header']})
                     self.assertNotIn('本版本由 VoyagerX 适配', page)
                     self.assertNotIn('tutorial_dir', page)
                     for pre in soup.select('.highlight pre'):
                         self.assertFalse(pre.get_text().lstrip().startswith('%cd '))
-                    self.assertIn('NVIDIA_Training_and_Certification', links[0]['href'])
                     self.assertTrue(soup.select_one('article').get_text(strip=True))
                     self.assertIsNone(soup.select_one('.subtitle'))
                     self.assertNotIn('NVIDIA DLI at ModelScope Notebook · VoyagerX 适配', page)
