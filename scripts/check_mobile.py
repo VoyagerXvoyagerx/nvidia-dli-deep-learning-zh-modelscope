@@ -18,7 +18,7 @@ from urllib.parse import parse_qs, quote, urlsplit
 
 from playwright.sync_api import sync_playwright
 
-RUN_URL = 'https://modelscope.cn/code/workspace?type=running&gid=cb1503c2-1458-4f67-b9c3-bd505091cb47'
+RUN_URL = 'https://modelscope.cn/code/workspace?type=running&gid=cb1503c2-1458-4f67-b9c3-bd505091cb47&utm_source=code'
 
 
 class Handler(SimpleHTTPRequestHandler):

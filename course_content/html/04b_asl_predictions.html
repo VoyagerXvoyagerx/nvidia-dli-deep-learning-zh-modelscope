@@ -573,7 +573,7 @@
     try{await navigator.clipboard.writeText(pre.innerText)}catch(e){const t=document.createElement('textarea');t.value=pre.innerText;document.body.append(t);t.select();document.execCommand('copy');t.remove()}
     copy.innerHTML=copiedIcon;copy.classList.add('copied');showTooltip(copy,'已复制');setTimeout(()=>{copy.innerHTML=copyIcon;copy.classList.remove('copied');if(tooltipOwner===copy){if(copy.matches(':hover')||document.activeElement===copy)showTooltip(copy);else hideTooltip()}},1200);
    });
-   const run=document.createElement('a');run.className='run-code';run.innerHTML=playIcon;run.href='https://modelscope.cn/code/workspace?type=running&gid=cb1503c2-1458-4f67-b9c3-bd505091cb47';run.target='_blank';run.rel='noopener noreferrer';addTooltip(run,'在魔搭Notebook中运行');
+   const run=document.createElement('a');run.className='run-code';run.innerHTML=playIcon;run.href='https://modelscope.cn/code/workspace?type=running&gid=cb1503c2-1458-4f67-b9c3-bd505091cb47&utm_source=code';run.target='_blank';run.rel='noopener noreferrer';addTooltip(run,'在魔搭Notebook中运行');
    const toolbar=document.createElement('div');toolbar.className='code-actions';toolbar.append(run,copy);block.append(toolbar);
   }
  });
